@@ -26,7 +26,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <QApplication>
+#include <QMainWindow>
+#include <QWidget>
+#include <QGridLayout>
+#include <QLabel>
+
+#include "src/Board.hpp"
+#include "src/Settings.hpp"
+
 int main(int argc, char* argv[])
 {
-    
+    QApplication application(argc, argv);
+    QMainWindow main_window;
+    QWidget base_widget{&main_window};
+    QGridLayout game_layout{&base_widget};
+
+    wf::Settings settings;
+
+    QLabel header{"Header", &base_widget};
+    wf::Board board(settings.getGridDimensions(), settings.getTileSize(), &base_widget);
+    QLabel hand{"Hand", &base_widget};
+    QLabel buttons{"Buttons", &base_widget};
+
+    game_layout.addWidget(&header, 0, 0);
+    game_layout.addWidget(&board, 1, 0);
+    game_layout.addWidget(&hand, 2, 0);
+    game_layout.addWidget(&buttons, 3, 0);
+
+    base_widget.setLayout(&game_layout);
+
+    main_window.setCentralWidget(&base_widget);
+    main_window.show();
+
+    return application.exec();
 }

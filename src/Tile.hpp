@@ -4,6 +4,9 @@
 #include <QLabel>
 #include <QSize>
 
+#include "Letter.hpp"
+#include "Modifier.hpp"
+
 namespace wf
 {
     class Tile : public QLabel
@@ -14,7 +17,14 @@ namespace wf
             Tile(const QSize& a_size);
             ~Tile();
 
+            void placeLetter(Letter a_letter);
+            void lockLetter();
+            void removeLetter();
+            void getLetter();
+
         private:
+            Modifier modifier;
+            Letter letter;
     };
 }
 

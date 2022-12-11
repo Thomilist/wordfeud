@@ -26,6 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <iostream>
+
 #include <QApplication>
 #include <QMainWindow>
 #include <QWidget>
@@ -34,6 +36,9 @@ SOFTWARE.
 
 #include "src/Board.hpp"
 #include "src/Settings.hpp"
+#include "src/Language.hpp"
+#include "src/Letter.hpp"
+#include "src/LetterPool.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -58,6 +63,21 @@ int main(int argc, char* argv[])
 
     main_window.setCentralWidget(&base_widget);
     main_window.show();
+
+    wf::Language english;
+    english.loadWordListFromFile(":/word-lists/english.txt");
+    english.loadLettersFromFile(":/letter-sets/english.csv");
+
+    wf::LetterPool letter_pool;
+    letter_pool.set(english);
+
+    int i = 0;
+
+    while (letter_pool.getRemainingCount())
+    {
+        wf::Letter random_letter = letter_pool.getRandomLetter();
+        std::cout << ++i << " " << random_letter.getText().toStdString() << " " << random_letter.getPoints() << "\n";
+    }
 
     return application.exec();
 }

@@ -25,4 +25,4 @@ find_package(Qt5 REQUIRED COMPONENTS Widgets)
 target_link_libraries(wordfeud PRIVATE Qt5::Widgets)
 
 add_subdirectory(src)
-target_link_libraries(wordfeud PRIVATE Board Settings)
+target_link_libraries(wordfeud PRIVATE Board Settings Language Letter LetterPool)

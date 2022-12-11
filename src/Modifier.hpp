@@ -12,6 +12,16 @@ namespace wf
         DoubleWord,
         TripleWord
     };
+
+    class Modifier
+    {
+        public:
+            Modifier();
+            ~Modifier();
+
+        private:
+            ModifierType type = ModifierType::None;
+    };
 }
 
 

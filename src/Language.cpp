@@ -15,6 +15,8 @@ namespace wf
 
         if (letter_file.open(QIODevice::ReadOnly))
         {
+            letter_list.clear();
+            
             QTextStream letters{&letter_file};
 
             while (!letters.atEnd())
@@ -45,6 +47,8 @@ namespace wf
 
         if (word_list_file.open(QIODevice::ReadOnly))
         {
+            word_list.clear();
+            
             QTextStream words{&word_list_file};
 
             while (!words.atEnd())

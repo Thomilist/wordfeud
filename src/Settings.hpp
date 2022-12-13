@@ -3,6 +3,9 @@
 
 #include <QSize>
 
+#include "ForwardDeclarations.hpp"
+#include "Language.hpp"
+
 namespace wf
 {
     class Settings
@@ -13,11 +16,12 @@ namespace wf
 
             void setGridDimensions(int rows, int collumns);
             void setTileSize(int size);
+            LanguageName getLanguage();
             const QSize& getGridDimensions();
             const QSize& getTileSize();
 
         private:
-
+            LanguageName language{LanguageName::English};
             QSize grid_dimensions{15,15};
             QSize tile_size{32,32};
     };

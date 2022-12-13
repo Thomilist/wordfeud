@@ -27,6 +27,11 @@ namespace wf
         return;
     }
     
+    LanguageName Settings::getLanguage()
+    {
+        return language;
+    }
+    
     const QSize& Settings::getGridDimensions()
     {
         return grid_dimensions;

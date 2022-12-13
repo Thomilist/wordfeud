@@ -1,5 +1,5 @@
 add_library(Letter Letter.cpp)
-target_link_libraries(Letter Qt5::Widgets)
+target_link_libraries(Letter Qt5::Widgets Tile)
 
 add_library(Modifier Modifier.cpp)
 
@@ -17,3 +17,6 @@ target_link_libraries(Language Qt5::Widgets)
 
 add_library(LetterPool LetterPool.cpp)
 target_link_libraries(LetterPool Qt5::Widgets Letter Language)
+
+add_library(Game Game.cpp)
+target_link_libraries(Game Qt5::Widgets Settings Letter Modifier Board)

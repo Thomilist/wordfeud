@@ -22,7 +22,15 @@ add_executable(
 )
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
-target_link_libraries(wordfeud PRIVATE Qt5::Widgets)
-
 add_subdirectory(src)
-target_link_libraries(wordfeud PRIVATE Board Settings Language Letter LetterPool)
+target_link_libraries(
+    wordfeud PRIVATE
+    Qt5::Widgets
+    Tile
+    Board
+    Settings
+    Language
+    Letter
+    LetterPool
+    Game
+)

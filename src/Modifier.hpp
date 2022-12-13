@@ -1,6 +1,8 @@
 #ifndef __MODIFIER_H__
 #define __MODIFIER_H__
 
+#include "ForwardDeclarations.hpp"
+
 namespace wf
 {
     enum class ModifierType

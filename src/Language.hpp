@@ -11,13 +11,15 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "ForwardDeclarations.hpp"
+#include "Letter.hpp"
+
 namespace wf
 {
-    struct LetterData
+    enum class LanguageName
     {
-        QString letter;
-        int count;
-        int points;
+        English,
+        Danish
     };
     
     class Language

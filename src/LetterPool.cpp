@@ -9,30 +9,20 @@ namespace wf
     LetterPool::~LetterPool()
     { }
     
-    void LetterPool::set(Language& a_language)
+    void LetterPool::set(std::vector<Letter*> a_letter_pointers)
     {
-        pool.clear();
-        
-        for (const auto& letter_data : a_language.getLetterList())
-        {
-            for (int n = 0; n < letter_data.count; ++n)
-            {
-                Letter letter{letter_data.letter, letter_data.points};
-                pool.push_back(letter);
-            }
-        }
-
+        pool = a_letter_pointers;
         return;
     }
     
-    Letter LetterPool::getRandomLetter()
+    Letter* LetterPool::getRandomLetter()
     {
         std::random_device random_seed;
         std::mt19937 rng(random_seed());
         std::uniform_int_distribution<> distribution(0, getRemainingCount() - 1);
 
         int random_index = distribution(rng);
-        Letter random_letter = pool.at(random_index);
+        Letter* random_letter = pool.at(random_index);
         pool.erase(pool.begin() + random_index);
 
         return random_letter;

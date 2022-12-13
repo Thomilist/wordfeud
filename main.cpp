@@ -34,49 +34,31 @@ SOFTWARE.
 #include <QGridLayout>
 #include <QLabel>
 
+#include "src/Tile.hpp"
 #include "src/Board.hpp"
 #include "src/Settings.hpp"
 #include "src/Language.hpp"
 #include "src/Letter.hpp"
 #include "src/LetterPool.hpp"
+#include "src/Game.hpp"
 
 int main(int argc, char* argv[])
 {
     QApplication application(argc, argv);
     QMainWindow main_window;
-    QWidget base_widget{&main_window};
-    QGridLayout game_layout{&base_widget};
-
     wf::Settings settings;
 
-    QLabel header{"Header", &base_widget};
-    wf::Board board(settings.getGridDimensions(), settings.getTileSize(), &base_widget);
-    QLabel hand{"Hand", &base_widget};
-    QLabel buttons{"Buttons", &base_widget};
+    wf::Game game{settings, &main_window};
 
-    game_layout.addWidget(&header, 0, 0);
-    game_layout.addWidget(&board, 1, 0);
-    game_layout.addWidget(&hand, 2, 0);
-    game_layout.addWidget(&buttons, 3, 0);
-
-    base_widget.setLayout(&game_layout);
-
-    main_window.setCentralWidget(&base_widget);
+    main_window.setCentralWidget(&game);
     main_window.show();
-
-    wf::Language english;
-    english.loadWordListFromFile(":/word-lists/english.txt");
-    english.loadLettersFromFile(":/letter-sets/english.csv");
-
-    wf::LetterPool letter_pool;
-    letter_pool.set(english);
 
     int i = 0;
 
-    while (letter_pool.getRemainingCount())
+    while (game.letter_pool.getRemainingCount())
     {
-        wf::Letter random_letter = letter_pool.getRandomLetter();
-        std::cout << ++i << " " << random_letter.getText().toStdString() << " " << random_letter.getPoints() << "\n";
+        wf::Letter* random_letter = game.letter_pool.getRandomLetter();
+        std::cout << ++i << " " << random_letter->getText().toStdString() << " " << random_letter->getPoints() << "\n";
     }
 
     return application.exec();

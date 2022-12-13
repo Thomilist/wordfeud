@@ -5,6 +5,7 @@
 #include <QGridLayout>
 #include <QSize>
 
+#include "ForwardDeclarations.hpp"
 #include "Tile.hpp"
 
 namespace wf

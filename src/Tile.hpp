@@ -2,8 +2,10 @@
 #define __TILE_H__
 
 #include <QLabel>
+#include <QPixmap>
 #include <QSize>
 
+#include "ForwardDeclarations.hpp"
 #include "Letter.hpp"
 #include "Modifier.hpp"
 

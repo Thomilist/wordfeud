@@ -4,6 +4,7 @@
 #include <vector>
 #include <random>
 
+#include "ForwardDeclarations.hpp"
 #include "Letter.hpp"
 #include "Language.hpp"
 
@@ -15,12 +16,12 @@ namespace wf
             LetterPool();
             ~LetterPool();
 
-            void set(Language& a_language);
-            [[nodiscard]] Letter getRandomLetter();
+            void set(std::vector<Letter*> a_letter_pointers);
+            [[nodiscard]] Letter* getRandomLetter();
             int getRemainingCount();
         
         private:
-            std::vector<Letter> pool;
+            std::vector<Letter*> pool;
     };
 }
 #endif // __LETTERPOOL_H__

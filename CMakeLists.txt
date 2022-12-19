@@ -26,11 +26,6 @@ add_subdirectory(src)
 target_link_libraries(
     wordfeud PRIVATE
     Qt5::Widgets
-    Tile
-    Board
     Settings
-    Language
-    Letter
-    LetterPool
     Game
 )

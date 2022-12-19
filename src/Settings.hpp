@@ -23,7 +23,7 @@ namespace wf
         private:
             LanguageName language{LanguageName::English};
             QSize grid_dimensions{15,15};
-            QSize tile_size{32,32};
+            QSize tile_size{48,48};
     };
 }
 #endif // __SETTINGS_H__

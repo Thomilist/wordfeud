@@ -34,12 +34,7 @@ SOFTWARE.
 #include <QGridLayout>
 #include <QLabel>
 
-#include "src/Tile.hpp"
-#include "src/Board.hpp"
 #include "src/Settings.hpp"
-#include "src/Language.hpp"
-#include "src/Letter.hpp"
-#include "src/LetterPool.hpp"
 #include "src/Game.hpp"
 
 int main(int argc, char* argv[])
@@ -53,13 +48,7 @@ int main(int argc, char* argv[])
     main_window.setCentralWidget(&game);
     main_window.show();
 
-    int i = 0;
-
-    while (game.letter_pool.getRemainingCount())
-    {
-        wf::Letter* random_letter = game.letter_pool.getRandomLetter();
-        std::cout << ++i << " " << random_letter->getText().toStdString() << " " << random_letter->getPoints() << "\n";
-    }
+    game.placeLetter(2, 1, game.letter_pool.getRandomLetter());
 
     return application.exec();
 }

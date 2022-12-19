@@ -1,9 +1,14 @@
 #ifndef __TILE_H__
 #define __TILE_H__
 
-#include <QLabel>
-#include <QPixmap>
+#include <QWidget>
 #include <QSize>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QRect>
+#include <QPoint>
+#include <QColor>
+#include <QFont>
 
 #include "ForwardDeclarations.hpp"
 #include "Letter.hpp"
@@ -11,22 +16,30 @@
 
 namespace wf
 {
-    class Tile : public QLabel
+    class Tile : public QWidget
     {
         Q_OBJECT
 
         public:
-            Tile(const QSize& a_size);
+            Tile(const QSize& a_size, QWidget* a_parent);
             ~Tile();
 
-            void placeLetter(Letter a_letter);
+            void placeLetter(Letter* a_letter);
             void lockLetter();
-            void removeLetter();
-            void getLetter();
+            [[nodiscard]] Letter* removeLetter();
+            Letter* getLetter();
+            void setModifier(Modifier* a_modifier);
+            Modifier* getModifier();
 
         private:
-            Modifier modifier;
-            Letter letter;
+            void paintEvent(QPaintEvent* a_event);
+            
+            Modifier* modifier = nullptr;
+            Letter* letter = nullptr;
+
+            // Dimensions, percentage of tile size
+            int margin = 5; 
+            int radius = 20;
     };
 }
 

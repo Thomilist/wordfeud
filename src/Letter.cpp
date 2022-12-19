@@ -28,6 +28,11 @@ namespace wf
         return text;
     }
     
+    QString Letter::getPointsAsText()
+    {
+        return QString::number(points);
+    }
+    
     int Letter::getPoints()
     {
         return points;
@@ -38,10 +43,14 @@ namespace wf
         return type;
     }
     
-    /*void Letter::draw(Tile* a_parent)
+    void Letter::lock()
     {
-        QLabel letter_background{a_parent};
-        QPixmap letter_background_image{":/letter-background.png"};
-        letter_background.setPixmap(letter_background_image.scaled(a_parent->size()));
-    }*/
+        status = LetterStatus::Locked;
+        return;
+    }
+    
+    LetterStatus Letter::getStatus()
+    {
+        return status;
+    }
 }

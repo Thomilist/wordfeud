@@ -5,6 +5,7 @@
 
 #include <QWidget>
 #include <QGridLayout>
+#include <QSize>
 
 #include "ForwardDeclarations.hpp"
 #include "Settings.hpp"
@@ -23,12 +24,20 @@ namespace wf
             ~Game();
 
             void loadLanguage();
-            void setLetters();
-            std::vector<Letter*> getLetters();
+            void loadLetters();
+            void placeLetter(int a_collumn, int a_row, Letter* a_letter);
+            [[nodiscard]] Letter* removeLetter(int a_collumn, int a_row);
+            void lockLetters();
+            void loadModifiers();
+            void placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite = false);
+            void placeModifiers(std::vector<Modifier*> a_modifiers);
 
             LetterPool letter_pool;
 
         private:
+            std::vector<Letter*> getAllLetters();
+            std::vector<Modifier*> getAllModifiers();
+
             Settings settings;
             QGridLayout game_layout;
             QLabel header;

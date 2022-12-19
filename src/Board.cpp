@@ -26,7 +26,7 @@ namespace wf
         {
             for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
             {
-                Tile* tile = new Tile(tile_size);
+                Tile* tile = new Tile(tile_size, this);
                 grid.addWidget(tile, row, collumn);
             }
         }
@@ -38,5 +38,30 @@ namespace wf
         board_size.setWidth(grid_dimensions.width() * tile_size.width());
 
         return;
+    }
+    
+    Tile* Board::getTileAtPosition(int a_collumn, int a_row)
+    {
+        QLayoutItem* layout_item = grid.itemAtPosition(a_row, a_collumn);
+
+        if (layout_item == nullptr)
+        {
+            return nullptr;
+        }
+
+        QWidget* widget = layout_item->widget();
+
+        if (widget == nullptr)
+        {
+            return nullptr;
+        }
+
+        Tile* tile = dynamic_cast<Tile*>(widget);
+        return tile;
+    }
+    
+    QSize Board::getGridDimensions()
+    {
+        return grid_dimensions;
     }
 }

@@ -6,7 +6,6 @@
 #include <QPixmap>
 
 #include "ForwardDeclarations.hpp"
-//#include "Tile.hpp"
 
 namespace wf
 {
@@ -23,6 +22,12 @@ namespace wf
         Letter,
         Wildcard
     };
+
+    enum class LetterStatus
+    {
+        Unlocked,
+        Locked
+    };
     
     class Letter
     {
@@ -32,14 +37,17 @@ namespace wf
             ~Letter();
 
             QString getText();
+            QString getPointsAsText();
             int getPoints();
             LetterType getType();
-            //void draw(Tile* a_parent);
+            void lock();
+            LetterStatus getStatus();
 
         private:
             QString text;
             int points;
             LetterType type;
+            LetterStatus status = LetterStatus::Unlocked;
     };
 }
 #endif // __LETTER_H__

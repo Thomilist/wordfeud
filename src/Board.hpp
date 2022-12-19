@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QSize>
+#include <QLayoutItem>
 
 #include "ForwardDeclarations.hpp"
 #include "Tile.hpp"
@@ -15,6 +16,9 @@ namespace wf
         public:
             Board(const QSize& a_grid_dimensions, const QSize& a_tile_size, QWidget* a_parent = nullptr);
             ~Board();
+
+            Tile* getTileAtPosition(int a_collumn, int a_row);
+            QSize getGridDimensions();
 
         private:
             void createEmptyGrid();

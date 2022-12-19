@@ -15,6 +15,7 @@ namespace wf
 
     enum class LanguageName;
     enum class LetterType;
+    enum class LetterStatus;
     enum class ModifierType;
 }
 

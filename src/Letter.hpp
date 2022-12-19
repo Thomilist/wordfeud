@@ -6,6 +6,8 @@
 #include <QPixmap>
 
 #include "ForwardDeclarations.hpp"
+#include "LetterType.hpp"
+#include "LetterStatus.hpp"
 
 namespace wf
 {
@@ -14,21 +16,6 @@ namespace wf
         QString letter;
         int count;
         int points;
-    };
-
-    enum class LetterType
-    {
-        None,
-        Letter,
-        Wildcard
-    };
-
-    enum class LetterStatus
-    {
-        Free,
-        Proposed,
-        LockedRecently,
-        Locked
     };
     
     class Letter
@@ -42,7 +29,7 @@ namespace wf
             QString getPointsAsText();
             int getPoints();
             LetterType getType();
-            void lock();
+            void setStatus(LetterStatus a_status);
             LetterStatus getStatus();
 
         private:

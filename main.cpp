@@ -48,9 +48,5 @@ int main(int argc, char* argv[])
     main_window.setCentralWidget(&game);
     main_window.show();
 
-    game.placeLetter(7, 7, game.letter_pool.getRandomLetter());
-    game.placeLetter(8, 7, game.letter_pool.getRandomLetter());
-    game.placeLetter(9, 7, game.letter_pool.getRandomLetter());
-
     return application.exec();
 }

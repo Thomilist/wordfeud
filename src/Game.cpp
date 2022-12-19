@@ -6,18 +6,22 @@ namespace wf
         , settings(a_settings)
         , game_layout(this)
         , header("Header", this)
-        , board(a_settings.getGridDimensions(), a_settings.getTileSize(), &selection, this)
-        , player1(a_settings.getHandDimensions(), a_settings.getHandTileSize(), &selection, this)
+        , board(BoardType::Board, a_settings.getGridDimensions(), a_settings.getTileSize(), &selection, this)
+        , hands(this)
         , buttons("Buttons", this)
-        , selection(a_settings.getSelectionTileSize(), &selection, this, true)
+        , selection(a_settings.getSelectionTileSize(), &selection, BoardType::None, this, true)
     {
         setMouseTracking(true);
         header.setMouseTracking(true);
+        hands.setMouseTracking(true);
         buttons.setMouseTracking(true);
+
+        createPlayer("Player 1");
+        createPlayer("Player 2");
         
         game_layout.addWidget(&header, 0, 0);
         game_layout.addWidget(&board, 1, 0);
-        game_layout.addWidget(player1.getHand(), 2, 0);
+        game_layout.addWidget(&hands, 2, 0);
         game_layout.addWidget(&buttons, 3, 0);
 
         setLayout(&game_layout);
@@ -29,7 +33,7 @@ namespace wf
         loadModifiers();
         placeModifiers(getAllModifiers());
 
-        player1.fillHand(&letter_pool);
+        all_players[current_player_index]->fillHand(&letter_pool);
     }
     
     Game::~Game()
@@ -110,7 +114,15 @@ namespace wf
                     continue;
                 }
 
-                tile->lockLetter();
+                if (tile->getLetter()->getStatus() == LetterStatus::LockedRecently)
+                {
+                    tile->getLetter()->setStatus(LetterStatus::Locked);
+                }
+                else
+                {
+                    tile->getLetter()->setStatus(LetterStatus::LockedRecently);
+                }
+                
             }
         }
 
@@ -187,6 +199,31 @@ namespace wf
                 }
             }
         }
+
+        return;
+    }
+    
+    void Game::createPlayer(QString a_display_name)
+    {
+        Player* player = new Player{a_display_name, settings.getHandDimensions(), settings.getHandTileSize(), &selection, this};
+        all_players.push_back(player);
+        hands.addWidget(player->getHand());
+        return;
+    }
+    
+    void Game::nextPlayer()
+    {
+        if (all_players.size() == 0)
+        {
+            return;
+        }
+
+        if (++current_player_index > all_players.size())
+        {
+            current_player_index = 0;
+        }
+
+        hands.setCurrentIndex(current_player_index);
 
         return;
     }

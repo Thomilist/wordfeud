@@ -43,9 +43,9 @@ namespace wf
         return type;
     }
     
-    void Letter::lock()
+    void Letter::setStatus(LetterStatus a_status)
     {
-        status = LetterStatus::Locked;
+        status = a_status;
         return;
     }
     

@@ -2,17 +2,19 @@
 
 namespace wf
 {
-    Player::Player(const QSize& a_hand_size, const QSize& a_tile_size, Tile* a_selection, QWidget* a_parent)
-        : hand(a_hand_size, a_tile_size, a_selection, a_parent)
+    Player::Player(QString a_display_name, const QSize& a_hand_size, const QSize& a_tile_size, Tile* a_selection, QWidget* a_parent)
+        : display_name(a_display_name)
         , hand_size(a_hand_size)
-    { }
+    {
+        hand = new Board{BoardType::Hand, a_hand_size, a_tile_size, a_selection, a_parent};
+    }
     
     Player::~Player()
     { }
     
     Board* Player::getHand()
     {
-        return &hand;
+        return hand;
     }
     
     void Player::fillHand(LetterPool* a_letter_pool)
@@ -21,7 +23,7 @@ namespace wf
         {
             for (int collumn = 0; collumn < hand_size.width(); ++collumn)
             {
-                Tile* tile = hand.getTileAtPosition(collumn, row);
+                Tile* tile = hand->getTileAtPosition(collumn, row);
 
                 if (tile == nullptr)
                 {

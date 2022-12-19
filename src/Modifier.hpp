@@ -4,19 +4,10 @@
 #include <QString>
 
 #include "ForwardDeclarations.hpp"
+#include "ModifierType.hpp"
 
 namespace wf
 {
-    enum class ModifierType
-    {
-        None,
-        Start,
-        DoubleLetter,
-        TripleLetter,
-        DoubleWord,
-        TripleWord
-    };
-
     class Modifier
     {
         public:

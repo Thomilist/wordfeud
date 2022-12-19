@@ -3,6 +3,7 @@
 namespace wf
 {
     Board::Board(
+        BoardType a_board_type,
         const QSize& a_grid_dimensions,
         const QSize& a_tile_size, 
         Tile* a_selection,
@@ -11,6 +12,7 @@ namespace wf
         , grid_dimensions(a_grid_dimensions)
         , tile_size(a_tile_size)
         , selection(a_selection)
+        , type(a_board_type)
     {
         setMouseTracking(true);
         grid.setSpacing(0);
@@ -30,7 +32,7 @@ namespace wf
         {
             for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
             {
-                Tile* tile = new Tile(tile_size, selection, this);
+                Tile* tile = new Tile(tile_size, selection, type, this);
                 grid.addWidget(tile, row, collumn);
             }
         }
@@ -67,5 +69,10 @@ namespace wf
     QSize Board::getGridDimensions()
     {
         return grid_dimensions;
+    }
+    
+    BoardType Board::getType()
+    {
+        return type;
     }
 }

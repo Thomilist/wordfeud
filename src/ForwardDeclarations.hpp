@@ -14,10 +14,13 @@ namespace wf
     class Tile;
     class Player;
 
+    struct LetterData;
+
     enum class LanguageName;
     enum class LetterType;
     enum class LetterStatus;
     enum class ModifierType;
+    enum class BoardType;
 }
 
 #endif // __FORWARDDECLARATIONS_H__

@@ -2,10 +2,11 @@
 
 namespace wf
 {
-    Tile::Tile(const QSize& a_size, Tile* a_selection, QWidget* a_parent, bool a_follows_mouse)
+    Tile::Tile(const QSize& a_size, Tile* a_selection, BoardType a_board_type, QWidget* a_parent, bool a_follows_mouse)
         : QWidget(a_parent)
         , selection(a_selection)
         , follows_mouse(a_follows_mouse)
+        , type(a_board_type)
     {
         setMouseTracking(true);
         resize(a_size);
@@ -24,6 +25,11 @@ namespace wf
             letter = a_letter;
         }
 
+        if (type == BoardType::Board)
+        {
+            letter->setStatus(LetterStatus::Proposed);
+        }
+
         if (follows_mouse)
         {
             show();
@@ -32,16 +38,12 @@ namespace wf
         return;
     }
     
-    void Tile::lockLetter()
-    {
-        letter->lock();
-        return;
-    }
-    
     Letter* Tile::removeLetter()
     {
         Letter* current_letter = letter;
         letter = nullptr;
+
+        current_letter->setStatus(LetterStatus::Free);
 
         if (follows_mouse)
         {
@@ -208,11 +210,11 @@ namespace wf
             return;
         }
         
-        if (selection->getLetter() == nullptr)
+        if (selection->getLetter() == nullptr && letter != nullptr)
         {
             selection->placeLetter(removeLetter());
         }
-        else if (letter == nullptr)
+        else if (selection->getLetter() != nullptr && letter == nullptr)
         {
             placeLetter(selection->removeLetter());
         }

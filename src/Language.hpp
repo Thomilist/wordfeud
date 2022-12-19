@@ -13,15 +13,10 @@
 
 #include "ForwardDeclarations.hpp"
 #include "Letter.hpp"
+#include "LanguageName.hpp"
 
 namespace wf
 {
-    enum class LanguageName
-    {
-        English,
-        Danish
-    };
-    
     class Language
     {
         public:

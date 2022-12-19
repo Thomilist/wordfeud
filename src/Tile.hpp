@@ -17,18 +17,19 @@
 #include "Letter.hpp"
 #include "Modifier.hpp"
 
+#include "BoardType.hpp"
+#include "LetterStatus.hpp"
+#include "ModifierType.hpp"
+
 namespace wf
 {
     class Tile : public QWidget
     {
-        Q_OBJECT
-
         public:
-            Tile(const QSize& a_size, Tile* a_selection, QWidget* a_parent = nullptr, bool a_follows_mouse = false);
+            Tile(const QSize& a_size, Tile* a_selection, BoardType a_board_type, QWidget* a_parent = nullptr, bool a_follows_mouse = false);
             ~Tile();
 
             void placeLetter(Letter* a_letter);
-            void lockLetter();
             [[nodiscard]] Letter* removeLetter();
             Letter* getLetter();
             void setModifier(Modifier* a_modifier);
@@ -42,6 +43,7 @@ namespace wf
             Letter* letter = nullptr;
             Tile* selection;
             bool follows_mouse;
+            BoardType type;
 
             // Dimensions, percentage of tile size
             int margin = 5; 

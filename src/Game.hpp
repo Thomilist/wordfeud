@@ -8,6 +8,7 @@
 #include <QSize>
 #include <QMouseEvent>
 #include <QPoint>
+#include <QStackedWidget>
 
 #include "ForwardDeclarations.hpp"
 #include "Settings.hpp"
@@ -17,6 +18,11 @@
 #include "Language.hpp"
 #include "LetterPool.hpp"
 #include "Player.hpp"
+
+#include "BoardType.hpp"
+#include "LanguageName.hpp"
+#include "LetterStatus.hpp"
+#include "ModifierType.hpp"
 
 namespace wf
 {
@@ -34,6 +40,8 @@ namespace wf
             void loadModifiers();
             void placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite = false);
             void placeModifiers(std::vector<Modifier*> a_modifiers);
+            void createPlayer(QString a_display_name);
+            void nextPlayer();
 
             LetterPool letter_pool;
 
@@ -42,14 +50,16 @@ namespace wf
             std::vector<Modifier*> getAllModifiers();
             void mouseMoveEvent(QMouseEvent* a_event);
 
+            std::vector<Letter> all_letters;
+            std::vector<Modifier> all_modifiers;
+            std::vector<Player*> all_players;
+            long unsigned int current_player_index = 0;
             Settings settings;
             QGridLayout game_layout;
             QLabel header;
             Board board;
-            Player player1;
+            QStackedWidget hands;
             QLabel buttons;
-            std::vector<Letter> all_letters;
-            std::vector<Modifier> all_modifiers;
             Language language;
             Tile selection;
     };

@@ -4,17 +4,21 @@ namespace wf
 {
     Board::Board(
         const QSize& a_grid_dimensions,
-        const QSize& a_tile_size,
+        const QSize& a_tile_size, 
+        Tile* a_selection,
         QWidget* a_parent)
         : QWidget(a_parent)
         , grid_dimensions(a_grid_dimensions)
         , tile_size(a_tile_size)
+        , selection(a_selection)
     {
+        setMouseTracking(true);
         grid.setSpacing(0);
         updateBoardSize();
-        setMaximumSize(board_size);
+        setMaximumSize(board_size.width(), board_size.height() * 1.1);
         setLayout(&grid);
         createEmptyGrid();
+        adjustSize();
     }
     
     Board::~Board()
@@ -26,7 +30,7 @@ namespace wf
         {
             for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
             {
-                Tile* tile = new Tile(tile_size, this);
+                Tile* tile = new Tile(tile_size, selection, this);
                 grid.addWidget(tile, row, collumn);
             }
         }

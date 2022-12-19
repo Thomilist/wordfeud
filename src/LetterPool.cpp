@@ -17,6 +17,11 @@ namespace wf
     
     Letter* LetterPool::getRandomLetter()
     {
+        if (getRemainingCount() == 0)
+        {
+            return nullptr;
+        }
+        
         std::random_device random_seed;
         std::mt19937 rng(random_seed());
         std::uniform_int_distribution<> distribution(0, getRemainingCount() - 1);

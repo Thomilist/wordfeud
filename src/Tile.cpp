@@ -2,9 +2,12 @@
 
 namespace wf
 {
-    Tile::Tile(const QSize& a_size, QWidget* a_parent)
+    Tile::Tile(const QSize& a_size, Tile* a_selection, QWidget* a_parent, bool a_follows_mouse)
         : QWidget(a_parent)
+        , selection(a_selection)
+        , follows_mouse(a_follows_mouse)
     {
+        setMouseTracking(true);
         resize(a_size);
         setMaximumSize(a_size);
         setMinimumSize(a_size);
@@ -20,6 +23,11 @@ namespace wf
         {
             letter = a_letter;
         }
+
+        if (follows_mouse)
+        {
+            show();
+        }
         
         return;
     }
@@ -34,6 +42,12 @@ namespace wf
     {
         Letter* current_letter = letter;
         letter = nullptr;
+
+        if (follows_mouse)
+        {
+            hide();
+        }
+
         return current_letter;
     }
     
@@ -59,8 +73,11 @@ namespace wf
         painter.setRenderHint(QPainter::Antialiasing, true);
 
         // Draw solid black tile background
-        QRect background{QPoint{0,0}, size()};
-        painter.fillRect(background, QColor{0, 0, 0});
+        if (!follows_mouse)
+        {
+            QRect background{QPoint{0,0}, size()};
+            painter.fillRect(background, QColor{0, 0, 0});
+        }
 
         // Slightly smaller rectangle used to draw the actual tile
         QRect tile_shape{
@@ -73,8 +90,26 @@ namespace wf
 
         if (letter != nullptr)
         {
-            // Draw white letter background
-            painter.setBrush(QColor{255, 255, 255});
+            // Draw letter background
+            switch (letter->getStatus())
+            {
+                case LetterStatus::Proposed:
+                {
+                    painter.setBrush(QColor{192, 192, 192});
+                    break;
+                }
+                case LetterStatus::LockedRecently:
+                {
+                    painter.setBrush(QColor{255, 255, 192});
+                    break;
+                }
+                default:
+                {
+                    painter.setBrush(QColor{255, 255, 255});
+                    break;
+                }
+            }
+            
             painter.drawRoundedRect(tile_shape, radius, radius, Qt::RelativeSize);
 
             // Alignment boxes for letter text and points
@@ -98,6 +133,10 @@ namespace wf
 
             painter.setFont(QFont{"Monospace", size().height() / 5});
             painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
+        }
+        else if (follows_mouse)
+        {
+            return;
         }
         else if (modifier != nullptr && modifier->getType() != ModifierType::None)
         {
@@ -138,8 +177,11 @@ namespace wf
             painter.drawRoundedRect(tile_shape, radius, radius, Qt::RelativeSize);
 
             // Draw text in white
+            QFont modifier_font{"Monospace", size().height() / 3};
+            modifier_font.setBold(true);
+
             painter.setPen(QColor{255, 255, 255});
-            painter.setFont(QFont{"Monospace", size().height() / 3});
+            painter.setFont(modifier_font);
             painter.drawText(tile_shape, Qt::AlignCenter, modifier->getText());
         }
         else
@@ -148,5 +190,38 @@ namespace wf
             painter.setBrush(QColor{50, 50, 50});
             painter.drawRoundedRect(tile_shape, radius, radius, Qt::RelativeSize);
         }
+
+        return;
+    }
+    
+    void Tile::mousePressEvent(QMouseEvent*)
+    {
+        if (follows_mouse)
+        {
+            return;
+        }
+
+        if (    letter != nullptr
+            && (letter->getStatus() == LetterStatus::Locked 
+            ||  letter->getStatus() == LetterStatus::LockedRecently))
+        {
+            return;
+        }
+        
+        if (selection->getLetter() == nullptr)
+        {
+            selection->placeLetter(removeLetter());
+        }
+        else if (letter == nullptr)
+        {
+            placeLetter(selection->removeLetter());
+        }
+        else
+        {
+            return;
+        }
+
+        repaint();
+        return;
     }
 }

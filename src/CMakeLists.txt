@@ -47,6 +47,13 @@ target_link_libraries(
     Language
 )
 
+add_library(Player Player.cpp)
+target_link_libraries(
+    Player
+    Qt5::Widgets
+    Board
+)
+
 add_library(Game Game.cpp)
 target_link_libraries(
     Game
@@ -57,4 +64,5 @@ target_link_libraries(
     Board
     Language
     LetterPool
+    Player
 )

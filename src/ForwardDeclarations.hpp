@@ -12,6 +12,7 @@ namespace wf
     class Modifier;
     class Settings;
     class Tile;
+    class Player;
 
     enum class LanguageName;
     enum class LetterType;

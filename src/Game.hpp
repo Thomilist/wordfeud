@@ -6,6 +6,8 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QSize>
+#include <QMouseEvent>
+#include <QPoint>
 
 #include "ForwardDeclarations.hpp"
 #include "Settings.hpp"
@@ -14,6 +16,7 @@
 #include "Board.hpp"
 #include "Language.hpp"
 #include "LetterPool.hpp"
+#include "Player.hpp"
 
 namespace wf
 {
@@ -37,16 +40,18 @@ namespace wf
         private:
             std::vector<Letter*> getAllLetters();
             std::vector<Modifier*> getAllModifiers();
+            void mouseMoveEvent(QMouseEvent* a_event);
 
             Settings settings;
             QGridLayout game_layout;
             QLabel header;
             Board board;
-            QLabel hand;
+            Player player1;
             QLabel buttons;
             std::vector<Letter> all_letters;
             std::vector<Modifier> all_modifiers;
             Language language;
+            Tile selection;
     };
 }
 

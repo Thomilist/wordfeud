@@ -14,7 +14,7 @@ namespace wf
     class Board : public QWidget
     {
         public:
-            Board(const QSize& a_grid_dimensions, const QSize& a_tile_size, QWidget* a_parent = nullptr);
+            Board(const QSize& a_grid_dimensions, const QSize& a_tile_size, Tile* a_selection, QWidget* a_parent = nullptr);
             ~Board();
 
             Tile* getTileAtPosition(int a_collumn, int a_row);
@@ -28,6 +28,7 @@ namespace wf
             QSize grid_dimensions;
             QSize tile_size;
             QSize board_size;
+            Tile* selection;
     };
 }
 #endif // __BOARD_H__

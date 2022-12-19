@@ -6,13 +6,18 @@ namespace wf
         , settings(a_settings)
         , game_layout(this)
         , header("Header", this)
-        , board(a_settings.getGridDimensions(), a_settings.getTileSize(), this)
-        , hand("Hand", this)
+        , board(a_settings.getGridDimensions(), a_settings.getTileSize(), &selection, this)
+        , player1(a_settings.getHandDimensions(), a_settings.getHandTileSize(), &selection, this)
         , buttons("Buttons", this)
+        , selection(a_settings.getSelectionTileSize(), &selection, this, true)
     {
+        setMouseTracking(true);
+        header.setMouseTracking(true);
+        buttons.setMouseTracking(true);
+        
         game_layout.addWidget(&header, 0, 0);
         game_layout.addWidget(&board, 1, 0);
-        game_layout.addWidget(&hand, 2, 0);
+        game_layout.addWidget(player1.getHand(), 2, 0);
         game_layout.addWidget(&buttons, 3, 0);
 
         setLayout(&game_layout);
@@ -23,6 +28,8 @@ namespace wf
 
         loadModifiers();
         placeModifiers(getAllModifiers());
+
+        player1.fillHand(&letter_pool);
     }
     
     Game::~Game()
@@ -181,6 +188,12 @@ namespace wf
             }
         }
 
+        return;
+    }
+    
+    void Game::mouseMoveEvent(QMouseEvent* a_event)
+    {
+        selection.move(a_event->pos() + QPoint{1, 1});
         return;
     }
 

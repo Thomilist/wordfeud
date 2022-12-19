@@ -41,4 +41,19 @@ namespace wf
     {
         return tile_size;
     }
+    
+    const QSize& Settings::getHandDimensions()
+    {
+        return hand_dimensions;
+    }
+    
+    const QSize& Settings::getHandTileSize()
+    {
+        return hand_tile_size;
+    }
+    
+    const QSize& Settings::getSelectionTileSize()
+    {
+        return selection_tile_size;
+    }
 }

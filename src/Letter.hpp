@@ -25,7 +25,9 @@ namespace wf
 
     enum class LetterStatus
     {
-        Unlocked,
+        Free,
+        Proposed,
+        LockedRecently,
         Locked
     };
     
@@ -47,7 +49,7 @@ namespace wf
             QString text;
             int points;
             LetterType type;
-            LetterStatus status = LetterStatus::Unlocked;
+            LetterStatus status = LetterStatus::Free;
     };
 }
 #endif // __LETTER_H__

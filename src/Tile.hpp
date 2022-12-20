@@ -26,7 +26,12 @@ namespace wf
     class Tile : public QWidget
     {
         public:
-            Tile(const QSize& a_size, Tile* a_selection, BoardType a_board_type, QWidget* a_parent = nullptr, bool a_follows_mouse = false);
+            Tile(
+                const QSize& a_size,
+                Tile* a_selection,
+                BoardType a_board_type,
+                QWidget* a_parent = nullptr,
+                bool a_follows_mouse = false);
             ~Tile();
 
             void placeLetter(Letter* a_letter);

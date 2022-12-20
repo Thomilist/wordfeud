@@ -2,7 +2,12 @@
 
 namespace wf
 {
-    Player::Player(QString a_display_name, const QSize& a_hand_size, const QSize& a_tile_size, Tile* a_selection, QWidget* a_parent)
+    Player::Player(
+        QString a_display_name,
+        const QSize& a_hand_size,
+        const QSize& a_tile_size,
+        Tile* a_selection,
+        QWidget* a_parent)
         : display_name(a_display_name)
         , hand_size(a_hand_size)
     {

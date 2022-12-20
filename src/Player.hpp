@@ -14,7 +14,12 @@ namespace wf
     class Player
     {
         public:
-            Player(QString a_display_name, const QSize& a_hand_size, const QSize& a_tile_size, Tile* a_selection, QWidget* a_parent = nullptr);
+            Player(
+                QString a_display_name,
+                const QSize& a_hand_size,
+                const QSize& a_tile_size,
+                Tile* a_selection,
+                QWidget* a_parent = nullptr);
             ~Player();
 
             Board* getHand();

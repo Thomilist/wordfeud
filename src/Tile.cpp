@@ -2,7 +2,12 @@
 
 namespace wf
 {
-    Tile::Tile(const QSize& a_size, Tile* a_selection, BoardType a_board_type, QWidget* a_parent, bool a_follows_mouse)
+    Tile::Tile(
+        const QSize& a_size,
+        Tile* a_selection,
+        BoardType a_board_type,
+        QWidget* a_parent,
+        bool a_follows_mouse)
         : QWidget(a_parent)
         , selection(a_selection)
         , follows_mouse(a_follows_mouse)
@@ -90,57 +95,7 @@ namespace wf
         // Prepare to fill with no outline
         painter.setPen(Qt::PenStyle::NoPen);
 
-        if (letter != nullptr)
-        {
-            // Draw letter background
-            switch (letter->getStatus())
-            {
-                case LetterStatus::Proposed:
-                {
-                    painter.setBrush(QColor{192, 192, 192});
-                    break;
-                }
-                case LetterStatus::LockedRecently:
-                {
-                    painter.setBrush(QColor{255, 255, 192});
-                    break;
-                }
-                default:
-                {
-                    painter.setBrush(QColor{255, 255, 255});
-                    break;
-                }
-            }
-            
-            painter.drawRoundedRect(tile_shape, radius, radius, Qt::RelativeSize);
-
-            // Alignment boxes for letter text and points
-            QRect letter_alignment{
-                size().width() * 2 / 10,
-                size().height() * 2 / 10,
-                size().width() * 45 / 100,
-                size().height() * 6 / 10
-            };
-            QRect points_alignment{
-                size().width() * 1 / 10,
-                size().height() * 1 / 10,
-                size().width() * 8 / 10,
-                size().height() * 3 / 10
-            };
-
-            // Draw text in black
-            painter.setPen(QColor{0, 0, 0});
-            painter.setFont(QFont{"Monospace", size().height() / 2});
-            painter.drawText(letter_alignment, Qt::AlignCenter, letter->getText());
-
-            painter.setFont(QFont{"Monospace", size().height() / 5});
-            painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
-        }
-        else if (follows_mouse)
-        {
-            return;
-        }
-        else if (modifier != nullptr && modifier->getType() != ModifierType::None)
+        if (modifier != nullptr && modifier->getType() != ModifierType::None)
         {
             // Draw background color according to modifier type
             switch (modifier->getType())
@@ -186,7 +141,73 @@ namespace wf
             painter.setFont(modifier_font);
             painter.drawText(tile_shape, Qt::AlignCenter, modifier->getText());
         }
-        else
+
+        if (letter != nullptr)
+        {
+            int alpha = 255;
+            
+            // Letters on modifiers have transparent backgrounds
+            if (modifier != nullptr)
+            {
+                if (    modifier->getType() == ModifierType::DoubleLetter
+                    ||  modifier->getType() == ModifierType::DoubleWord
+                    ||  modifier->getType() == ModifierType::TripleLetter
+                    ||  modifier->getType() == ModifierType::TripleWord)
+                {
+                    alpha = 200;
+                }
+            }
+            
+            // Draw letter background
+            switch (letter->getStatus())
+            {
+                case LetterStatus::Proposed:
+                {
+                    painter.setBrush(QColor{192, 192, 192, alpha});
+                    break;
+                }
+                case LetterStatus::LockedRecently:
+                {
+                    painter.setBrush(QColor{255, 255, 192, alpha});
+                    break;
+                }
+                default:
+                {
+                    painter.setBrush(QColor{255, 255, 255, alpha});
+                    break;
+                }
+            }
+            
+            painter.drawRoundedRect(tile_shape, radius, radius, Qt::RelativeSize);
+
+            // Alignment boxes for letter text and points
+            QRect letter_alignment{
+                size().width() * 2 / 10,
+                size().height() * 2 / 10,
+                size().width() * 45 / 100,
+                size().height() * 6 / 10
+            };
+            QRect points_alignment{
+                size().width() * 1 / 10,
+                size().height() * 1 / 10,
+                size().width() * 8 / 10,
+                size().height() * 3 / 10
+            };
+
+            // Draw text in black
+            painter.setPen(QColor{0, 0, 0});
+            painter.setFont(QFont{"Monospace", size().height() / 2});
+            painter.drawText(letter_alignment, Qt::AlignCenter, letter->getText());
+
+            painter.setFont(QFont{"Monospace", size().height() / 5});
+            painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
+        }
+        else if (follows_mouse)
+        {
+            return;
+        }
+
+        if (letter == nullptr && (modifier == nullptr || modifier->getType() == ModifierType::None))
         {
             // Draw dark gray background
             painter.setBrush(QColor{50, 50, 50});

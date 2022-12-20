@@ -1,7 +1,9 @@
 #include "Game.hpp"
 namespace wf
 {
-    Game::Game(Settings& a_settings, QWidget* a_parent)
+    Game::Game(
+        Settings& a_settings,
+        QWidget* a_parent)
         : QWidget(a_parent)
         , settings(a_settings)
         , game_layout(this)

@@ -22,7 +22,9 @@ namespace wf
     {
         public:
             Letter();
-            Letter(QString a_letter, int a_points);
+            Letter(
+                QString a_letter,
+                int a_points);
             ~Letter();
 
             QString getText();

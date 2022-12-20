@@ -6,7 +6,9 @@ namespace wf
         type = LetterType::None;
     }
 
-    Letter::Letter(QString a_letter, int a_points)
+    Letter::Letter(
+        QString a_letter,
+        int a_points)
         : text(a_letter)
         , points(a_points)
     {

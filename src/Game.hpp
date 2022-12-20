@@ -29,7 +29,9 @@ namespace wf
     class Game : public QWidget
     {
         public:
-            Game(Settings& a_settings, QWidget* a_parent = nullptr);
+            Game(
+                Settings& a_settings,
+                QWidget* a_parent = nullptr);
             ~Game();
 
             void loadLanguage();

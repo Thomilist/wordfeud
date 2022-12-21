@@ -17,9 +17,12 @@ namespace wf
         , tiles_left_count("", this)
     {
         setFixedSize(size);
+        setMouseTracking(true);
 
         tiles_left_text.setAlignment(Qt::AlignRight);
         tiles_left_count.setAlignment(Qt::AlignCenter);
+        tiles_left_text.setMouseTracking(true);
+        tiles_left_count.setMouseTracking(true);
         
         std::vector<QPushButton*> buttons
         {
@@ -34,10 +37,13 @@ namespace wf
         {
             button->setFixedWidth(button_width);
             button->adjustSize();
+            button->setMouseTracking(true);
         }
 
         play_pass_buttons.setFixedWidth(button_width);
         clear_shuffle_buttons.setFixedWidth(button_width);
+        play_pass_buttons.setMouseTracking(true);
+        clear_shuffle_buttons.setMouseTracking(true);
         
         play_pass_buttons.addWidget(&play_button);
         play_pass_buttons.addWidget(&pass_button);

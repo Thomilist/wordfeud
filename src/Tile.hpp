@@ -43,8 +43,9 @@ namespace wf
             Modifier* getModifier();
         
         signals:
-            void propose_letter(Tile* a_tile);
-            void unpropose_letter(Tile* a_tile);
+            void proposeLetter(Tile* a_tile);
+            void unproposeLetter(Tile* a_tile);
+            void letterAddedRemoved();
 
         private:
             void paintEvent(QPaintEvent* a_event);

@@ -29,17 +29,23 @@ namespace wf
         {
             letter = a_letter;
         }
+        else
+        {
+            return;
+        }
 
         if (type == BoardType::Board)
         {
             letter->setStatus(LetterStatus::Proposed);
-            emit propose_letter(this);
+            emit proposeLetter(this);
         }
 
         if (follows_mouse)
         {
             show();
         }
+
+        emit letterAddedRemoved();
         
         return;
     }
@@ -61,6 +67,8 @@ namespace wf
         {
             hide();
         }
+
+        emit letterAddedRemoved();
 
         return current_letter;
     }
@@ -242,9 +250,9 @@ namespace wf
         {
             if (letter->getStatus() == LetterStatus::Proposed)
             {
-                emit unpropose_letter(this);
+                emit unproposeLetter(this);
             }
-            
+
             selection->placeLetter(removeLetter());
         }
         else if (selection->getLetter() != nullptr && letter == nullptr)

@@ -256,7 +256,7 @@ namespace wf
             }
         }
 
-        clear_proposed();
+        clearProposed();
         board.repaint();
         all_players[current_player_index]->getHand()->repaint();
 
@@ -273,24 +273,37 @@ namespace wf
         
     }
     
-    void Game::propose_letter(Tile* a_tile)
+    void Game::proposeLetter(Tile* a_tile)
     {
         proposed_letters.push_back(a_tile);
         showCorrectButtons();
         return;
     }
     
-    void Game::unpropose_letter(Tile* a_tile)
+    void Game::unproposeLetter(Tile* a_tile)
     {
         proposed_letters.erase(std::remove(proposed_letters.begin(), proposed_letters.end(), a_tile), proposed_letters.end());
         showCorrectButtons();
         return;
     }
     
-    void Game::clear_proposed()
+    void Game::clearProposed()
     {
         proposed_letters.clear();
         showCorrectButtons();
+        return;
+    }
+    
+    void Game::setCorrectButtonState()
+    {
+        bool state = selection.getLetter() != nullptr;
+
+        buttons.getPlayButton()->setDisabled(state);
+        buttons.getPassButton()->setDisabled(state);
+        buttons.getClearButton()->setDisabled(state);
+        buttons.getShuffleButton()->setDisabled(state);
+        buttons.getSwapButton()->setDisabled(state);
+
         return;
     }
     
@@ -302,6 +315,7 @@ namespace wf
         connect(buttons.getClearButton(), &QPushButton::clicked, this, &Game::clear);
         connect(buttons.getShuffleButton(), &QPushButton::clicked, this, &Game::shuffle);
         connect(buttons.getSwapButton(), &QPushButton::clicked, this, &Game::swap);
+        connect(&selection, &Tile::letterAddedRemoved, this, &Game::setCorrectButtonState);
 
         QSize board_size = board.getGridDimensions();
 
@@ -310,8 +324,8 @@ namespace wf
             for (int row = 0; row < board_size.height(); ++row)
             {
                 Tile* tile = board.getTileAtPosition(collumn, row);
-                connect(tile, &Tile::propose_letter, this, &Game::propose_letter);
-                connect(tile, &Tile::unpropose_letter, this, &Game::unpropose_letter);
+                connect(tile, &Tile::proposeLetter, this, &Game::proposeLetter);
+                connect(tile, &Tile::unproposeLetter, this, &Game::unproposeLetter);
             }
         }
 

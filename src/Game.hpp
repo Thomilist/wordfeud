@@ -57,9 +57,10 @@ namespace wf
             void clear();
             void shuffle();
             void swap();
-            void propose_letter(Tile* a_tile);
-            void unpropose_letter(Tile* a_tile);
-            void clear_proposed();
+            void proposeLetter(Tile* a_tile);
+            void unproposeLetter(Tile* a_tile);
+            void clearProposed();
+            void setCorrectButtonState();
 
         private:
             void initialiseConnections();

@@ -15,6 +15,7 @@ namespace wf
             a_settings.getHandDimensions().height() * a_settings.getHandTileSize().height() / 2
             },this)
         , selection(a_settings.getSelectionTileSize(), &selection, BoardType::None, this, true)
+        , rng(std::default_random_engine{})
     {
         initialiseConnections();
         
@@ -41,6 +42,9 @@ namespace wf
         placeModifiers(getAllModifiers());
 
         all_players[current_player_index]->fillHand(&letter_pool);
+
+        setCorrectButtonState();
+        showCorrectButtons();
     }
     
     Game::~Game()
@@ -265,7 +269,39 @@ namespace wf
     
     void Game::shuffle()
     {
+        Board* hand = all_players[current_player_index]->getHand();
+        QSize hand_size = hand->size();
+        std::vector<Tile*> tiles;
+        std::vector<Letter*> letters;
+
+        for (int row = 0; row < hand_size.width(); ++row)
+        {
+            for (int collumn = 0; collumn < hand_size.height(); ++collumn)
+            {
+                Tile* tile = hand->getTileAtPosition(collumn, row);
+
+                if (tile == nullptr || tile->getLetter() == nullptr)
+                {
+                    break;
+                }
+
+                tiles.push_back(tile);
+                letters.push_back(tile->removeLetter());
+            }
+        }
+
+        std::shuffle(letters.begin(), letters.end(), rng);
+
+        int index = 0;
+
+        for (auto letter : letters)
+        {
+            tiles[index++]->placeLetter(letter);
+        }
         
+        hand->repaint();
+
+        return;
     }
     
     void Game::swap()

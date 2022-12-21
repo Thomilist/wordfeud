@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <random>
 
 #include <QWidget>
 #include <QGridLayout>
@@ -83,6 +84,7 @@ namespace wf
             ButtonPanel buttons;
             Language language;
             Tile selection;
+            std::default_random_engine rng;
     };
 }
 

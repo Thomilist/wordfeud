@@ -18,6 +18,7 @@
 #include "Language.hpp"
 #include "LetterPool.hpp"
 #include "Player.hpp"
+#include "ButtonPanel.hpp"
 
 #include "BoardType.hpp"
 #include "LanguageName.hpp"
@@ -28,6 +29,8 @@ namespace wf
 {
     class Game : public QWidget
     {
+        Q_OBJECT
+
         public:
             Game(
                 Settings& a_settings,
@@ -44,14 +47,21 @@ namespace wf
             void placeModifiers(std::vector<Modifier*> a_modifiers);
             void createPlayer(QString a_display_name);
             void nextPlayer();
-
-            LetterPool letter_pool;
+        
+        public slots:
+            void play();
+            void pass();
+            void clear();
+            void shuffle();
+            void swap();
 
         private:
+            void initialiseConnections();
             std::vector<Letter*> getAllLetters();
             std::vector<Modifier*> getAllModifiers();
             void mouseMoveEvent(QMouseEvent* a_event);
 
+            LetterPool letter_pool;
             std::vector<Letter> all_letters;
             std::vector<Modifier> all_modifiers;
             std::vector<Player*> all_players;
@@ -61,7 +71,7 @@ namespace wf
             QLabel header;
             Board board;
             QStackedWidget hands;
-            QLabel buttons;
+            ButtonPanel buttons;
             Language language;
             Tile selection;
     };

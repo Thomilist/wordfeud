@@ -10,9 +10,14 @@ namespace wf
         , header("Header", this)
         , board(BoardType::Board, a_settings.getGridDimensions(), a_settings.getTileSize(), &selection, this)
         , hands(this)
-        , buttons("Buttons", this)
+        , buttons(QSize{
+            a_settings.getHandDimensions().width() * a_settings.getHandTileSize().width(),
+            a_settings.getHandDimensions().height() * a_settings.getHandTileSize().height() / 2
+            },this)
         , selection(a_settings.getSelectionTileSize(), &selection, BoardType::None, this, true)
     {
+        initialiseConnections();
+        
         setMouseTracking(true);
         header.setMouseTracking(true);
         hands.setMouseTracking(true);
@@ -226,6 +231,38 @@ namespace wf
         }
 
         hands.setCurrentIndex(current_player_index);
+
+        return;
+    }
+    
+    void Game::play()
+    {
+        
+    }
+    
+    void Game::pass()
+    {
+        
+    }
+    
+    void Game::clear()
+    {
+        
+    }
+    
+    void Game::shuffle()
+    {
+        
+    }
+    
+    void Game::swap()
+    {
+        
+    }
+    
+    void Game::initialiseConnections()
+    {
+        connect(&letter_pool, &LetterPool::remainingCountChanged, &buttons, &ButtonPanel::setTileCount);
 
         return;
     }

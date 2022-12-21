@@ -65,4 +65,11 @@ target_link_libraries(
     Language
     LetterPool
     Player
+    ButtonPanel
+)
+
+add_library(ButtonPanel ButtonPanel.cpp)
+target_link_libraries(
+    ButtonPanel
+    Qt5::Widgets
 )

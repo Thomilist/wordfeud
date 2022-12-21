@@ -30,6 +30,8 @@ namespace wf
         Letter* random_letter = pool.at(random_index);
         pool.erase(pool.begin() + random_index);
 
+        emit remainingCountChanged(getRemainingCount());
+
         return random_letter;
     }
     

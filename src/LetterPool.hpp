@@ -4,14 +4,18 @@
 #include <vector>
 #include <random>
 
+#include <QObject>
+
 #include "ForwardDeclarations.hpp"
 #include "Letter.hpp"
 #include "Language.hpp"
 
 namespace wf
 {
-    class LetterPool
+    class LetterPool : public QObject
     {
+        Q_OBJECT
+
         public:
             LetterPool();
             ~LetterPool();
@@ -20,6 +24,9 @@ namespace wf
             [[nodiscard]] Letter* getRandomLetter();
             int getRemainingCount();
         
+        signals:
+            void remainingCountChanged(int a_count);
+
         private:
             std::vector<Letter*> pool;
     };

@@ -55,6 +55,45 @@ namespace wf
     ButtonPanel::~ButtonPanel()
     { }
     
+    QPushButton* ButtonPanel::getPlayButton()
+    {
+        return &play_button;
+    }
+    
+    QPushButton* ButtonPanel::getPassButton()
+    {
+        return &pass_button;
+    }
+    
+    QPushButton* ButtonPanel::getClearButton()
+    {
+        return &clear_button;
+    }
+    
+    QPushButton* ButtonPanel::getShuffleButton()
+    {
+        return &shuffle_button;
+    }
+    
+    QPushButton* ButtonPanel::getSwapButton()
+    {
+        return &swap_button;
+    }
+    
+    void ButtonPanel::showPlayClearButtons()
+    {
+        play_pass_buttons.setCurrentWidget(&play_button);
+        clear_shuffle_buttons.setCurrentWidget(&clear_button);
+        return;
+    }
+    
+    void ButtonPanel::showPassShuffleButtons()
+    {
+        play_pass_buttons.setCurrentWidget(&pass_button);
+        clear_shuffle_buttons.setCurrentWidget(&shuffle_button);
+        return;
+    }
+    
     void ButtonPanel::setTileCount(int a_count)
     {
         tiles_left = a_count;

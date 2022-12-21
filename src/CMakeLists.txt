@@ -52,6 +52,8 @@ target_link_libraries(
     Player
     Qt5::Widgets
     Board
+    LetterPool
+    Letter
 )
 
 add_library(Game Game.cpp)

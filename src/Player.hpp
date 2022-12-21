@@ -8,6 +8,7 @@
 #include "ForwardDeclarations.hpp"
 #include "Board.hpp"
 #include "LetterPool.hpp"
+#include "Letter.hpp"
 
 namespace wf
 {
@@ -24,6 +25,8 @@ namespace wf
 
             Board* getHand();
             void fillHand(LetterPool* a_letter_pool);
+            int availableSpacesInHand();
+            void addLetterToHand(Letter* a_letter);
         
         private:
             QString display_name;

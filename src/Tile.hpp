@@ -25,6 +25,8 @@ namespace wf
 {
     class Tile : public QWidget
     {
+        Q_OBJECT
+        
         public:
             Tile(
                 const QSize& a_size,
@@ -39,6 +41,10 @@ namespace wf
             Letter* getLetter();
             void setModifier(Modifier* a_modifier);
             Modifier* getModifier();
+        
+        signals:
+            void propose_letter(Tile* a_tile);
+            void unpropose_letter(Tile* a_tile);
 
         private:
             void paintEvent(QPaintEvent* a_event);

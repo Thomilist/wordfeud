@@ -33,6 +33,7 @@ namespace wf
         if (type == BoardType::Board)
         {
             letter->setStatus(LetterStatus::Proposed);
+            emit propose_letter(this);
         }
 
         if (follows_mouse)
@@ -45,6 +46,12 @@ namespace wf
     
     Letter* Tile::removeLetter()
     {
+        if (    letter->getStatus() == LetterStatus::Locked 
+            ||  letter->getStatus() == LetterStatus::LockedRecently)
+        {
+            return nullptr;
+        }
+        
         Letter* current_letter = letter;
         letter = nullptr;
 
@@ -233,6 +240,11 @@ namespace wf
         
         if (selection->getLetter() == nullptr && letter != nullptr)
         {
+            if (letter->getStatus() == LetterStatus::Proposed)
+            {
+                emit unpropose_letter(this);
+            }
+            
             selection->placeLetter(removeLetter());
         }
         else if (selection->getLetter() != nullptr && letter == nullptr)

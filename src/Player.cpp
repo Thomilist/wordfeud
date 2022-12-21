@@ -32,7 +32,7 @@ namespace wf
 
                 if (tile == nullptr)
                 {
-                    return;
+                    continue;
                 }
 
                 if (tile->getLetter() != nullptr)
@@ -48,6 +48,55 @@ namespace wf
                 }
 
                 tile->placeLetter(new_letter);
+            }
+        }
+
+        return;
+    }
+    
+    int Player::availableSpacesInHand()
+    {
+        int spaces = 0;
+        
+        for (int collumn = 0; collumn < hand_size.width(); ++collumn)
+        {
+            for (int row = 0; row < hand_size.height(); ++row)
+            {
+                Tile* tile = hand->getTileAtPosition(collumn, row);
+
+                if (tile == nullptr)
+                {
+                    continue;
+                }
+
+                if (tile->getLetter() == nullptr)
+                {
+                    ++spaces;
+                }
+            }
+        }
+
+        return spaces;
+    }
+    
+    void Player::addLetterToHand(Letter* a_letter)
+    {
+        for (int collumn = 0; collumn < hand_size.width(); ++collumn)
+        {
+            for (int row = 0; row < hand_size.height(); ++row)
+            {
+                Tile* tile = hand->getTileAtPosition(collumn, row);
+
+                if (tile == nullptr)
+                {
+                    continue;
+                }
+
+                if (tile->getLetter() == nullptr)
+                {
+                    tile->placeLetter(a_letter);
+                    return;
+                }
             }
         }
 

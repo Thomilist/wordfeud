@@ -19,10 +19,18 @@ namespace wf
     class ButtonPanel : public QWidget
     {
         Q_OBJECT
-        
+
         public:
             ButtonPanel(QSize a_size, QWidget* a_parent = nullptr);
             ~ButtonPanel();
+
+            QPushButton* getPlayButton();
+            QPushButton* getPassButton();
+            QPushButton* getClearButton();
+            QPushButton* getShuffleButton();
+            QPushButton* getSwapButton();
+            void showPlayClearButtons();
+            void showPassShuffleButtons();
 
         public slots:
             void setTileCount(int a_count);

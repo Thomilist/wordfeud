@@ -2,6 +2,7 @@
 #define __GAME_H__
 
 #include <vector>
+#include <algorithm>
 
 #include <QWidget>
 #include <QGridLayout>
@@ -9,6 +10,7 @@
 #include <QMouseEvent>
 #include <QPoint>
 #include <QStackedWidget>
+#include <QPushButton>
 
 #include "ForwardDeclarations.hpp"
 #include "Settings.hpp"
@@ -19,6 +21,7 @@
 #include "LetterPool.hpp"
 #include "Player.hpp"
 #include "ButtonPanel.hpp"
+#include "Tile.hpp"
 
 #include "BoardType.hpp"
 #include "LanguageName.hpp"
@@ -54,17 +57,22 @@ namespace wf
             void clear();
             void shuffle();
             void swap();
+            void propose_letter(Tile* a_tile);
+            void unpropose_letter(Tile* a_tile);
+            void clear_proposed();
 
         private:
             void initialiseConnections();
             std::vector<Letter*> getAllLetters();
             std::vector<Modifier*> getAllModifiers();
             void mouseMoveEvent(QMouseEvent* a_event);
+            void showCorrectButtons();
 
             LetterPool letter_pool;
             std::vector<Letter> all_letters;
             std::vector<Modifier> all_modifiers;
             std::vector<Player*> all_players;
+            std::vector<Tile*> proposed_letters;
             long unsigned int current_player_index = 0;
             Settings settings;
             QGridLayout game_layout;

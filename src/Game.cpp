@@ -247,7 +247,20 @@ namespace wf
     
     void Game::clear()
     {
-        
+        for (auto tile : proposed_letters)
+        {
+            if (all_players[current_player_index]->availableSpacesInHand() > 0)
+            {
+                Letter* letter = tile->removeLetter();
+                all_players[current_player_index]->addLetterToHand(letter);
+            }
+        }
+
+        clear_proposed();
+        board.repaint();
+        all_players[current_player_index]->getHand()->repaint();
+
+        return;
     }
     
     void Game::shuffle()
@@ -260,9 +273,47 @@ namespace wf
         
     }
     
+    void Game::propose_letter(Tile* a_tile)
+    {
+        proposed_letters.push_back(a_tile);
+        showCorrectButtons();
+        return;
+    }
+    
+    void Game::unpropose_letter(Tile* a_tile)
+    {
+        proposed_letters.erase(std::remove(proposed_letters.begin(), proposed_letters.end(), a_tile), proposed_letters.end());
+        showCorrectButtons();
+        return;
+    }
+    
+    void Game::clear_proposed()
+    {
+        proposed_letters.clear();
+        showCorrectButtons();
+        return;
+    }
+    
     void Game::initialiseConnections()
     {
         connect(&letter_pool, &LetterPool::remainingCountChanged, &buttons, &ButtonPanel::setTileCount);
+        connect(buttons.getPlayButton(), &QPushButton::clicked, this, &Game::play);
+        connect(buttons.getPassButton(), &QPushButton::clicked, this, &Game::pass);
+        connect(buttons.getClearButton(), &QPushButton::clicked, this, &Game::clear);
+        connect(buttons.getShuffleButton(), &QPushButton::clicked, this, &Game::shuffle);
+        connect(buttons.getSwapButton(), &QPushButton::clicked, this, &Game::swap);
+
+        QSize board_size = board.getGridDimensions();
+
+        for (int collumn = 0; collumn < board_size.width(); ++collumn)
+        {
+            for (int row = 0; row < board_size.height(); ++row)
+            {
+                Tile* tile = board.getTileAtPosition(collumn, row);
+                connect(tile, &Tile::propose_letter, this, &Game::propose_letter);
+                connect(tile, &Tile::unpropose_letter, this, &Game::unpropose_letter);
+            }
+        }
 
         return;
     }
@@ -270,6 +321,20 @@ namespace wf
     void Game::mouseMoveEvent(QMouseEvent* a_event)
     {
         selection.move(a_event->pos() + QPoint{1, 1});
+        return;
+    }
+    
+    void Game::showCorrectButtons()
+    {
+        if (proposed_letters.size() > 0)
+        {
+            buttons.showPlayClearButtons();
+        }
+        else
+        {
+            buttons.showPassShuffleButtons();
+        }
+
         return;
     }
 

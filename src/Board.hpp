@@ -9,6 +9,7 @@
 #include "ForwardDeclarations.hpp"
 #include "Tile.hpp"
 #include "BoardType.hpp"
+#include "TileNeighbours.hpp"
 
 namespace wf
 {
@@ -23,13 +24,14 @@ namespace wf
                 QWidget* a_parent = nullptr);
             ~Board();
 
-            Tile* getTileAtPosition(int a_collumn, int a_row);
-            QSize getGridDimensions();
-            BoardType getType();
+            Tile* getTileAtPosition(int a_collumn, int a_row) const;
+            QSize getGridDimensions() const;
+            BoardType getType() const;
 
         private:
             void createEmptyGrid();
             void updateBoardSize();
+            void assignNeighbours();
 
             QGridLayout grid;
             QSize grid_dimensions;

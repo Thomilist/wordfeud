@@ -23,7 +23,7 @@ namespace wf
                 QWidget* a_parent = nullptr);
             ~Player();
 
-            Board* getHand();
+            Board* getHand() const;
             void fillHand(LetterPool* a_letter_pool);
             int availableSpacesInHand();
             void addLetterToHand(Letter* a_letter);

@@ -48,12 +48,12 @@ namespace wf
         return;
     }
     
-    ModifierType Modifier::getType()
+    ModifierType Modifier::getType() const
     {
         return type;
     }
     
-    QString Modifier::getText()
+    QString Modifier::getText() const
     {
         return text;
     }

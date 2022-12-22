@@ -61,7 +61,7 @@ namespace wf
         }
     }
     
-    const std::vector<LetterData>& Language::getLetterList()
+    const std::vector<LetterData>& Language::getLetterList() const
     {
         return letter_list;
     }

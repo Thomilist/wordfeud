@@ -1,7 +1,7 @@
 #ifndef __TILE_H__
 #define __TILE_H__
 
-#include <iostream>
+#include <array>
 
 #include <QWidget>
 #include <QSize>
@@ -20,6 +20,7 @@
 #include "BoardType.hpp"
 #include "LetterStatus.hpp"
 #include "ModifierType.hpp"
+#include "TileNeighbours.hpp"
 
 namespace wf
 {
@@ -38,9 +39,14 @@ namespace wf
 
             void placeLetter(Letter* a_letter);
             [[nodiscard]] Letter* removeLetter();
-            Letter* getLetter();
+            Letter* getLetter() const;
             void setModifier(Modifier* a_modifier);
-            Modifier* getModifier();
+            Modifier* getModifier() const;
+            std::array<Tile*, 4> getNeighbours() const;
+            Tile* getNeighbour(TileNeighbour a_index) const;
+            void setNeighbour(Tile* a_tile, TileNeighbour a_index);
+            void setGridPosition(int a_collumn, int a_row);
+            QPoint getGridPosition() const;
         
         signals:
             void proposeLetter(Tile* a_tile);
@@ -56,6 +62,10 @@ namespace wf
             Tile* selection;
             bool follows_mouse;
             BoardType type;
+            QPoint grid_position;
+
+            // Top, right, bottom, left
+            std::array<Tile*, 4> neighbours{nullptr, nullptr, nullptr, nullptr};
 
             // Dimensions, percentage of tile size
             int margin = 5; 

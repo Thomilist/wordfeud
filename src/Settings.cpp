@@ -27,32 +27,32 @@ namespace wf
         return;
     }
     
-    LanguageName Settings::getLanguage()
+    LanguageName Settings::getLanguage() const
     {
         return language;
     }
     
-    const QSize& Settings::getGridDimensions()
+    const QSize& Settings::getGridDimensions() const
     {
         return grid_dimensions;
     }
     
-    const QSize& Settings::getTileSize()
+    const QSize& Settings::getTileSize() const
     {
         return tile_size;
     }
     
-    const QSize& Settings::getHandDimensions()
+    const QSize& Settings::getHandDimensions() const
     {
         return hand_dimensions;
     }
     
-    const QSize& Settings::getHandTileSize()
+    const QSize& Settings::getHandTileSize() const
     {
         return hand_tile_size;
     }
     
-    const QSize& Settings::getSelectionTileSize()
+    const QSize& Settings::getSelectionTileSize() const
     {
         return selection_tile_size;
     }

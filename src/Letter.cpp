@@ -25,22 +25,22 @@ namespace wf
     Letter::~Letter()
     { }
     
-    QString Letter::getText()
+    QString Letter::getText() const
     {
         return text;
     }
     
-    QString Letter::getPointsAsText()
+    QString Letter::getPointsAsText() const
     {
         return QString::number(points);
     }
     
-    int Letter::getPoints()
+    int Letter::getPoints() const
     {
         return points;
     }
     
-    LetterType Letter::getType()
+    LetterType Letter::getType() const
     {
         return type;
     }
@@ -51,7 +51,7 @@ namespace wf
         return;
     }
     
-    LetterStatus Letter::getStatus()
+    LetterStatus Letter::getStatus() const
     {
         return status;
     }

@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
+#include <array>
 
 #include <QWidget>
 #include <QGridLayout>
@@ -12,6 +13,7 @@
 #include <QPoint>
 #include <QStackedWidget>
 #include <QPushButton>
+#include <QMessageBox>
 
 #include "ForwardDeclarations.hpp"
 #include "Settings.hpp"
@@ -70,6 +72,11 @@ namespace wf
             std::vector<Modifier*> getAllModifiers();
             void mouseMoveEvent(QMouseEvent* a_event);
             void showCorrectButtons();
+            bool isPlacementValid();
+            bool isPlacementConnectedToStart(Tile* a_tile);
+            bool isPlacementLinear();
+            bool isPlacementInOneCollumn();
+            bool isPlacementInOneRow();
 
             LetterPool letter_pool;
             std::vector<Letter> all_letters;
@@ -77,6 +84,7 @@ namespace wf
             std::vector<Player*> all_players;
             std::vector<Tile*> proposed_letters;
             std::vector<Letter*> locked_letters;
+            std::vector<Tile*> checked_tiles;
             long unsigned int current_player_index = 0;
             Settings settings;
             QGridLayout game_layout;

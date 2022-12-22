@@ -25,7 +25,7 @@ namespace wf
 
             void loadLettersFromFile(QString a_file_path);
             void loadWordListFromFile(QString a_file_path);
-            const std::vector<LetterData>& getLetterList();
+            const std::vector<LetterData>& getLetterList() const;
 
         private:
             std::vector<LetterData> letter_list;

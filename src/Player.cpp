@@ -17,7 +17,7 @@ namespace wf
     Player::~Player()
     { }
     
-    Board* Player::getHand()
+    Board* Player::getHand() const
     {
         return hand;
     }

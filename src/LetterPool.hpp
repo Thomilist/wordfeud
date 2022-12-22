@@ -22,7 +22,7 @@ namespace wf
 
             void set(std::vector<Letter*> a_letter_pointers);
             [[nodiscard]] Letter* getRandomLetter();
-            int getRemainingCount();
+            int getRemainingCount() const;
         
         signals:
             void remainingCountChanged(int a_count);

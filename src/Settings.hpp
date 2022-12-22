@@ -16,12 +16,12 @@ namespace wf
 
             void setGridDimensions(int rows, int collumns);
             void setTileSize(int size);
-            LanguageName getLanguage();
-            const QSize& getGridDimensions();
-            const QSize& getTileSize();
-            const QSize& getHandDimensions();
-            const QSize& getHandTileSize();
-            const QSize& getSelectionTileSize();
+            LanguageName getLanguage() const;
+            const QSize& getGridDimensions() const;
+            const QSize& getTileSize() const;
+            const QSize& getHandDimensions() const;
+            const QSize& getHandTileSize() const;
+            const QSize& getSelectionTileSize() const;
 
         private:
             LanguageName language{LanguageName::English};

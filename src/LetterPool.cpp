@@ -35,7 +35,7 @@ namespace wf
         return random_letter;
     }
     
-    int LetterPool::getRemainingCount()
+    int LetterPool::getRemainingCount() const
     {
         return pool.size();
     }

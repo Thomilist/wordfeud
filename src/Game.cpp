@@ -241,15 +241,29 @@ namespace wf
     
     void Game::play()
     {
-        lockRecentlyLockedLetters();
-        lockProposedLetters();
-        nextPlayer();
+        if (isPlacementValid())
+        {
+            lockRecentlyLockedLetters();
+            lockProposedLetters();
+            nextPlayer();
+        }
+        else
+        {
+            QMessageBox invalid_placement;
+            invalid_placement.setText("Invalid placement.");
+            invalid_placement.setIcon(QMessageBox::Icon::Warning);
+            invalid_placement.setWindowTitle(" ");
+            invalid_placement.exec();
+        }
+        
+        return;
     }
     
     void Game::pass()
     {
         lockRecentlyLockedLetters();
         nextPlayer();
+        return;
     }
     
     void Game::clear()
@@ -285,7 +299,7 @@ namespace wf
 
                 if (tile == nullptr || tile->getLetter() == nullptr)
                 {
-                    break;
+                    continue;
                 }
 
                 tiles.push_back(tile);
@@ -309,7 +323,7 @@ namespace wf
     
     void Game::swap()
     {
-        
+        return;
     }
     
     void Game::proposeLetter(Tile* a_tile)
@@ -398,6 +412,69 @@ namespace wf
         }
 
         return;
+    }
+    
+    bool Game::isPlacementValid()
+    {
+        checked_tiles.clear();
+        return isPlacementConnectedToStart(proposed_letters[0]) && isPlacementLinear();
+    }
+    
+    bool Game::isPlacementConnectedToStart(Tile* a_tile)
+    {
+        checked_tiles.push_back(a_tile);
+        
+        if (a_tile->getModifier()->getType() == ModifierType::Start)
+        {
+            return true;
+        }
+
+        std::array<Tile*, 4> neighbours = a_tile->getNeighbours();
+        bool start_found = false;
+
+        for (const auto neighbour : neighbours)
+        {
+            if (std::find(checked_tiles.begin(), checked_tiles.end(), neighbour) != checked_tiles.end())
+            {
+                continue;
+            }
+            
+            if (neighbour->getLetter() != nullptr)
+            {
+                start_found = start_found || isPlacementConnectedToStart(neighbour);
+            }
+        }
+
+        return start_found;
+    }
+    
+    bool Game::isPlacementLinear()
+    {
+        return isPlacementInOneCollumn() || isPlacementInOneRow();
+    }
+    
+    bool Game::isPlacementInOneCollumn()
+    {
+        std::vector<int> collumns;
+        
+        for (const auto tile : proposed_letters)
+        {
+            collumns.push_back(tile->getGridPosition().x());
+        }
+
+        return std::adjacent_find(collumns.begin(), collumns.end(), std::not_equal_to<>()) == collumns.end();
+    }
+    
+    bool Game::isPlacementInOneRow()
+    {
+        std::vector<int> rows;
+        
+        for (const auto tile : proposed_letters)
+        {
+            rows.push_back(tile->getGridPosition().y());
+        }
+
+        return std::adjacent_find(rows.begin(), rows.end(), std::not_equal_to<>()) == rows.end();
     }
 
     std::vector<Letter*> Game::getAllLetters()

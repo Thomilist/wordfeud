@@ -27,12 +27,12 @@ namespace wf
                 int a_points);
             ~Letter();
 
-            QString getText();
-            QString getPointsAsText();
-            int getPoints();
-            LetterType getType();
+            QString getText() const;
+            QString getPointsAsText() const;
+            int getPoints() const;
+            LetterType getType() const;
             void setStatus(LetterStatus a_status);
-            LetterStatus getStatus();
+            LetterStatus getStatus() const;
 
         private:
             QString text;

@@ -16,8 +16,8 @@ namespace wf
             ~Modifier();
 
             void setType(ModifierType a_type);
-            ModifierType getType();
-            QString getText();
+            ModifierType getType() const;
+            QString getText() const;
 
         private:
             ModifierType type = ModifierType::None;

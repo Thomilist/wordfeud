@@ -20,6 +20,7 @@ namespace wf
         setMaximumSize(board_size.width(), board_size.height() * 1.1);
         setLayout(&grid);
         createEmptyGrid();
+        assignNeighbours();
         adjustSize();
     }
     
@@ -33,6 +34,7 @@ namespace wf
             for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
             {
                 Tile* tile = new Tile(tile_size, selection, type, this);
+                tile->setGridPosition(collumn, row);
                 grid.addWidget(tile, row, collumn);
             }
         }
@@ -46,8 +48,34 @@ namespace wf
         return;
     }
     
-    Tile* Board::getTileAtPosition(int a_collumn, int a_row)
+    void Board::assignNeighbours()
     {
+        for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
+        {
+            for (int row = 0; row < grid_dimensions.height(); ++row)
+            {
+                Tile* tile = getTileAtPosition(collumn, row);
+
+                tile->setNeighbour(getTileAtPosition(collumn, row - 1), TileNeighbour::Top);
+                tile->setNeighbour(getTileAtPosition(collumn + 1, row), TileNeighbour::Right);
+                tile->setNeighbour(getTileAtPosition(collumn, row + 1), TileNeighbour::Bottom);
+                tile->setNeighbour(getTileAtPosition(collumn - 1, row), TileNeighbour::Left);
+            }
+        }
+
+        return;
+    }
+    
+    Tile* Board::getTileAtPosition(int a_collumn, int a_row) const
+    {
+        if (    a_collumn < 0
+            ||  a_row < 0
+            ||  a_collumn >= grid_dimensions.width()
+            ||  a_row >= grid_dimensions.height())
+        {
+            return nullptr;
+        }
+        
         QLayoutItem* layout_item = grid.itemAtPosition(a_row, a_collumn);
 
         if (layout_item == nullptr)
@@ -66,12 +94,12 @@ namespace wf
         return tile;
     }
     
-    QSize Board::getGridDimensions()
+    QSize Board::getGridDimensions() const
     {
         return grid_dimensions;
     }
     
-    BoardType Board::getType()
+    BoardType Board::getType() const
     {
         return type;
     }

@@ -73,7 +73,7 @@ namespace wf
         return current_letter;
     }
     
-    Letter* Tile::getLetter()
+    Letter* Tile::getLetter() const
     {
         return letter;
     }
@@ -84,9 +84,35 @@ namespace wf
         return;
     }
     
-    Modifier* Tile::getModifier()
+    Modifier* Tile::getModifier() const
     {
         return modifier;
+    }
+    
+    std::array<Tile*, 4> Tile::getNeighbours() const
+    {
+        return neighbours;
+    }
+    
+    Tile* Tile::getNeighbour(TileNeighbour a_index) const
+    {
+        return neighbours[a_index];
+    }
+    
+    void Tile::setNeighbour(Tile* a_tile, TileNeighbour a_index)
+    {
+        neighbours[a_index] = a_tile;
+    }
+    
+    void Tile::setGridPosition(int a_collumn, int a_row)
+    {
+        grid_position = QPoint{a_collumn, a_row};
+        return;
+    }
+    
+    QPoint Tile::getGridPosition() const
+    {
+        return grid_position;
     }
     
     void Tile::paintEvent(QPaintEvent*)
@@ -183,7 +209,7 @@ namespace wf
                 }
                 case LetterStatus::LockedRecently:
                 {
-                    painter.setBrush(QColor{255, 255, 192, alpha});
+                    painter.setBrush(QColor{255, 255, 128, alpha});
                     break;
                 }
                 default:

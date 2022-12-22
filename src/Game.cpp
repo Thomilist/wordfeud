@@ -110,30 +110,27 @@ namespace wf
         return tile->removeLetter();
     }
     
-    void Game::lockLetters()
+    void Game::lockProposedLetters()
     {
-        QSize grid_dimensions = board.getGridDimensions();
-
-        for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
+        for (auto tile : proposed_letters)
         {
-            for (int row = 0; row < grid_dimensions.height(); ++row)
+            Letter* letter = tile->getLetter();
+            letter->setStatus(LetterStatus::LockedRecently);
+            locked_letters.push_back(letter);
+        }
+
+        clearProposed();
+
+        return;
+    }
+    
+    void Game::lockRecentlyLockedLetters()
+    {
+        for (auto letter : locked_letters)
+        {
+            if (letter->getStatus() == LetterStatus::LockedRecently)
             {
-                Tile* tile = board.getTileAtPosition(collumn, row);
-
-                if (tile == nullptr)
-                {
-                    continue;
-                }
-
-                if (tile->getLetter()->getStatus() == LetterStatus::LockedRecently)
-                {
-                    tile->getLetter()->setStatus(LetterStatus::Locked);
-                }
-                else
-                {
-                    tile->getLetter()->setStatus(LetterStatus::LockedRecently);
-                }
-                
+                letter->setStatus(LetterStatus::Locked);
             }
         }
 
@@ -229,24 +226,30 @@ namespace wf
             return;
         }
 
-        if (++current_player_index > all_players.size())
+        if (++current_player_index >= all_players.size())
         {
             current_player_index = 0;
         }
 
+        all_players[current_player_index]->fillHand(&letter_pool);
+
         hands.setCurrentIndex(current_player_index);
+        repaint();
 
         return;
     }
     
     void Game::play()
     {
-        
+        lockRecentlyLockedLetters();
+        lockProposedLetters();
+        nextPlayer();
     }
     
     void Game::pass()
     {
-        
+        lockRecentlyLockedLetters();
+        nextPlayer();
     }
     
     void Game::clear()
@@ -313,6 +316,7 @@ namespace wf
     {
         proposed_letters.push_back(a_tile);
         showCorrectButtons();
+        setCorrectButtonState();
         return;
     }
     
@@ -320,6 +324,7 @@ namespace wf
     {
         proposed_letters.erase(std::remove(proposed_letters.begin(), proposed_letters.end(), a_tile), proposed_letters.end());
         showCorrectButtons();
+        setCorrectButtonState();
         return;
     }
     
@@ -327,18 +332,25 @@ namespace wf
     {
         proposed_letters.clear();
         showCorrectButtons();
+        setCorrectButtonState();
         return;
     }
     
     void Game::setCorrectButtonState()
     {
-        bool state = selection.getLetter() != nullptr;
+        bool button_state = selection.getLetter() != nullptr;
 
-        buttons.getPlayButton()->setDisabled(state);
-        buttons.getPassButton()->setDisabled(state);
-        buttons.getClearButton()->setDisabled(state);
-        buttons.getShuffleButton()->setDisabled(state);
-        buttons.getSwapButton()->setDisabled(state);
+        buttons.getPlayButton()->setDisabled(button_state);
+        buttons.getPassButton()->setDisabled(button_state);
+        buttons.getClearButton()->setDisabled(button_state);
+        buttons.getShuffleButton()->setDisabled(button_state);
+
+        bool swap_button_state
+            =   button_state 
+            ||  (letter_pool.getRemainingCount() < (settings.getHandDimensions().width() * settings.getHandDimensions().height()))
+            ||  (proposed_letters.size() != 0);
+
+        buttons.getSwapButton()->setDisabled(swap_button_state);
 
         return;
     }

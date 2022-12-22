@@ -45,7 +45,8 @@ namespace wf
             void loadLetters();
             void placeLetter(int a_collumn, int a_row, Letter* a_letter);
             [[nodiscard]] Letter* removeLetter(int a_collumn, int a_row);
-            void lockLetters();
+            void lockProposedLetters();
+            void lockRecentlyLockedLetters();
             void loadModifiers();
             void placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite = false);
             void placeModifiers(std::vector<Modifier*> a_modifiers);
@@ -75,6 +76,7 @@ namespace wf
             std::vector<Modifier> all_modifiers;
             std::vector<Player*> all_players;
             std::vector<Tile*> proposed_letters;
+            std::vector<Letter*> locked_letters;
             long unsigned int current_player_index = 0;
             Settings settings;
             QGridLayout game_layout;

@@ -13,6 +13,8 @@ namespace wf
     class Settings;
     class Tile;
     class Player;
+    class ButtonPanel;
+    class Header;
 
     struct LetterData;
 
@@ -21,6 +23,9 @@ namespace wf
     enum class LetterStatus;
     enum class ModifierType;
     enum class BoardType;
+    enum class PlayType;
+
+    enum TileNeighbour : unsigned int;
 }
 
 #endif // __FORWARDDECLARATIONS_H__

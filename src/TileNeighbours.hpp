@@ -3,7 +3,7 @@
 
 namespace wf
 {
-    enum TileNeighbour
+    enum TileNeighbour : unsigned int
     {
         Top,
         Right,

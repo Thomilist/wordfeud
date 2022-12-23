@@ -4,11 +4,13 @@ namespace wf
 {
     Player::Player(
         QString a_display_name,
+        QColor a_color,
         const QSize& a_hand_size,
         const QSize& a_tile_size,
         Tile* a_selection,
         QWidget* a_parent)
         : display_name(a_display_name)
+        , name_color(a_color)
         , hand_size(a_hand_size)
     {
         hand = new Board{BoardType::Hand, a_hand_size, a_tile_size, a_selection, a_parent};
@@ -101,5 +103,48 @@ namespace wf
         }
 
         return;
+    }
+    
+    void Player::addPoints(int a_points)
+    {
+        score += a_points;
+        return;
+    }
+    
+    int Player::getScore()
+    {
+        return score;
+    }
+    
+    QString Player::getScoreAsText() const
+    {
+        return QString::number(score);
+    }
+    
+    QString Player::getDisplayName() const
+    {
+        return display_name;
+    }
+    
+    void Player::setTurn(bool a_has_turn)
+    {
+        has_turn = a_has_turn;
+        return;
+    }
+    
+    bool Player::hasTurn()
+    {
+        return has_turn;
+    }
+    
+    void Player::setColor(QColor a_color)
+    {
+        name_color = a_color;
+        return;
+    }
+    
+    QColor Player::getColor()
+    {
+        return name_color;
     }
 }

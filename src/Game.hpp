@@ -14,6 +14,7 @@
 #include <QStackedWidget>
 #include <QPushButton>
 #include <QMessageBox>
+#include <QColor>
 
 #include "ForwardDeclarations.hpp"
 #include "Settings.hpp"
@@ -25,11 +26,13 @@
 #include "Player.hpp"
 #include "ButtonPanel.hpp"
 #include "Tile.hpp"
+#include "Header.hpp"
 
 #include "BoardType.hpp"
 #include "LanguageName.hpp"
 #include "LetterStatus.hpp"
 #include "ModifierType.hpp"
+#include "PlayType.hpp"
 
 namespace wf
 {
@@ -52,7 +55,7 @@ namespace wf
             void loadModifiers();
             void placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite = false);
             void placeModifiers(std::vector<Modifier*> a_modifiers);
-            void createPlayer(QString a_display_name);
+            void createPlayer(QString a_display_name, QColor a_color);
             void nextPlayer();
         
         public slots:
@@ -88,7 +91,7 @@ namespace wf
             long unsigned int current_player_index = 0;
             Settings settings;
             QGridLayout game_layout;
-            QLabel header;
+            Header header;
             Board board;
             QStackedWidget hands;
             ButtonPanel buttons;

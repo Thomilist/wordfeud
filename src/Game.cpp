@@ -7,25 +7,32 @@ namespace wf
         : QWidget(a_parent)
         , settings(a_settings)
         , game_layout(this)
-        , header("Header", this)
+        , header(QSize{
+            a_settings.getHandDimensions().width() * a_settings.getHandTileSize().width(),
+            a_settings.getHandDimensions().height() * a_settings.getHandTileSize().height()
+            },
+            this)
         , board(BoardType::Board, a_settings.getGridDimensions(), a_settings.getTileSize(), &selection, this)
         , hands(this)
         , buttons(QSize{
             a_settings.getHandDimensions().width() * a_settings.getHandTileSize().width(),
             a_settings.getHandDimensions().height() * a_settings.getHandTileSize().height() / 2
-            },this)
+            },
+            this)
         , selection(a_settings.getSelectionTileSize(), &selection, BoardType::None, this, true)
         , rng(std::default_random_engine{})
     {
         initialiseConnections();
         
         setMouseTracking(true);
-        header.setMouseTracking(true);
         hands.setMouseTracking(true);
-        buttons.setMouseTracking(true);
 
-        createPlayer("Player 1");
-        createPlayer("Player 2");
+        createPlayer("Player 1", QColor{128, 0, 0});
+        createPlayer("Player 2", QColor{0, 0, 128});
+
+        header.setLeftPlayer(all_players[0]);
+        header.setRightPlayer(all_players[1]);
+        all_players[current_player_index]->setTurn(true);
         
         game_layout.addWidget(&header, 0, 0);
         game_layout.addWidget(&board, 1, 0);
@@ -211,9 +218,15 @@ namespace wf
         return;
     }
     
-    void Game::createPlayer(QString a_display_name)
+    void Game::createPlayer(QString a_display_name, QColor a_color)
     {
-        Player* player = new Player{a_display_name, settings.getHandDimensions(), settings.getHandTileSize(), &selection, this};
+        Player* player = new Player{
+            a_display_name,
+            a_color,
+            settings.getHandDimensions(),
+            settings.getHandTileSize(),
+            &selection,
+            this};
         all_players.push_back(player);
         hands.addWidget(player->getHand());
         return;
@@ -226,12 +239,15 @@ namespace wf
             return;
         }
 
+        all_players[current_player_index]->setTurn(false);
+
         if (++current_player_index >= all_players.size())
         {
             current_player_index = 0;
         }
 
         all_players[current_player_index]->fillHand(&letter_pool);
+        all_players[current_player_index]->setTurn(true);
 
         hands.setCurrentIndex(current_player_index);
         repaint();
@@ -245,6 +261,12 @@ namespace wf
         {
             lockRecentlyLockedLetters();
             lockProposedLetters();
+            header.updateWithPlay(
+                PlayType::Play,
+                all_players[current_player_index],
+                "TEST",
+                10);
+            all_players[current_player_index]->addPoints(10);
             nextPlayer();
         }
         else
@@ -262,6 +284,9 @@ namespace wf
     void Game::pass()
     {
         lockRecentlyLockedLetters();
+        header.updateWithPlay(
+            PlayType::Pass,
+            all_players[current_player_index]);
         nextPlayer();
         return;
     }

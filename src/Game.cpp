@@ -124,6 +124,9 @@ namespace wf
             Letter* letter = tile->getLetter();
             letter->setStatus(LetterStatus::LockedRecently);
             locked_letters.push_back(letter);
+
+            Modifier* modifier = tile->getModifier();
+            modifier->setUsed(true);
         }
 
         clearProposed();
@@ -257,26 +260,74 @@ namespace wf
     
     void Game::play()
     {
-        if (isPlacementValid())
+        // Placement check
+        if (!isPlacementValid())
         {
-            lockRecentlyLockedLetters();
-            lockProposedLetters();
-            header.updateWithPlay(
-                PlayType::Play,
-                all_players[current_player_index],
-                "TEST",
-                10);
-            all_players[current_player_index]->addPoints(10);
-            nextPlayer();
+            QMessageBox invalid_placement_warning;
+            invalid_placement_warning.setText("Invalid placement.");
+            invalid_placement_warning.setIcon(QMessageBox::Icon::Warning);
+            invalid_placement_warning.setWindowTitle(" ");
+            invalid_placement_warning.exec();
+            return;
         }
-        else
+
+        // Dictionary check
+        findProposedWords();
+        
+        std::vector<const Word*> invalid_words;
+
+        for (const auto& word : proposed_words)
         {
-            QMessageBox invalid_placement;
-            invalid_placement.setText("Invalid placement.");
-            invalid_placement.setIcon(QMessageBox::Icon::Warning);
-            invalid_placement.setWindowTitle(" ");
-            invalid_placement.exec();
+            if (!language.isInWordList(word.getWordAsText().toLower()))
+            {
+                invalid_words.push_back(&word);
+            }
         }
+        
+        if (invalid_words.size() > 0)
+        {
+            QString invalid_words_message{"Word(s) not found in dictionary:"};
+
+            for (const auto word : invalid_words)
+            {
+                invalid_words_message.append("\n");
+                invalid_words_message.append(word->getWordAsText());
+            }
+            
+            QMessageBox invalid_words_warning;
+            invalid_words_warning.setText(invalid_words_message);
+            invalid_words_warning.setIcon(QMessageBox::Icon::Warning);
+            invalid_words_warning.setWindowTitle(" ");
+            invalid_words_warning.exec();
+            return;
+        }
+
+        // Points calculation
+        int points = 0;
+
+        for (const auto& word : proposed_words)
+        {
+            points += word.calculatePoints();
+        }
+
+        all_players[current_player_index]->addPoints(points);
+        
+        // Cleanup
+        for (const auto tile : proposed_letters)
+        {
+            tile->getModifier()->setUsed(true);
+        }
+
+        lockRecentlyLockedLetters();
+        lockProposedLetters();
+
+        // Next turn
+        header.updateWithPlay(
+            PlayType::Play,
+            all_players[current_player_index],
+            proposed_words[0].getWordAsText(),
+            points);
+        nextPlayer();
         
         return;
     }
@@ -459,6 +510,11 @@ namespace wf
 
         for (const auto neighbour : neighbours)
         {
+            if (neighbour == nullptr)
+            {
+                continue;
+            }
+            
             if (std::find(checked_tiles.begin(), checked_tiles.end(), neighbour) != checked_tiles.end())
             {
                 continue;
@@ -500,6 +556,104 @@ namespace wf
         }
 
         return std::adjacent_find(rows.begin(), rows.end(), std::not_equal_to<>()) == rows.end();
+    }
+    
+    void Game::findProposedWords()
+    {
+        proposed_words.clear();
+        
+        if (proposed_letters.size() == 0)
+        {
+            return;
+        }
+        // Single-letter words are allowed only as an opener
+        else if (   proposed_letters.size() == 1
+                &&  proposed_letters[0]->getModifier()->getType() == ModifierType::Start)
+        {
+            Word word;
+            word.appendLetter(proposed_letters[0]);
+            proposed_words.push_back(word);
+            return;
+        }
+
+        std::unordered_set<int> collumns;
+        std::unordered_set<int> rows;
+
+        for (const auto tile : proposed_letters)
+        {
+            QPoint grid_position = tile->getGridPosition();
+
+            collumns.insert(grid_position.x());
+            rows.insert(grid_position.y());
+        }
+
+        for (const auto collumn : collumns)
+        {
+            findProposedWordInLine(collumn, settings.getGridDimensions().height(), Direction::Vertical);
+        }
+
+        for (const auto row : rows)
+        {
+            findProposedWordInLine(row, settings.getGridDimensions().width(), Direction::Horisontal);
+        }
+
+        return;
+    }
+    
+    void Game::findProposedWordInLine(int a_line, int a_max_index, Direction a_direction)
+    {
+        Word word;
+            
+        for (int index = 0; index < a_max_index; ++index)
+        {
+            Tile* tile;
+
+            switch (a_direction)
+            {
+                case Direction::Horisontal:
+                {
+                    tile = board.getTileAtPosition(index, a_line);
+                    break;
+                }
+                case Direction::Vertical:
+                {
+                    tile = board.getTileAtPosition(a_line, index);
+                    break;
+                }
+            }
+
+            if (tile->getLetter() == nullptr)
+            {
+                if (word.containsAnyOf(proposed_letters))
+                {
+                    if (word.getLength() > 1)
+                    {
+                        proposed_words.push_back(word);
+                    }
+                    
+                    break;
+                }
+                else
+                {
+                    word.clear();
+                }
+            }
+            else
+            {
+                word.appendLetter(tile);
+
+                if (index == a_max_index - 1)
+                {
+                    if (word.containsAnyOf(proposed_letters))
+                    {
+                        proposed_words.push_back(word);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return;
     }
 
     std::vector<Letter*> Game::getAllLetters()

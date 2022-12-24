@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <random>
 #include <array>
+#include <unordered_set>
 
 #include <QWidget>
 #include <QGridLayout>
@@ -27,12 +28,14 @@
 #include "ButtonPanel.hpp"
 #include "Tile.hpp"
 #include "Header.hpp"
+#include "Word.hpp"
 
 #include "BoardType.hpp"
 #include "LanguageName.hpp"
 #include "LetterStatus.hpp"
 #include "ModifierType.hpp"
 #include "PlayType.hpp"
+#include "Direction.hpp"
 
 namespace wf
 {
@@ -80,6 +83,8 @@ namespace wf
             bool isPlacementLinear();
             bool isPlacementInOneCollumn();
             bool isPlacementInOneRow();
+            void findProposedWords();
+            void findProposedWordInLine(int a_line, int a_max_index, Direction a_direction);
 
             LetterPool letter_pool;
             std::vector<Letter> all_letters;
@@ -88,6 +93,7 @@ namespace wf
             std::vector<Tile*> proposed_letters;
             std::vector<Letter*> locked_letters;
             std::vector<Tile*> checked_tiles;
+            std::vector<Word> proposed_words;
             long unsigned int current_player_index = 0;
             Settings settings;
             QGridLayout game_layout;

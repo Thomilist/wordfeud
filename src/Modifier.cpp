@@ -57,4 +57,15 @@ namespace wf
     {
         return text;
     }
+    
+    void Modifier::setUsed(bool a_used)
+    {
+        used = a_used;
+        return;
+    }
+    
+    bool Modifier::isUsed()
+    {
+        return used;
+    }
 }

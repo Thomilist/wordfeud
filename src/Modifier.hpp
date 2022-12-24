@@ -18,10 +18,13 @@ namespace wf
             void setType(ModifierType a_type);
             ModifierType getType() const;
             QString getText() const;
+            void setUsed(bool a_used);
+            bool isUsed();
 
         private:
             ModifierType type = ModifierType::None;
             QString text;
+            bool used = false;
     };
 }
 

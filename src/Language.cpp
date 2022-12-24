@@ -65,4 +65,9 @@ namespace wf
     {
         return letter_list;
     }
+    
+    bool Language::isInWordList(QString a_word)
+    {
+        return word_list.contains(a_word);
+    }
 }

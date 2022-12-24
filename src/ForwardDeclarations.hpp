@@ -15,6 +15,7 @@ namespace wf
     class Player;
     class ButtonPanel;
     class Header;
+    class Word;
 
     struct LetterData;
 
@@ -24,6 +25,7 @@ namespace wf
     enum class ModifierType;
     enum class BoardType;
     enum class PlayType;
+    enum class Direction;
 
     enum TileNeighbour : unsigned int;
 }

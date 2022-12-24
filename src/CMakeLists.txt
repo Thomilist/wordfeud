@@ -69,6 +69,7 @@ target_link_libraries(
     Player
     ButtonPanel
     Header
+    Word
 )
 
 add_library(ButtonPanel ButtonPanel.cpp)
@@ -82,4 +83,13 @@ target_link_libraries(
     Header
     Qt5::Widgets
     Player
+)
+
+add_library(Word Word.cpp)
+target_link_libraries(
+    Word
+    Qt5::Widgets
+    Tile
+    Letter
+    Modifier
 )

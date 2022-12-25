@@ -95,16 +95,37 @@ namespace wf
         return points;
     }
     
+    bool Word::contains(Tile* a_tile) const
+    {
+        return std::find(tiles.begin(), tiles.end(), a_tile) != tiles.end();
+    }
+    
     bool Word::containsAnyOf(std::vector<Tile*> a_tiles) const
     {
-        bool found = false;
-
         for (const auto tile : a_tiles)
         {
-            found = found || (std::find(tiles.begin(), tiles.end(), tile) != tiles.end());
+            if (contains(tile))
+            {
+                return true;
+            }
         }
 
-        return found;
+        return false;
+    }
+    
+    int Word::containsHowManyOf(std::vector<Tile*> a_tiles) const
+    {
+        int count = 0;
+        
+        for (const auto tile : a_tiles)
+        {
+            if (contains(tile))
+            {
+                ++count;
+            }
+        }
+
+        return count;
     }
     
     int Word::getLength() const

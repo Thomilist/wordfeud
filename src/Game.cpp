@@ -311,6 +311,20 @@ namespace wf
         }
 
         all_players[current_player_index]->addPoints(points);
+
+        // Find most relevant word
+        int highest_match_count = 0;
+        Word most_relevant_word;
+
+        for (const auto& word : proposed_words)
+        {
+            int match_count = word.containsHowManyOf(proposed_letters);
+
+            if (match_count > highest_match_count)
+            {
+                most_relevant_word = word;
+            }
+        }
         
         // Cleanup
         for (const auto tile : proposed_letters)
@@ -325,7 +339,7 @@ namespace wf
         header.updateWithPlay(
             PlayType::Play,
             all_players[current_player_index],
-            proposed_words[0].getWordAsText(),
+            most_relevant_word.getWordAsText(),
             points);
         nextPlayer();
         

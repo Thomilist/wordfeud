@@ -24,7 +24,9 @@ namespace wf
             QString getWordAsText() const;
             int calculatePoints() const;
             std::vector<Tile*> getTiles() const;
+            bool contains(Tile* a_tile) const;
             bool containsAnyOf(std::vector<Tile*> a_tiles) const;
+            int containsHowManyOf(std::vector<Tile*> a_tiles) const;
             int getLength() const;
             void clear();
 

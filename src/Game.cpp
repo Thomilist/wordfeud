@@ -322,6 +322,7 @@ namespace wf
 
             if (match_count > highest_match_count)
             {
+                highest_match_count = match_count;
                 most_relevant_word = word;
             }
         }

@@ -659,7 +659,8 @@ namespace wf
 
                 if (index == a_max_index - 1)
                 {
-                    if (word.containsAnyOf(proposed_letters))
+                    if (    word.containsAnyOf(proposed_letters)
+                        &&  word.getLength() > 1)
                     {
                         proposed_words.push_back(word);
                         break;

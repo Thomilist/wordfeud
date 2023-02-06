@@ -292,6 +292,14 @@ namespace wf
         {
             placeLetter(selection->removeLetter());
         }
+        else if (selection->getLetter() != nullptr && letter != nullptr)
+        {
+            Letter* letter_from_tile = removeLetter();
+            Letter* letter_from_selection = selection->removeLetter();
+
+            placeLetter(letter_from_selection);
+            selection->placeLetter(letter_from_tile);
+        }
         else
         {
             return;

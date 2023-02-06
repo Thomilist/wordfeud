@@ -514,8 +514,22 @@ namespace wf
     
     bool Game::isPlacementValid()
     {
-        checked_tiles.clear();
-        return isPlacementConnectedToStart(proposed_letters[0]) && isPlacementLinear();
+        if (!isPlacementLinear())
+        {
+            return false;
+        }
+
+        for (const auto letter : proposed_letters)
+        {
+            checked_tiles.clear();
+            
+            if (!isPlacementConnectedToStart(letter))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     
     bool Game::isPlacementConnectedToStart(Tile* a_tile)

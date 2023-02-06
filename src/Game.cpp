@@ -13,6 +13,11 @@ namespace wf
             },
             this)
         , board(BoardType::Board, a_settings.getGridDimensions(), a_settings.getTileSize(), &selection, this)
+        , proposal_info(QSize{
+            a_settings.getHandDimensions().width() * a_settings.getHandTileSize().width(),
+            a_settings.getHandDimensions().height() * a_settings.getHandTileSize().height()
+            },
+            this)
         , hands(this)
         , buttons(QSize{
             a_settings.getHandDimensions().width() * a_settings.getHandTileSize().width(),
@@ -34,10 +39,13 @@ namespace wf
         header.setRightPlayer(all_players[1]);
         all_players[current_player_index]->setTurn(true);
         
-        game_layout.addWidget(&header, 0, 0);
-        game_layout.addWidget(&board, 1, 0);
-        game_layout.addWidget(&hands, 2, 0);
-        game_layout.addWidget(&buttons, 3, 0);
+        int grid_row = 0;
+
+        game_layout.addWidget(&header, grid_row++, 0);
+        game_layout.addWidget(&board, grid_row++, 0);
+        game_layout.addWidget(&proposal_info, grid_row++, 0);
+        game_layout.addWidget(&hands, grid_row++, 0);
+        game_layout.addWidget(&buttons, grid_row++, 0);
 
         setLayout(&game_layout);
 
@@ -55,7 +63,12 @@ namespace wf
     }
     
     Game::~Game()
-    { }
+    {
+        for (auto player : all_players)
+        {
+            delete player;
+        }
+    }
     
     void Game::loadLanguage()
     {
@@ -273,16 +286,7 @@ namespace wf
 
         // Dictionary check
         findProposedWords();
-        
-        std::vector<const Word*> invalid_words;
-
-        for (const auto& word : proposed_words)
-        {
-            if (!language.isInWordList(word.getWordAsText().toLower()))
-            {
-                invalid_words.push_back(&word);
-            }
-        }
+        findInvalidProposedWords();
         
         if (invalid_words.size() > 0)
         {
@@ -422,6 +426,7 @@ namespace wf
         proposed_letters.push_back(a_tile);
         showCorrectButtons();
         setCorrectButtonState();
+        displayProposedPlayValue();
         return;
     }
     
@@ -430,6 +435,7 @@ namespace wf
         proposed_letters.erase(std::remove(proposed_letters.begin(), proposed_letters.end(), a_tile), proposed_letters.end());
         showCorrectButtons();
         setCorrectButtonState();
+        displayProposedPlayValue();
         return;
     }
     
@@ -438,6 +444,7 @@ namespace wf
         proposed_letters.clear();
         showCorrectButtons();
         setCorrectButtonState();
+        displayProposedPlayValue();
         return;
     }
     
@@ -669,6 +676,60 @@ namespace wf
             }
         }
 
+        return;
+    }
+    
+    void Game::checkProposedWords()
+    {
+        // Placement check
+        proposed_words_valid = isPlacementValid();
+
+        // Dictionary check
+        findProposedWords();
+        findInvalidProposedWords();
+
+        if (invalid_words.size() > 0)
+        {
+            proposed_words_valid = false;
+        }
+
+        // Points calculation
+        calculateProposedPoints();
+
+        return;
+    }
+    
+    void Game::findInvalidProposedWords()
+    {
+        invalid_words.clear();
+
+        for (const auto& word : proposed_words)
+        {
+            if (!language.isInWordList(word.getWordAsText().toLower()))
+            {
+                invalid_words.push_back(&word);
+            }
+        }
+
+        return;
+    }
+    
+    void Game::calculateProposedPoints()
+    {
+        proposed_words_points = 0;
+
+        for (const auto& word : proposed_words)
+        {
+            proposed_words_points += word.calculatePoints();
+        }
+
+        return;
+    }
+    
+    void Game::displayProposedPlayValue()
+    {
+        checkProposedWords();
+        proposal_info.setProposedPlay(proposed_words_valid, proposed_words_points);
         return;
     }
 

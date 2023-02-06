@@ -70,6 +70,7 @@ target_link_libraries(
     ButtonPanel
     Header
     Word
+    ProposalInfo
 )
 
 add_library(ButtonPanel ButtonPanel.cpp)
@@ -92,4 +93,10 @@ target_link_libraries(
     Tile
     Letter
     Modifier
+)
+
+add_library(ProposalInfo ProposalInfo.cpp)
+target_link_libraries(
+    ProposalInfo
+    Qt5::Widgets
 )

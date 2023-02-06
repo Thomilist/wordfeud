@@ -29,6 +29,7 @@
 #include "Tile.hpp"
 #include "Header.hpp"
 #include "Word.hpp"
+#include "ProposalInfo.hpp"
 
 #include "BoardType.hpp"
 #include "LanguageName.hpp"
@@ -85,6 +86,10 @@ namespace wf
             bool isPlacementInOneRow();
             void findProposedWords();
             void findProposedWordInLine(int a_line, int a_max_index, Direction a_direction);
+            void checkProposedWords();
+            void findInvalidProposedWords();
+            void calculateProposedPoints();
+            void displayProposedPlayValue();
 
             LetterPool letter_pool;
             std::vector<Letter> all_letters;
@@ -94,16 +99,20 @@ namespace wf
             std::vector<Letter*> locked_letters;
             std::vector<Tile*> checked_tiles;
             std::vector<Word> proposed_words;
+            std::vector<const Word*> invalid_words;
             long unsigned int current_player_index = 0;
             Settings settings;
             QGridLayout game_layout;
             Header header;
             Board board;
+            ProposalInfo proposal_info;
             QStackedWidget hands;
             ButtonPanel buttons;
             Language language;
             Tile selection;
             std::default_random_engine rng;
+            int proposed_words_points = 0;
+            bool proposed_words_valid = true;
     };
 }
 

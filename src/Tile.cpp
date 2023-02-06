@@ -240,8 +240,11 @@ namespace wf
             painter.setFont(QFont{"Monospace", size().height() / 2});
             painter.drawText(letter_alignment, Qt::AlignCenter, letter->getText());
 
-            painter.setFont(QFont{"Monospace", size().height() / 5});
-            painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
+            if (letter->getPoints() != 0)
+            {
+                painter.setFont(QFont{"Monospace", size().height() / 5});
+                painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
+            }
         }
         else if (follows_mouse)
         {
@@ -274,12 +277,16 @@ namespace wf
         
         if (selection->getLetter() == nullptr && letter != nullptr)
         {
-            if (letter->getStatus() == LetterStatus::Proposed)
+            // The unproposeLetter signal must be emitted after removing the letter
+            // so that the tiles in Game::proposed_letters and Game::board correspond
+            bool letter_was_proposed = letter->getStatus() == LetterStatus::Proposed;
+            
+            selection->placeLetter(removeLetter());
+
+            if (letter_was_proposed)
             {
                 emit unproposeLetter(this);
             }
-
-            selection->placeLetter(removeLetter());
         }
         else if (selection->getLetter() != nullptr && letter == nullptr)
         {

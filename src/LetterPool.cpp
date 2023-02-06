@@ -15,7 +15,7 @@ namespace wf
         return;
     }
     
-    Letter* LetterPool::getRandomLetter()
+    [[nodiscard]] Letter* LetterPool::getRandomLetter()
     {
         if (getRemainingCount() == 0)
         {

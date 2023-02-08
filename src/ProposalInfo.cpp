@@ -12,9 +12,14 @@ namespace wf
         setMouseTracking(true);
 
         grid_layout.addWidget(&proposed_play_label, 0, 0);
-        grid_layout.addWidget(&proposed_play_value, 0, 1);
+        grid_layout.addWidget(&proposed_play_value, 1, 0);
 
-        proposed_play_label.setAlignment(Qt::AlignRight);
+        proposed_play_label.setAlignment(Qt::AlignCenter);
+        proposed_play_value.setAlignment(Qt::AlignCenter);
+
+        QFont value_font{"Monospace", size.height() / 7};
+        value_font.setBold(true);
+        proposed_play_value.setFont(value_font);
 
         grid_layout.setSpacing(0);
         setLayout(&grid_layout);

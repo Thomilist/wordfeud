@@ -363,12 +363,21 @@ namespace wf
     
     void Game::clear()
     {
-        for (auto tile : proposed_letters)
+        Letter* letter;
+        Tile* tile;
+
+        while (proposed_letters.size() > 0)
         {
+            tile = proposed_letters.at(0);
+            
             if (all_players[current_player_index]->availableSpacesInHand() > 0)
             {
-                Letter* letter = tile->removeLetter();
+                letter = tile->removeLetter();
                 all_players[current_player_index]->addLetterToHand(letter);
+            }
+            else
+            {
+                break;
             }
         }
 
@@ -484,8 +493,10 @@ namespace wf
             for (int row = 0; row < board_size.height(); ++row)
             {
                 Tile* tile = board.getTileAtPosition(collumn, row);
+
                 connect(tile, &Tile::proposeLetter, this, &Game::proposeLetter);
                 connect(tile, &Tile::unproposeLetter, this, &Game::unproposeLetter);
+                connect(tile, &Tile::wildcardPlacedOnBoard, this, &Game::assignWildcardLetter);
             }
         }
 
@@ -744,6 +755,39 @@ namespace wf
     {
         checkProposedWords();
         proposal_info.setProposedPlay(proposed_words_valid, proposed_words_points);
+        return;
+    }
+    
+    void Game::assignWildcardLetter(Tile* a_tile)
+    {
+        if (a_tile->getLetter()->getWildcardText() != "")
+        {
+            return;
+        }
+        
+        bool dialog_ok;
+        
+        QString wildcard_letter = QInputDialog::getItem
+        (
+            this,
+            "Wordfeud",
+            "Choose letter:",
+            letter_pool.getNonWildcardLetters(),
+            0,
+            false,
+            &dialog_ok
+        );
+
+        if (dialog_ok && !wildcard_letter.isEmpty())
+        {
+            a_tile->getLetter()->setWildcardText(wildcard_letter);
+        }
+        else
+        {
+            Letter* letter = a_tile->removeLetter();
+            selection.placeLetter(letter);
+        }
+
         return;
     }
 

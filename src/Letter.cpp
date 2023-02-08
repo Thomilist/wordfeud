@@ -27,7 +27,14 @@ namespace wf
     
     QString Letter::getText() const
     {
-        return text;
+        if (getType() == LetterType::Wildcard && wildcard_text.length() > 0)
+        {
+            return wildcard_text;
+        }
+        else
+        {
+            return text;
+        }
     }
     
     QString Letter::getPointsAsText() const
@@ -54,5 +61,16 @@ namespace wf
     LetterStatus Letter::getStatus() const
     {
         return status;
+    }
+    
+    void Letter::setWildcardText(QString a_text)
+    {
+        wildcard_text = a_text;
+        return;
+    }
+    
+    QString Letter::getWildcardText() const
+    {
+        return wildcard_text;
     }
 }

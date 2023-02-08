@@ -33,9 +33,12 @@ namespace wf
             LetterType getType() const;
             void setStatus(LetterStatus a_status);
             LetterStatus getStatus() const;
+            void setWildcardText(QString a_text);
+            QString getWildcardText() const;
 
         private:
             QString text;
+            QString wildcard_text = "";
             int points;
             LetterType type;
             LetterStatus status = LetterStatus::Free;

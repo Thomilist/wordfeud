@@ -47,11 +47,13 @@ namespace wf
             void setNeighbour(Tile* a_tile, TileNeighbour a_index);
             void setGridPosition(int a_collumn, int a_row);
             QPoint getGridPosition() const;
+            BoardType getBoardType() const;
         
         signals:
             void proposeLetter(Tile* a_tile);
             void unproposeLetter(Tile* a_tile);
             void letterAddedRemoved();
+            void wildcardPlacedOnBoard(Tile* a_tile);
 
         private:
             void paintEvent(QPaintEvent* a_event);
@@ -61,7 +63,7 @@ namespace wf
             Letter* letter = nullptr;
             Tile* selection;
             bool follows_mouse;
-            BoardType type;
+            BoardType board_type;
             QPoint grid_position;
 
             // Top, right, bottom, left

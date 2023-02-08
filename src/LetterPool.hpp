@@ -5,6 +5,7 @@
 #include <random>
 
 #include <QObject>
+#include <QStringList>
 
 #include "ForwardDeclarations.hpp"
 #include "Letter.hpp"
@@ -23,12 +24,14 @@ namespace wf
             void set(std::vector<Letter*> a_letter_pointers);
             [[nodiscard]] Letter* getRandomLetter();
             int getRemainingCount() const;
+            QStringList getNonWildcardLetters() const;
         
         signals:
             void remainingCountChanged(int a_count);
 
         private:
             std::vector<Letter*> pool;
+            QStringList non_wildcard_letters;
     };
 }
 #endif // __LETTERPOOL_H__

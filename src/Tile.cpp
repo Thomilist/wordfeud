@@ -11,7 +11,7 @@ namespace wf
         : QWidget(a_parent)
         , selection(a_selection)
         , follows_mouse(a_follows_mouse)
-        , type(a_board_type)
+        , board_type(a_board_type)
     {
         setMouseTracking(true);
         resize(a_size);
@@ -34,10 +34,33 @@ namespace wf
             return;
         }
 
-        if (type == BoardType::Board)
+        switch (board_type)
         {
-            letter->setStatus(LetterStatus::Proposed);
-            emit proposeLetter(this);
+            case BoardType::Board:
+            {
+                letter->setStatus(LetterStatus::Proposed);
+                emit proposeLetter(this);
+
+                if (letter->getType() == LetterType::Wildcard)
+                {
+                    emit wildcardPlacedOnBoard(this);
+                }
+
+                break;
+            }
+            case BoardType::Hand:
+            {
+                if (letter->getType() == LetterType::Wildcard)
+                {
+                    letter->setWildcardText("");
+                }
+
+                break;
+            }
+            case BoardType::None:
+            {
+                break;
+            }
         }
 
         if (follows_mouse)
@@ -61,11 +84,17 @@ namespace wf
         Letter* current_letter = letter;
         letter = nullptr;
 
+        LetterStatus old_status = current_letter->getStatus();
         current_letter->setStatus(LetterStatus::Free);
 
         if (follows_mouse)
         {
             hide();
+        }
+
+        if (old_status == LetterStatus::Proposed)
+        {
+            emit unproposeLetter(this);
         }
 
         emit letterAddedRemoved();
@@ -113,6 +142,11 @@ namespace wf
     QPoint Tile::getGridPosition() const
     {
         return grid_position;
+    }
+    
+    BoardType Tile::getBoardType() const
+    {
+        return board_type;
     }
     
     void Tile::paintEvent(QPaintEvent*)
@@ -277,16 +311,7 @@ namespace wf
         
         if (selection->getLetter() == nullptr && letter != nullptr)
         {
-            // The unproposeLetter signal must be emitted after removing the letter
-            // so that the tiles in Game::proposed_letters and Game::board correspond
-            bool letter_was_proposed = letter->getStatus() == LetterStatus::Proposed;
-            
             selection->placeLetter(removeLetter());
-
-            if (letter_was_proposed)
-            {
-                emit unproposeLetter(this);
-            }
         }
         else if (selection->getLetter() != nullptr && letter == nullptr)
         {

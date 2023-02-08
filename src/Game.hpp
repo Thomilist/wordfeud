@@ -16,6 +16,7 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include <QColor>
+#include <QInputDialog>
 
 #include "ForwardDeclarations.hpp"
 #include "Settings.hpp"
@@ -72,6 +73,7 @@ namespace wf
             void unproposeLetter(Tile* a_tile);
             void clearProposed();
             void setCorrectButtonState();
+            void assignWildcardLetter(Tile* a_tile);
 
         private:
             void initialiseConnections();

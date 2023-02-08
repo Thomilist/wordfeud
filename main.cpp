@@ -30,9 +30,8 @@ SOFTWARE.
 
 #include <QApplication>
 #include <QMainWindow>
-#include <QWidget>
-#include <QGridLayout>
-#include <QLabel>
+#include <QFile>
+#include <QTextStream>
 
 #include "src/Settings.hpp"
 #include "src/Game.hpp"
@@ -40,6 +39,12 @@ SOFTWARE.
 int main(int argc, char* argv[])
 {
     QApplication application(argc, argv);
+
+    QFile stylesheet{":/dark/stylesheet.qss"};
+    stylesheet.open(QFile::ReadOnly | QFile::Text);
+    QTextStream stylesheet_stream(&stylesheet);
+    application.setStyleSheet(stylesheet_stream.readAll());
+
     QMainWindow main_window;
     wf::Settings settings;
 

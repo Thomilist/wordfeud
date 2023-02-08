@@ -19,6 +19,7 @@ add_executable(
     ${PROJECT_NAME}
     main.cpp
     resources/resources.qrc
+    resources/styles/breeze/breeze.qrc
 )
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets)

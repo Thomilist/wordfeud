@@ -27,8 +27,6 @@ namespace wf
         , selection(a_settings.getSelectionTileSize(), &selection, BoardType::None, this, true)
         , rng(std::default_random_engine{})
     {
-        initialiseConnections();
-        
         setMouseTracking(true);
         hands.setMouseTracking(true);
 
@@ -58,8 +56,11 @@ namespace wf
 
         all_players[current_player_index]->fillHand(&letter_pool);
 
+        buttons.setTileCount(letter_pool.getRemainingCount());
         setCorrectButtonState();
         showCorrectButtons();
+
+        initialiseConnections();
     }
     
     Game::~Game()
@@ -427,6 +428,34 @@ namespace wf
     
     void Game::swap()
     {
+        setGameState(GameState::Swap);
+        showCorrectButtons();
+        return;
+    }
+    
+    void Game::confirm()
+    {
+        int swap_count = swapLetters();
+        clearSwapList();
+        setGameState(GameState::Play);
+        showCorrectButtons();
+
+        // Next turn
+        header.updateWithPlay(
+            PlayType::Swap,
+            all_players[current_player_index],
+            "",
+            swap_count);
+        nextPlayer();
+
+        return;
+    }
+    
+    void Game::cancel()
+    {
+        clearSwapList();
+        setGameState(GameState::Play);
+        showCorrectButtons();
         return;
     }
     
@@ -484,19 +513,35 @@ namespace wf
         connect(buttons.getClearButton(), &QPushButton::clicked, this, &Game::clear);
         connect(buttons.getShuffleButton(), &QPushButton::clicked, this, &Game::shuffle);
         connect(buttons.getSwapButton(), &QPushButton::clicked, this, &Game::swap);
+        connect(buttons.getConfirmButton(), &QPushButton::clicked, this, &Game::confirm);
+        connect(buttons.getCancelButton(), &QPushButton::clicked, this, &Game::cancel);
         connect(&selection, &Tile::letterAddedRemoved, this, &Game::setCorrectButtonState);
 
-        QSize board_size = board.getGridDimensions();
-
-        for (int collumn = 0; collumn < board_size.width(); ++collumn)
+        // Board
+        for (int collumn = 0; collumn < board.getGridDimensions().width(); ++collumn)
         {
-            for (int row = 0; row < board_size.height(); ++row)
+            for (int row = 0; row < board.getGridDimensions().height(); ++row)
             {
                 Tile* tile = board.getTileAtPosition(collumn, row);
 
                 connect(tile, &Tile::proposeLetter, this, &Game::proposeLetter);
                 connect(tile, &Tile::unproposeLetter, this, &Game::unproposeLetter);
                 connect(tile, &Tile::wildcardPlacedOnBoard, this, &Game::assignWildcardLetter);
+            }
+        }
+
+        // Hands
+        for (auto player : all_players)
+        {
+            for (int collumn = 0; collumn < settings.getHandDimensions().width(); ++collumn)
+            {
+                for (int row = 0; row < settings.getHandDimensions().height(); ++row)
+                {
+                    Tile* tile = player->getHand()->getTileAtPosition(collumn, row);
+
+                    connect(tile, &Tile::markForSwap, this, &Game::addToSwapLetters);
+                    connect(tile, &Tile::unmarkForSwap, this, &Game::removeFromSwapLetters);
+                }
             }
         }
 
@@ -513,11 +558,15 @@ namespace wf
     {
         if (proposed_letters.size() > 0)
         {
-            buttons.showPlayClearButtons();
+            buttons.showPlayClearSwapButtons();
         }
-        else
+        else if (state == GameState::Play)
         {
-            buttons.showPassShuffleButtons();
+            buttons.showPassShuffleSwapButtons();
+        }
+        else if (state == GameState::Swap)
+        {
+            buttons.showConfirmCancelButtons();
         }
 
         return;
@@ -728,7 +777,7 @@ namespace wf
     {
         invalid_words.clear();
 
-        for (const auto& word : proposed_words)
+        for (auto& word : proposed_words)
         {
             if (!language.isInWordList(word.getWordAsText().toLower()))
             {
@@ -755,6 +804,29 @@ namespace wf
     {
         checkProposedWords();
         proposal_info.setProposedPlay(proposed_words_valid, proposed_words_points);
+        return;
+    }
+    
+    void Game::setGameState(GameState a_state)
+    {
+        state = a_state;
+
+        switch (state)
+        {
+            case GameState::Play:
+            {
+                board.setDimmedAndDisabled(false);
+                all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Move);
+                break;
+            }
+            case GameState::Swap:
+            {
+                board.setDimmedAndDisabled(true);
+                all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Swap);
+                break;
+            }
+        }
+
         return;
     }
     
@@ -787,6 +859,57 @@ namespace wf
             Letter* letter = a_tile->removeLetter();
             selection.placeLetter(letter);
         }
+
+        return;
+    }
+    
+    void Game::addToSwapLetters(Tile* a_tile)
+    {
+        swap_letters.push_back(a_tile);
+        return;
+    }
+    
+    void Game::removeFromSwapLetters(Tile* a_tile)
+    {
+        std::vector<Tile*>::iterator position = std::find(swap_letters.begin(), swap_letters.end(), a_tile);
+
+        if (position != swap_letters.end())
+        {
+            swap_letters.erase(position);
+        }
+
+        return;
+    }
+    
+    int Game::swapLetters()
+    {
+        std::vector<Letter*> swapped_letters;
+        int swap_count = swap_letters.size();
+
+        for (auto tile : swap_letters)
+        {
+            swapped_letters.push_back(tile->removeLetter());
+        }
+
+        all_players[current_player_index]->fillHand(&letter_pool);
+
+        for (auto letter : swapped_letters)
+        {
+            letter_pool.insertLetter(letter);
+        }
+
+        return swap_count;
+    }
+    
+    void Game::clearSwapList()
+    {
+        for (auto tile : swap_letters)
+        {
+            tile->setSwapMarking(false);
+        }
+
+        swap_letters.clear();
+        all_players[current_player_index]->getHand()->repaint();
 
         return;
     }

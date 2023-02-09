@@ -149,6 +149,24 @@ namespace wf
         return board_type;
     }
     
+    void Tile::setDimmed(bool a_state)
+    {
+        dimmed = a_state;
+        return;
+    }
+    
+    void Tile::setInteractMode(TileInteractMode a_mode)
+    {
+        interact_mode = a_mode;
+        return;
+    }
+    
+    void Tile::setSwapMarking(bool a_state)
+    {
+        swap_marking = a_state;
+        return;
+    }
+    
     void Tile::paintEvent(QPaintEvent*)
     {
         QPainter painter(this);
@@ -279,6 +297,17 @@ namespace wf
                 painter.setFont(QFont{"Monospace", size().height() / 5});
                 painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
             }
+
+            // Draw red cross over tiles marked for swapping
+            if (swap_marking)
+            {
+                QPen red_cross_pen;
+                red_cross_pen.setColor(QColor{255, 0, 0});
+                red_cross_pen.setWidth(5);
+                painter.setPen(red_cross_pen);
+                painter.drawLine(tile_shape.topLeft(), tile_shape.bottomRight());
+                painter.drawLine(tile_shape.bottomLeft(), tile_shape.topRight());
+            }
         }
         else if (follows_mouse)
         {
@@ -292,6 +321,12 @@ namespace wf
             painter.drawRoundedRect(tile_shape, radius, radius, Qt::RelativeSize);
         }
 
+        if (dimmed)
+        {
+            QRect tile_area{QPoint{0,0}, size()};
+            painter.fillRect(tile_area, QColor{0, 0, 0, 100});
+        }
+
         return;
     }
     
@@ -302,32 +337,55 @@ namespace wf
             return;
         }
 
-        if (    letter != nullptr
-            && (letter->getStatus() == LetterStatus::Locked 
-            ||  letter->getStatus() == LetterStatus::LockedRecently))
+        switch (interact_mode)
         {
-            return;
-        }
-        
-        if (selection->getLetter() == nullptr && letter != nullptr)
-        {
-            selection->placeLetter(removeLetter());
-        }
-        else if (selection->getLetter() != nullptr && letter == nullptr)
-        {
-            placeLetter(selection->removeLetter());
-        }
-        else if (selection->getLetter() != nullptr && letter != nullptr)
-        {
-            Letter* letter_from_tile = removeLetter();
-            Letter* letter_from_selection = selection->removeLetter();
+            case TileInteractMode::Move:
+            {
+                if (    letter != nullptr
+                    && (letter->getStatus() == LetterStatus::Locked 
+                    ||  letter->getStatus() == LetterStatus::LockedRecently))
+                {
+                    return;
+                }
+                
+                if (selection->getLetter() == nullptr && letter != nullptr)
+                {
+                    selection->placeLetter(removeLetter());
+                }
+                else if (selection->getLetter() != nullptr && letter == nullptr)
+                {
+                    placeLetter(selection->removeLetter());
+                }
+                else if (selection->getLetter() != nullptr && letter != nullptr)
+                {
+                    Letter* letter_from_tile = removeLetter();
+                    Letter* letter_from_selection = selection->removeLetter();
 
-            placeLetter(letter_from_selection);
-            selection->placeLetter(letter_from_tile);
-        }
-        else
-        {
-            return;
+                    placeLetter(letter_from_selection);
+                    selection->placeLetter(letter_from_tile);
+                }
+                else
+                {
+                    return;
+                }
+
+                break;
+            }
+            case TileInteractMode::Swap:
+            {
+                setSwapMarking(!swap_marking);
+
+                if (swap_marking)
+                {
+                    emit markForSwap(this);
+                }
+                else
+                {
+                    emit unmarkForSwap(this);
+                }
+
+                break;
+            }
         }
 
         repaint();

@@ -26,6 +26,8 @@ namespace wf
     enum class BoardType;
     enum class PlayType;
     enum class Direction;
+    enum class GameState;
+    enum class TileInteractMode;
 
     enum TileNeighbour : unsigned int;
 }

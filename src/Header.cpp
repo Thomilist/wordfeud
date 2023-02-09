@@ -55,12 +55,12 @@ namespace wf
         return;
     }
     
-    void Header::updateWithPlay(PlayType a_play_type, Player* a_player, QString a_word, int a_points)
+    void Header::updateWithPlay(PlayType a_play_type, Player* a_player, QString a_word, int a_value)
     {
         last_play_type = a_play_type;
         last_play_player = a_player;
         last_play_word = a_word;
-        last_play_points = a_points;
+        last_play_value = a_value;
         repaint();
         return;
     }
@@ -140,7 +140,7 @@ namespace wf
                     last_play.append(" played ");
                     last_play.append(last_play_word);
                     last_play.append(" for ");
-                    last_play.append(QString::number(last_play_points));
+                    last_play.append(QString::number(last_play_value));
                     last_play.append(" points");
                     break;
                 }
@@ -153,7 +153,9 @@ namespace wf
                 case PlayType::Swap:
                 {
                     last_play.append(last_play_player->getDisplayName());
-                    last_play.append(" swapped tiles");
+                    last_play.append(" swapped ");
+                    last_play.append(QString::number(last_play_value));
+                    last_play.append(" tiles");
                     break;
                 }
             }

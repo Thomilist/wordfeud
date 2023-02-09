@@ -28,7 +28,7 @@ namespace wf
 
             void setLeftPlayer(Player* a_player);
             void setRightPlayer(Player* a_player);
-            void updateWithPlay(PlayType a_play_type, Player* a_player = nullptr, QString a_word = "", int a_points = 0);
+            void updateWithPlay(PlayType a_play_type, Player* a_player = nullptr, QString a_word = "", int a_value = 0);
         
         private:
             void paintEvent(QPaintEvent* a_event);
@@ -47,7 +47,7 @@ namespace wf
             QLabel last_play_text;
             Player* last_play_player = nullptr;
             QString last_play_word;
-            int last_play_points;
+            int last_play_value;
             int radius = 3;
     };
 }

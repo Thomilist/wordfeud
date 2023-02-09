@@ -38,6 +38,7 @@
 #include "ModifierType.hpp"
 #include "PlayType.hpp"
 #include "Direction.hpp"
+#include "GameState.hpp"
 
 namespace wf
 {
@@ -69,11 +70,15 @@ namespace wf
             void clear();
             void shuffle();
             void swap();
+            void confirm();
+            void cancel();
             void proposeLetter(Tile* a_tile);
             void unproposeLetter(Tile* a_tile);
             void clearProposed();
             void setCorrectButtonState();
             void assignWildcardLetter(Tile* a_tile);
+            void addToSwapLetters(Tile* a_tile);
+            void removeFromSwapLetters(Tile* a_tile);
 
         private:
             void initialiseConnections();
@@ -92,16 +97,21 @@ namespace wf
             void findInvalidProposedWords();
             void calculateProposedPoints();
             void displayProposedPlayValue();
+            void setGameState(GameState a_state);
+            int swapLetters();
+            void clearSwapList();
 
+            GameState state = GameState::Play;
             LetterPool letter_pool;
             std::vector<Letter> all_letters;
             std::vector<Modifier> all_modifiers;
             std::vector<Player*> all_players;
             std::vector<Tile*> proposed_letters;
             std::vector<Letter*> locked_letters;
+            std::vector<Tile*> swap_letters;
             std::vector<Tile*> checked_tiles;
             std::vector<Word> proposed_words;
-            std::vector<const Word*> invalid_words;
+            std::vector<Word*> invalid_words;
             long unsigned int current_player_index = 0;
             Settings settings;
             QGridLayout game_layout;

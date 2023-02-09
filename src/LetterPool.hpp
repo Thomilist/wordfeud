@@ -21,10 +21,11 @@ namespace wf
             LetterPool();
             ~LetterPool();
 
-            void set(std::vector<Letter*> a_letter_pointers);
+            void set(std::vector<Letter*> a_letters);
             [[nodiscard]] Letter* getRandomLetter();
             int getRemainingCount() const;
             QStringList getNonWildcardLetters() const;
+            void insertLetter(Letter* a_letter);
         
         signals:
             void remainingCountChanged(int a_count);

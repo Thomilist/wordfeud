@@ -29,8 +29,11 @@ namespace wf
             QPushButton* getClearButton();
             QPushButton* getShuffleButton();
             QPushButton* getSwapButton();
-            void showPlayClearButtons();
-            void showPassShuffleButtons();
+            QPushButton* getConfirmButton();
+            QPushButton* getCancelButton();
+            void showPlayClearSwapButtons();
+            void showPassShuffleSwapButtons();
+            void showConfirmCancelButtons();
 
         public slots:
             void setTileCount(int a_count);
@@ -41,13 +44,16 @@ namespace wf
             QSize size;
             int button_width;
             QGridLayout button_layout;
-            QStackedWidget play_pass_buttons;
-            QStackedWidget clear_shuffle_buttons;
+            QStackedWidget play_pass_stack;
+            QStackedWidget clear_shuffle_confirm_stack;
+            QStackedWidget swap_cancel_stack;
             QPushButton play_button;
             QPushButton pass_button;
             QPushButton clear_button;
             QPushButton shuffle_button;
             QPushButton swap_button;
+            QPushButton confirm_button;
+            QPushButton cancel_button;
             QLabel tiles_left_text;
             QLabel tiles_left_count;
             int tiles_left;

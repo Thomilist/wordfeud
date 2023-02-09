@@ -5,11 +5,17 @@
 #include <QGridLayout>
 #include <QSize>
 #include <QLayoutItem>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QRect>
+#include <QPoint>
+#include <QColor>
 
 #include "ForwardDeclarations.hpp"
 #include "Tile.hpp"
 #include "BoardType.hpp"
 #include "TileNeighbours.hpp"
+#include "TileInteractMode.hpp"
 
 namespace wf
 {
@@ -27,6 +33,8 @@ namespace wf
             Tile* getTileAtPosition(int a_collumn, int a_row) const;
             QSize getGridDimensions() const;
             BoardType getType() const;
+            void setDimmedAndDisabled(bool a_state);
+            void setTileInteractMode(TileInteractMode a_mode);
 
         private:
             void createEmptyGrid();
@@ -39,6 +47,8 @@ namespace wf
             QSize board_size;
             Tile* selection;
             BoardType type;
+            bool dimmed_and_disabled = false;
+
     };
 }
 #endif // __BOARD_H__

@@ -103,4 +103,34 @@ namespace wf
     {
         return type;
     }
+    
+    void Board::setDimmedAndDisabled(bool a_state)
+    {
+        dimmed_and_disabled = a_state;
+        setDisabled(dimmed_and_disabled);
+
+        for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
+        {
+            for (int row = 0; row < getGridDimensions().height(); ++row)
+            {
+                getTileAtPosition(collumn, row)->setDimmed(dimmed_and_disabled);
+            }
+        }
+
+        repaint();
+        return;
+    }
+    
+    void Board::setTileInteractMode(TileInteractMode a_mode)
+    {
+        for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
+        {
+            for (int row = 0; row < getGridDimensions().height(); ++row)
+            {
+                getTileAtPosition(collumn, row)->setInteractMode(a_mode);
+            }
+        }
+
+        return;
+    }
 }

@@ -7,9 +7,9 @@ namespace wf
     LetterPool::~LetterPool()
     { }
     
-    void LetterPool::set(std::vector<Letter*> a_letter_pointers)
+    void LetterPool::set(std::vector<Letter*> a_letters)
     {
-        pool = a_letter_pointers;
+        pool = a_letters;
         non_wildcard_letters.clear();
 
         for (const auto letter : pool)
@@ -51,5 +51,12 @@ namespace wf
     QStringList LetterPool::getNonWildcardLetters() const
     {
         return non_wildcard_letters;
+    }
+    
+    void LetterPool::insertLetter(Letter* a_letter)
+    {
+        pool.push_back(a_letter);
+        emit remainingCountChanged(getRemainingCount());
+        return;
     }
 }

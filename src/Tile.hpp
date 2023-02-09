@@ -21,6 +21,7 @@
 #include "LetterStatus.hpp"
 #include "ModifierType.hpp"
 #include "TileNeighbours.hpp"
+#include "TileInteractMode.hpp"
 
 namespace wf
 {
@@ -48,12 +49,17 @@ namespace wf
             void setGridPosition(int a_collumn, int a_row);
             QPoint getGridPosition() const;
             BoardType getBoardType() const;
+            void setDimmed(bool a_state);
+            void setInteractMode(TileInteractMode a_mode);
+            void setSwapMarking(bool a_state);
         
         signals:
             void proposeLetter(Tile* a_tile);
             void unproposeLetter(Tile* a_tile);
             void letterAddedRemoved();
             void wildcardPlacedOnBoard(Tile* a_tile);
+            void markForSwap(Tile* a_tile);
+            void unmarkForSwap(Tile* a_tile);
 
         private:
             void paintEvent(QPaintEvent* a_event);
@@ -65,6 +71,9 @@ namespace wf
             bool follows_mouse;
             BoardType board_type;
             QPoint grid_position;
+            bool dimmed = false;
+            TileInteractMode interact_mode = TileInteractMode::Move;
+            bool swap_marking = false;
 
             // Top, right, bottom, left
             std::array<Tile*, 4> neighbours{nullptr, nullptr, nullptr, nullptr};

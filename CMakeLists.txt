@@ -8,6 +8,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+if (MINGW)
+    set(CMAKE_CXX_FLAGS "-mwindows")
+endif (MINGW)
+
 add_compile_options(
     -Wall
     -Wextra

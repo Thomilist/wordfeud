@@ -78,7 +78,7 @@ namespace wf
 
             painter.setPen(Qt::NoPen);
             painter.setBrush(left_player->getColor());
-            painter.drawRoundedRect(pixmap.rect(), radius, radius);
+            painter.drawRect(pixmap.rect());
 
             painter.setPen(QColor{255, 255, 255});
             painter.drawText(pixmap.rect(), left_player->getDisplayName());
@@ -105,7 +105,7 @@ namespace wf
 
             painter.setPen(Qt::NoPen);
             painter.setBrush(right_player->getColor());
-            painter.drawRoundedRect(pixmap.rect(), radius, radius);
+            painter.drawRect(pixmap.rect());
 
             painter.setPen(QColor{255, 255, 255});
             painter.drawText(pixmap.rect(), right_player->getDisplayName(), QTextOption{Qt::AlignRight});

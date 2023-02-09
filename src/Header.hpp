@@ -48,7 +48,6 @@ namespace wf
             Player* last_play_player = nullptr;
             QString last_play_word;
             int last_play_value;
-            int radius = 3;
     };
 }
 

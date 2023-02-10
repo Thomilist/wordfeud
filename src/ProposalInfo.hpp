@@ -9,6 +9,7 @@
 #include <QString>
 
 #include "ForwardDeclarations.hpp"
+#include "Settings.hpp"
 
 namespace wf
 {
@@ -16,7 +17,7 @@ namespace wf
     {
         public:
             ProposalInfo(
-                QSize a_size,
+                Settings* a_settings,
                 QWidget* a_parent = nullptr);
             ~ProposalInfo();
 
@@ -26,6 +27,7 @@ namespace wf
             void paintEvent(QPaintEvent* a_event);
             QString getPointsAsText();
 
+            Settings* settings;
             QSize size;
             QGridLayout grid_layout;
             QLabel proposed_play_label{"Proposed play: "};

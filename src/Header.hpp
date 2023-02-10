@@ -13,6 +13,7 @@
 
 #include "ForwardDeclarations.hpp"
 #include "Player.hpp"
+#include "Settings.hpp"
 
 #include "PlayType.hpp"
 
@@ -22,7 +23,7 @@ namespace wf
     {
         public:
             Header(
-                QSize a_size,
+                Settings* a_settings,
                 QWidget* a_parent = nullptr);
             ~Header();
 
@@ -33,6 +34,7 @@ namespace wf
         private:
             void paintEvent(QPaintEvent* a_event);
 
+            Settings* settings;
             QSize size;
             Player* left_player = nullptr;
             Player* right_player = nullptr;

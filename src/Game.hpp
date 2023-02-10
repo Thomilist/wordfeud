@@ -48,7 +48,7 @@ namespace wf
 
         public:
             Game(
-                Settings& a_settings,
+                Settings* a_settings,
                 QWidget* a_parent = nullptr);
             ~Game();
 
@@ -116,7 +116,7 @@ namespace wf
             std::vector<Word> proposed_words;
             std::vector<Word*> invalid_words;
             long unsigned int current_player_index = 0;
-            Settings settings;
+            Settings* settings;
             QGridLayout game_layout;
             Header header;
             Board board;

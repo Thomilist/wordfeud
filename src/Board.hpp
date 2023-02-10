@@ -11,6 +11,8 @@
 #include <QPoint>
 #include <QColor>
 
+#include "Settings.hpp"
+
 #include "ForwardDeclarations.hpp"
 #include "Tile.hpp"
 #include "BoardType.hpp"
@@ -24,8 +26,7 @@ namespace wf
         public:
             Board(
                 BoardType a_board_type,
-                const QSize& a_grid_dimensions,
-                const QSize& a_tile_size,
+                Settings* a_settings,
                 Tile* a_selection,
                 QWidget* a_parent = nullptr);
             ~Board();
@@ -43,6 +44,7 @@ namespace wf
             void updateBoardSize();
             void assignNeighbours();
 
+            Settings* settings;
             QGridLayout grid;
             QSize grid_dimensions;
             QSize tile_size;

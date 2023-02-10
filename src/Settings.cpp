@@ -5,7 +5,10 @@ namespace wf
 {
     Settings::Settings()
     {
-        
+        int monospace_font_family_id = QFontDatabase::addApplicationFont(":/fonts/NotoSansMono-Regular.ttf");
+        QString monospace_font_family = QFontDatabase::applicationFontFamilies(monospace_font_family_id).at(0);
+        monospace_font.setFamily(monospace_font_family);
+        monospace_font.setStyleHint(QFont::TypeWriter);
     }
     
     Settings::~Settings()
@@ -13,16 +16,16 @@ namespace wf
     
     void Settings::setGridDimensions(int rows, int collumns)
     {
-        grid_dimensions.setHeight(rows);
-        grid_dimensions.setWidth(collumns);
+        board_dimensions.setHeight(rows);
+        board_dimensions.setWidth(collumns);
 
         return;
     }
     
     void Settings::setTileSize(int size)
     {
-        tile_size.setHeight(size);
-        tile_size.setWidth(size);
+        board_tile_size.setHeight(size);
+        board_tile_size.setWidth(size);
 
         return;
     }
@@ -32,14 +35,14 @@ namespace wf
         return language;
     }
     
-    const QSize& Settings::getGridDimensions() const
+    const QSize& Settings::getBoardDimensions() const
     {
-        return grid_dimensions;
+        return board_dimensions;
     }
     
-    const QSize& Settings::getTileSize() const
+    const QSize& Settings::getBoardTileSize() const
     {
-        return tile_size;
+        return board_tile_size;
     }
     
     const QSize& Settings::getHandDimensions() const
@@ -55,5 +58,10 @@ namespace wf
     const QSize& Settings::getSelectionTileSize() const
     {
         return selection_tile_size;
+    }
+    
+    QFont Settings::getMonospaceFont() const
+    {
+        return monospace_font;
     }
 }

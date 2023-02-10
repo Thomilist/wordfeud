@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     QMainWindow main_window;
     wf::Settings settings;
 
-    wf::Game game{settings, &main_window};
+    wf::Game game{&settings, &main_window};
 
     main_window.setCentralWidget(&game);
     main_window.show();

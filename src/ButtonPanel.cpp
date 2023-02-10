@@ -2,10 +2,11 @@
 
 namespace wf
 {
-    ButtonPanel::ButtonPanel(QSize a_size, QWidget* a_parent)
+    ButtonPanel::ButtonPanel(
+        Settings* a_settings,
+        QWidget* a_parent)
         : QWidget(a_parent)
-        , size(a_size)
-        , button_width(a_size.width() / 4)
+        , settings(a_settings)
         , play_pass_stack(this)
         , clear_shuffle_confirm_stack(this)
         , swap_cancel_stack(this)
@@ -19,6 +20,13 @@ namespace wf
         , tiles_left_text("Tiles left:", this)
         , tiles_left_count("", this)
     {
+        size = QSize{
+            settings->getHandDimensions().width() * settings->getHandTileSize().width(),
+            settings->getHandDimensions().height() * settings->getHandTileSize().height() / 2
+        };
+
+        button_width = size.width() / 4;
+        
         setFixedSize(size);
         setMouseTracking(true);
 
@@ -149,7 +157,8 @@ namespace wf
     
     void ButtonPanel::drawTileCounter()
     {
-        QFont count_font{"Monospace", size.height() / 2};
+        QFont count_font = settings->getMonospaceFont();
+        count_font.setPointSize(size.height() / 2);
         tiles_left_count.setFont(count_font);
         tiles_left_count.setText(QString::number(tiles_left));
         return;

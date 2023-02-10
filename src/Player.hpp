@@ -10,6 +10,7 @@
 #include "Board.hpp"
 #include "LetterPool.hpp"
 #include "Letter.hpp"
+#include "Settings.hpp"
 
 namespace wf
 {
@@ -19,8 +20,7 @@ namespace wf
             Player(
                 QString a_display_name,
                 QColor a_color,
-                const QSize& a_hand_size,
-                const QSize& a_tile_size,
+                Settings* a_settings,
                 Tile* a_selection,
                 QWidget* a_parent = nullptr);
             ~Player();
@@ -42,6 +42,7 @@ namespace wf
         private:
             QString display_name;
             QColor name_color;
+            Settings* settings;
             int score = 0;
             Board* hand;
             QSize hand_size;

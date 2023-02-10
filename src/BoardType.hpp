@@ -7,7 +7,7 @@ namespace wf
     {
         Board,
         Hand,
-        None
+        Selection
     };
 }
 

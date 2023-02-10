@@ -16,6 +16,7 @@
 #include "ForwardDeclarations.hpp"
 #include "Letter.hpp"
 #include "Modifier.hpp"
+#include "Settings.hpp"
 
 #include "BoardType.hpp"
 #include "LetterStatus.hpp"
@@ -31,7 +32,7 @@ namespace wf
         
         public:
             Tile(
-                const QSize& a_size,
+                Settings* a_settings,
                 Tile* a_selection,
                 BoardType a_board_type,
                 QWidget* a_parent = nullptr,
@@ -65,6 +66,8 @@ namespace wf
             void paintEvent(QPaintEvent* a_event);
             void mousePressEvent(QMouseEvent* a_event);
             
+            Settings* settings;
+            QSize tile_size;
             Modifier* modifier = nullptr;
             Letter* letter = nullptr;
             Tile* selection;

@@ -5,19 +5,21 @@ namespace wf
     Player::Player(
         QString a_display_name,
         QColor a_color,
-        const QSize& a_hand_size,
-        const QSize& a_tile_size,
+        Settings* a_settings,
         Tile* a_selection,
         QWidget* a_parent)
         : display_name(a_display_name)
         , name_color(a_color)
-        , hand_size(a_hand_size)
+        , settings(a_settings)
     {
-        hand = new Board{BoardType::Hand, a_hand_size, a_tile_size, a_selection, a_parent};
+        hand = new Board{BoardType::Hand, a_settings, a_selection, a_parent};
+        hand_size = settings->getHandDimensions();
     }
     
     Player::~Player()
-    { }
+    {
+        delete hand;
+    }
     
     Board* Player::getHand() const
     {

@@ -14,6 +14,9 @@
 #include <QPainter>
 #include <QString>
 
+#include "ForwardDeclarations.hpp"
+#include "Settings.hpp"
+
 namespace wf
 {
     class ButtonPanel : public QWidget
@@ -21,7 +24,9 @@ namespace wf
         Q_OBJECT
 
         public:
-            ButtonPanel(QSize a_size, QWidget* a_parent = nullptr);
+            ButtonPanel(
+                Settings* a_settings,
+                QWidget* a_parent = nullptr);
             ~ButtonPanel();
 
             QPushButton* getPlayButton();
@@ -41,6 +46,7 @@ namespace wf
         private:
             void drawTileCounter();
 
+            Settings* settings;
             QSize size;
             int button_width;
             QGridLayout button_layout;

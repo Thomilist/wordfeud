@@ -3,20 +3,39 @@
 namespace wf
 {
     Tile::Tile(
-        const QSize& a_size,
+        Settings* a_settings,
         Tile* a_selection,
         BoardType a_board_type,
         QWidget* a_parent,
         bool a_follows_mouse)
         : QWidget(a_parent)
+        , settings(a_settings)
         , selection(a_selection)
         , follows_mouse(a_follows_mouse)
         , board_type(a_board_type)
     {
+        switch (board_type)
+        {
+            case BoardType::Board:
+            {
+                tile_size = settings->getBoardTileSize();
+                break;
+            }
+            case BoardType::Hand:
+            {
+                tile_size = settings->getHandTileSize();
+                break;
+            }
+            case BoardType::Selection:
+            {
+                tile_size = settings->getSelectionTileSize();
+                break;
+            }
+        }
+        
         setMouseTracking(true);
-        resize(a_size);
-        setMaximumSize(a_size);
-        setMinimumSize(a_size);
+        setMinimumSize(tile_size);
+        setMaximumSize(tile_size);
         repaint();
     }
     
@@ -57,7 +76,7 @@ namespace wf
 
                 break;
             }
-            case BoardType::None:
+            case BoardType::Selection:
             {
                 break;
             }
@@ -171,8 +190,7 @@ namespace wf
     {
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing, true);
-        QFont monospace_font{"Monospace"};
-        monospace_font.setStyleHint(QFont::TypeWriter);
+        QFont monospace_font = settings->getMonospaceFont();
 
         // Draw solid black tile background
         if (!follows_mouse)

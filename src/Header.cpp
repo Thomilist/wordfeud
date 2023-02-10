@@ -3,11 +3,16 @@
 namespace wf
 {
     Header::Header(
-                QSize a_size,
-                QWidget* a_parent)
+        Settings* a_settings,
+        QWidget* a_parent)
         : QWidget(a_parent)
-        , size(a_size)
+        , settings(a_settings)
     {
+        size = QSize{
+            settings->getHandDimensions().width() * settings->getHandTileSize().width(),
+            settings->getHandDimensions().height() * settings->getHandTileSize().height()
+        };
+        
         setFixedWidth(size.width());
         setMouseTracking(true);
 
@@ -67,7 +72,8 @@ namespace wf
     
     void Header::paintEvent(QPaintEvent*)
     {
-        QFont name_font{"Monospace", size.height() / 8};
+        QFont name_font = settings->getMonospaceFont();
+        name_font.setPointSize(size.height() / 8);
 
         if (left_player != nullptr)
         {

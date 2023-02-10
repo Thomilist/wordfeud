@@ -4,13 +4,11 @@ namespace wf
 {
     Board::Board(
         BoardType a_board_type,
-        const QSize& a_grid_dimensions,
-        const QSize& a_tile_size, 
+        Settings* a_settings, 
         Tile* a_selection,
         QWidget* a_parent)
         : QWidget(a_parent)
-        , grid_dimensions(a_grid_dimensions)
-        , tile_size(a_tile_size)
+        , settings(a_settings)
         , selection(a_selection)
         , type(a_board_type)
     {
@@ -25,7 +23,15 @@ namespace wf
     }
     
     Board::~Board()
-    { }
+    {
+        for (int row = 0; row < grid_dimensions.height(); ++row)
+        {
+            for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
+            {
+                delete getTileAtPosition(collumn, row);
+            }
+        }
+    }
     
     void Board::createEmptyGrid()
     {
@@ -33,7 +39,7 @@ namespace wf
         {
             for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
             {
-                Tile* tile = new Tile(tile_size, selection, type, this);
+                Tile* tile = new Tile(settings, selection, type, this);
                 tile->setGridPosition(collumn, row);
                 grid.addWidget(tile, row, collumn);
             }
@@ -42,6 +48,29 @@ namespace wf
     
     void Board::updateBoardSize()
     {
+        switch (type)
+        {
+            case BoardType::Board:
+            {
+                grid_dimensions = settings->getBoardDimensions();
+                tile_size = settings->getBoardTileSize();
+                break;
+            }
+            case BoardType::Hand:
+            {
+                grid_dimensions = settings->getHandDimensions();
+                tile_size = settings->getHandTileSize();
+                break;
+            }
+            case BoardType::Selection:
+            {
+                grid_dimensions.setHeight(0);
+                grid_dimensions.setWidth(0);
+                tile_size = settings->getSelectionTileSize();
+                break;
+            }
+        }
+        
         board_size.setHeight(grid_dimensions.height() * tile_size.height());
         board_size.setWidth(grid_dimensions.width() * tile_size.width());
 

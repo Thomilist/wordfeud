@@ -2,29 +2,17 @@
 namespace wf
 {
     Game::Game(
-        Settings& a_settings,
+        Settings* a_settings,
         QWidget* a_parent)
         : QWidget(a_parent)
         , settings(a_settings)
         , game_layout(this)
-        , header(QSize{
-            a_settings.getHandDimensions().width() * a_settings.getHandTileSize().width(),
-            a_settings.getHandDimensions().height() * a_settings.getHandTileSize().height()
-            },
-            this)
-        , board(BoardType::Board, a_settings.getGridDimensions(), a_settings.getTileSize(), &selection, this)
-        , proposal_info(QSize{
-            a_settings.getHandDimensions().width() * a_settings.getHandTileSize().width(),
-            a_settings.getHandDimensions().height() * a_settings.getHandTileSize().height()
-            },
-            this)
+        , header(a_settings, this)
+        , board(BoardType::Board, a_settings, &selection, this)
+        , proposal_info(a_settings, this)
         , hands(this)
-        , buttons(QSize{
-            a_settings.getHandDimensions().width() * a_settings.getHandTileSize().width(),
-            a_settings.getHandDimensions().height() * a_settings.getHandTileSize().height() / 2
-            },
-            this)
-        , selection(a_settings.getSelectionTileSize(), &selection, BoardType::None, this, true)
+        , buttons(a_settings, this)
+        , selection(a_settings, &selection, BoardType::Selection, this, true)
         , rng(std::default_random_engine{})
     {
         setMouseTracking(true);
@@ -76,7 +64,7 @@ namespace wf
     
     void Game::loadLanguage()
     {
-        switch (settings.getLanguage())
+        switch (settings->getLanguage())
         {
             case LanguageName::English:
             {
@@ -243,8 +231,7 @@ namespace wf
         Player* player = new Player{
             a_display_name,
             a_color,
-            settings.getHandDimensions(),
-            settings.getHandTileSize(),
+            settings,
             &selection,
             this};
         all_players.push_back(player);
@@ -567,9 +554,9 @@ namespace wf
         // Hands
         for (auto player : all_players)
         {
-            for (int collumn = 0; collumn < settings.getHandDimensions().width(); ++collumn)
+            for (int collumn = 0; collumn < settings->getHandDimensions().width(); ++collumn)
             {
-                for (int row = 0; row < settings.getHandDimensions().height(); ++row)
+                for (int row = 0; row < settings->getHandDimensions().height(); ++row)
                 {
                     Tile* tile = player->getHand()->getTileAtPosition(collumn, row);
 
@@ -719,12 +706,12 @@ namespace wf
 
         for (const auto collumn : collumns)
         {
-            findProposedWordInLine(collumn, settings.getGridDimensions().height(), Direction::Vertical);
+            findProposedWordInLine(collumn, settings->getBoardDimensions().height(), Direction::Vertical);
         }
 
         for (const auto row : rows)
         {
-            findProposedWordInLine(row, settings.getGridDimensions().width(), Direction::Horisontal);
+            findProposedWordInLine(row, settings->getBoardDimensions().width(), Direction::Horisontal);
         }
 
         return;

@@ -32,14 +32,12 @@ namespace wf
         right_player_your_turn.setAlignment(Qt::AlignRight);
         last_play_text.setAlignment(Qt::AlignCenter);
 
-        QFont score_font{"Monospace", size.height() / 5};
+        QFont score_font = settings->getMonospaceFont();
+        score_font.setPointSize(size.height() / 5);
         score_font.setBold(true);
-        QFont your_turn_font;
 
         left_player_score.setFont(score_font);
-        left_player_your_turn.setFont(your_turn_font);
         right_player_score.setFont(score_font);
-        right_player_your_turn.setFont(your_turn_font);
 
         grid_layout.setSpacing(0);
         setLayout(&grid_layout);

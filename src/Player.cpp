@@ -147,4 +147,32 @@ namespace wf
     {
         return name_color;
     }
+    
+    int Player::getLetterPenaltyPoints()
+    {
+        // Calculate penalty points based on remaining tiles in hand
+        
+        if (getHand()->getLetterCount() == 0)
+        {
+            return 0;
+        }
+        
+        int penalty = 0;
+        Tile* tile;
+        
+        for (int collumn = 0; collumn < getHand()->getGridDimensions().width(); ++collumn)
+        {
+            for (int row = 0; row < getHand()->getGridDimensions().height(); ++row)
+            {
+                tile = getHand()->getTileAtPosition(collumn, row);
+                
+                if (tile->getLetter() != nullptr)
+                {
+                    penalty += tile->getLetter()->getPoints();
+                }
+            }
+        }
+
+        return penalty;
+    }
 }

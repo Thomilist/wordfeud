@@ -133,4 +133,30 @@ namespace wf
 
         return;
     }
+    
+    int Board::getTileCount()
+    {
+        return getGridDimensions().width() * getGridDimensions().height();
+    }
+    
+    int Board::getLetterCount()
+    {
+        int count = 0;
+        Letter* letter;
+        
+        for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
+        {
+            for (int row = 0; row < getGridDimensions().height(); ++row)
+            {
+                letter = getTileAtPosition(collumn, row)->getLetter();
+
+                if (letter != nullptr)
+                {
+                    ++count;
+                }
+            }
+        }
+
+        return count;
+    }
 }

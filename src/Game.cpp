@@ -54,7 +54,10 @@ namespace wf
         loadModifiers();
         placeModifiers(getAllModifiers());
 
-        all_players[current_player_index]->fillHand(&letter_pool);
+        for (auto player : all_players)
+        {
+            player->fillHand(&letter_pool);
+        }
 
         buttons.setTileCount(letter_pool.getRemainingCount());
         setCorrectButtonState();
@@ -256,19 +259,41 @@ namespace wf
             return;
         }
 
-        all_players[current_player_index]->setTurn(false);
-
-        if (++current_player_index >= all_players.size())
+        if (isGameOver())
         {
-            current_player_index = 0;
+            finalisePoints();
+            Player* winning_player = getHighestScoringPlayer();
+            QMessageBox game_over;
+
+            if (winning_player != nullptr)
+            {
+                game_over.setText(winning_player->getDisplayName() + " wins!");
+            }
+            else
+            {
+                game_over.setText("Draw.");
+            }
+            
+            game_over.setIcon(QMessageBox::Icon::Information);
+            game_over.setWindowTitle(" ");
+            game_over.exec();
+        }
+        else
+        {
+            all_players[current_player_index]->setTurn(false);
+
+            if (++current_player_index >= all_players.size())
+            {
+                current_player_index = 0;
+            }
+
+            all_players[current_player_index]->fillHand(&letter_pool);
+            all_players[current_player_index]->setTurn(true);
+
+            hands.setCurrentIndex(current_player_index);
         }
 
-        all_players[current_player_index]->fillHand(&letter_pool);
-        all_players[current_player_index]->setTurn(true);
-
-        hands.setCurrentIndex(current_player_index);
         repaint();
-
         return;
     }
     
@@ -315,6 +340,12 @@ namespace wf
             points += word.calculatePoints();
         }
 
+        // 40 point bonus for using all letters in hand
+        if (proposed_letters.size() == static_cast<long unsigned int>(all_players[current_player_index]->getHand()->getTileCount()))
+        {
+            points += 40;
+        }
+
         all_players[current_player_index]->addPoints(points);
 
         // Find most relevant word
@@ -342,6 +373,7 @@ namespace wf
         lockProposedLetters();
 
         // Next turn
+        consecutive_passes = 0;
         header.updateWithPlay(
             PlayType::Play,
             all_players[current_player_index],
@@ -355,6 +387,7 @@ namespace wf
     void Game::pass()
     {
         lockRecentlyLockedLetters();
+        ++consecutive_passes;
         header.updateWithPlay(
             PlayType::Pass,
             all_players[current_player_index]);
@@ -441,6 +474,7 @@ namespace wf
         showCorrectButtons();
 
         // Next turn
+        consecutive_passes = 0;
         header.updateWithPlay(
             PlayType::Swap,
             all_players[current_player_index],
@@ -497,7 +531,7 @@ namespace wf
 
         bool swap_button_state
             =   button_state 
-            ||  (letter_pool.getRemainingCount() < (settings.getHandDimensions().width() * settings.getHandDimensions().height()))
+            ||  (letter_pool.getRemainingCount() < (all_players[current_player_index]->getHand()->getTileCount()))
             ||  (proposed_letters.size() != 0);
 
         buttons.getSwapButton()->setDisabled(swap_button_state);
@@ -910,6 +944,68 @@ namespace wf
 
         swap_letters.clear();
         all_players[current_player_index]->getHand()->repaint();
+
+        return;
+    }
+    
+    bool Game::isGameOver()
+    {
+        if (consecutive_passes >= 3)
+        {
+            return true;
+        }
+
+        for (auto player : all_players)
+        {
+            if (player->getHand()->getLetterCount() == 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    Player* Game::getHighestScoringPlayer()
+    {
+        Player* highest_scoring_player = nullptr;
+        int high_score = INT_MIN;
+        
+        for (auto player : all_players)
+        {
+            if (player->getScore() > high_score)
+            {
+                high_score = player->getScore();
+                highest_scoring_player = player;
+            }
+            else if (player->getScore() == high_score)
+            {
+                highest_scoring_player = nullptr;
+            }
+        }
+
+        return highest_scoring_player;
+    }
+    
+    void Game::finalisePoints()
+    {
+        for (auto player : all_players)
+        {
+            player->addPoints(- player->getLetterPenaltyPoints());
+
+            if (player->getHand()->getLetterCount() == 0)
+            {
+                for (auto other_player : all_players)
+                {
+                    if (other_player == player)
+                    {
+                        continue;
+                    }
+
+                    player->addPoints(other_player->getLetterPenaltyPoints());
+                }
+            }
+        }
 
         return;
     }

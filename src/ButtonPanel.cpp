@@ -22,7 +22,7 @@ namespace wf
         setFixedSize(size);
         setMouseTracking(true);
 
-        tiles_left_text.setAlignment(Qt::AlignRight);
+        tiles_left_text.setAlignment(Qt::AlignCenter);
         tiles_left_count.setAlignment(Qt::AlignCenter);
         tiles_left_text.setMouseTracking(true);
         tiles_left_count.setMouseTracking(true);

@@ -171,6 +171,8 @@ namespace wf
     {
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing, true);
+        QFont monospace_font{"Monospace"};
+        monospace_font.setStyleHint(QFont::TypeWriter);
 
         // Draw solid black tile background
         if (!follows_mouse)
@@ -227,11 +229,11 @@ namespace wf
             painter.drawRoundedRect(tile_shape, radius, radius, Qt::RelativeSize);
 
             // Draw text in white
-            QFont modifier_font{"Monospace", size().height() / 3};
-            modifier_font.setBold(true);
+            monospace_font.setBold(true);
+            monospace_font.setPointSize(size().height() / 3);
 
             painter.setPen(QColor{255, 255, 255});
-            painter.setFont(modifier_font);
+            painter.setFont(monospace_font);
             painter.drawText(tile_shape, Qt::AlignCenter, modifier->getText());
         }
 
@@ -288,13 +290,17 @@ namespace wf
             };
 
             // Draw text in black
+            monospace_font.setBold(false);
+            monospace_font.setPointSize(size().height() / 2);
+
             painter.setPen(QColor{0, 0, 0});
-            painter.setFont(QFont{"Monospace", size().height() / 2});
+            painter.setFont(monospace_font);
             painter.drawText(letter_alignment, Qt::AlignCenter, letter->getText());
 
             if (letter->getPoints() != 0)
             {
-                painter.setFont(QFont{"Monospace", size().height() / 5});
+                monospace_font.setPointSize(size().height() / 5);
+                painter.setFont(monospace_font);
                 painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
             }
 

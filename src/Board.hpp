@@ -35,6 +35,8 @@ namespace wf
             BoardType getType() const;
             void setDimmedAndDisabled(bool a_state);
             void setTileInteractMode(TileInteractMode a_mode);
+            int getTileCount();
+            int getLetterCount();
 
         private:
             void createEmptyGrid();

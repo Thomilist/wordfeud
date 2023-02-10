@@ -100,6 +100,9 @@ namespace wf
             void setGameState(GameState a_state);
             int swapLetters();
             void clearSwapList();
+            bool isGameOver();
+            Player* getHighestScoringPlayer();
+            void finalisePoints();
 
             GameState state = GameState::Play;
             LetterPool letter_pool;
@@ -125,6 +128,7 @@ namespace wf
             std::default_random_engine rng;
             int proposed_words_points = 0;
             bool proposed_words_valid = true;
+            int consecutive_passes = 0;
     };
 }
 

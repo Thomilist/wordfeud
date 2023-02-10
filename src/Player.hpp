@@ -37,6 +37,7 @@ namespace wf
             bool hasTurn();
             void setColor(QColor a_color);
             QColor getColor();
+            int getLetterPenaltyPoints();
         
         private:
             QString display_name;

@@ -198,7 +198,7 @@ namespace wf
             &selection
         );
 
-        hands.addWidget(player->getHand());
+        hands.addWidget(player->getHandCentered());
         all_players.push_back(player);
         return;
     }

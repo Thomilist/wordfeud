@@ -13,6 +13,9 @@ namespace wf
         , hand(BoardType::Hand, a_settings, a_selection)
     {
         hand_size = settings->getHandDimensions();
+        hand_layout.addWidget(&hand, 0, 0, Qt::AlignCenter);
+        hand_widget.setLayout(&hand_layout);
+        hand_widget.setMouseTracking(true);
     }
     
     Player::~Player()
@@ -21,6 +24,11 @@ namespace wf
     Board* Player::getHand()
     {
         return &hand;
+    }
+    
+    QWidget* Player::getHandCentered()
+    {
+        return &hand_widget;
     }
     
     void Player::fillHand(LetterPool* a_letter_pool)

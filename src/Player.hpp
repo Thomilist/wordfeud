@@ -5,6 +5,7 @@
 #include <QSize>
 #include <QString>
 #include <QColor>
+#include <QGridLayout>
 
 #include "ForwardDeclarations.hpp"
 #include "Board.hpp"
@@ -25,6 +26,7 @@ namespace wf
             ~Player();
 
             Board* getHand();
+            QWidget* getHandCentered();
             void fillHand(LetterPool* a_letter_pool);
             int availableSpacesInHand();
             void addLetterToHand(Letter* a_letter);
@@ -43,6 +45,8 @@ namespace wf
             QColor name_color;
             Settings* settings;
             int score = 0;
+            QWidget hand_widget;
+            QGridLayout hand_layout;
             Board hand;
             QSize hand_size;
             bool has_turn = false;

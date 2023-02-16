@@ -228,8 +228,13 @@ namespace wf
             return;
         }
 
+        all_players[current_player_index]->setTurn(false);
+
         if (isGameOver())
         {
+            hands.setDisabled(true);
+            setCorrectButtonState();
+
             finalisePoints();
             Player* winning_player = getHighestScoringPlayer();
             QMessageBox game_over;
@@ -249,8 +254,6 @@ namespace wf
         }
         else
         {
-            all_players[current_player_index]->setTurn(false);
-
             if (++current_player_index >= all_players.size())
             {
                 current_player_index = 0;
@@ -287,6 +290,7 @@ namespace wf
         header.reset();
         board.reset();
         proposal_info.setProposedPlay(true, 0);
+        hands.setDisabled(false);
 
         createPlayers();
 
@@ -538,12 +542,26 @@ namespace wf
     
     void Game::setCorrectButtonState()
     {
+        if (isGameOver())
+        {
+            buttons.getPlayButton()->setDisabled(true);
+            buttons.getPassButton()->setDisabled(true);
+            buttons.getClearButton()->setDisabled(true);
+            buttons.getShuffleButton()->setDisabled(true);
+            buttons.getSwapButton()->setDisabled(true);
+            buttons.getConfirmButton()->setDisabled(true);
+            buttons.getCancelButton()->setDisabled(true);
+            return;
+        }
+        
         bool button_state = selection.getLetter() != nullptr;
 
         buttons.getPlayButton()->setDisabled(button_state);
         buttons.getPassButton()->setDisabled(button_state);
         buttons.getClearButton()->setDisabled(button_state);
         buttons.getShuffleButton()->setDisabled(button_state);
+        buttons.getConfirmButton()->setDisabled(button_state);
+        buttons.getCancelButton()->setDisabled(button_state);
 
         bool swap_button_state
             =   button_state 

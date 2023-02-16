@@ -16,6 +16,9 @@ namespace wf
         setFixedWidth(size.width());
         setMouseTracking(true);
 
+        proposed_play_label.setMouseTracking(true);
+        proposed_play_value.setMouseTracking(true);
+
         grid_layout.addWidget(&proposed_play_label, 0, 0);
         grid_layout.addWidget(&proposed_play_value, 1, 0);
 

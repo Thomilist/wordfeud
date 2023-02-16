@@ -32,12 +32,13 @@ namespace wf
         
         int grid_row = 0;
 
-        game_layout.addWidget(&header, grid_row++, 0);
-        game_layout.addWidget(&board, grid_row++, 0);
-        game_layout.addWidget(&proposal_info, grid_row++, 0);
-        game_layout.addWidget(&hands, grid_row++, 0);
-        game_layout.addWidget(&buttons, grid_row++, 0);
+        game_layout.addWidget(&header, grid_row++, 0, Qt::AlignCenter);
+        game_layout.addWidget(&board, grid_row++, 0, Qt::AlignCenter);
+        game_layout.addWidget(&proposal_info, grid_row++, 0, Qt::AlignCenter);
+        game_layout.addWidget(&hands, grid_row++, 0, Qt::AlignCenter);
+        game_layout.addWidget(&buttons, grid_row++, 0, Qt::AlignCenter);
 
+        game_layout.setSpacing(0);
         setLayout(&game_layout);
 
         loadLetters();

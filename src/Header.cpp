@@ -16,6 +16,14 @@ namespace wf
         setFixedWidth(size.width());
         setMouseTracking(true);
 
+        left_player_name.setMouseTracking(true);
+        right_player_name.setMouseTracking(true);
+        left_player_score.setMouseTracking(true);
+        right_player_score.setMouseTracking(true);
+        left_player_your_turn.setMouseTracking(true);
+        right_player_your_turn.setMouseTracking(true);
+        last_play_text.setMouseTracking(true);
+
         left_player_name.setFixedHeight(size.height() / 4);
         right_player_name.setFixedHeight(size.height() / 4);
 

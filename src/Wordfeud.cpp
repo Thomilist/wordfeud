@@ -13,6 +13,8 @@ namespace wf
     , open_github("Open on GitHub...", &about_menu)
     {
         main_window.setCentralWidget(&game);
+        main_window.setMouseTracking(true);
+        main_window.menuBar()->setMouseTracking(true);
 
         initialiseGameMenu();
         initialiseAboutMenu();

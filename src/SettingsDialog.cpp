@@ -12,6 +12,7 @@ namespace wf
     {
         setModal(true);
         setLayout(&layout);
+        setWindowTitle("Settings");
         
         createLanguageDropdown();
         createModifierDistributionDropdown();

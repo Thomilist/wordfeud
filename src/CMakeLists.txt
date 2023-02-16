@@ -71,6 +71,7 @@ target_link_libraries(
     Header
     Word
     ProposalInfo
+    ModifierPattern
 )
 
 add_library(ButtonPanel ButtonPanel.cpp)
@@ -98,5 +99,26 @@ target_link_libraries(
 add_library(ProposalInfo ProposalInfo.cpp)
 target_link_libraries(
     ProposalInfo
+    Qt5::Widgets
+)
+
+add_library(Wordfeud Wordfeud.cpp)
+target_link_libraries(
+    Wordfeud
+    Qt5::Widgets
+    Settings
+    Game
+    SettingsDialog
+)
+
+add_library(SettingsDialog SettingsDialog.cpp)
+target_link_libraries(
+    SettingsDialog
+    Qt5::Widgets
+)
+
+add_library(ModifierPattern ModifierPattern.cpp)
+target_link_libraries(
+    ModifierPattern
     Qt5::Widgets
 )

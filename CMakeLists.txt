@@ -31,6 +31,5 @@ add_subdirectory(src)
 target_link_libraries(
     wordfeud PRIVATE
     Qt5::Widgets
-    Settings
-    Game
+    Wordfeud
 )

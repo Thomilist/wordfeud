@@ -1,6 +1,8 @@
 #ifndef __HEADER_H__
 #define __HEADER_H__
 
+#include <memory>
+
 #include <QWidget>
 #include <QGridLayout>
 #include <QSize>
@@ -30,6 +32,7 @@ namespace wf
             void setLeftPlayer(Player* a_player);
             void setRightPlayer(Player* a_player);
             void updateWithPlay(PlayType a_play_type, Player* a_player = nullptr, QString a_word = "", int a_value = 0);
+            void reset();
         
         private:
             void paintEvent(QPaintEvent* a_event);

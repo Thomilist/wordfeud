@@ -31,6 +31,7 @@
 #include "Header.hpp"
 #include "Word.hpp"
 #include "ProposalInfo.hpp"
+#include "ModifierPattern.hpp"
 
 #include "BoardType.hpp"
 #include "LanguageName.hpp"
@@ -51,27 +52,17 @@ namespace wf
                 Settings* a_settings,
                 QWidget* a_parent = nullptr);
             ~Game();
-
-            void loadLanguage();
-            void loadLetters();
-            void placeLetter(int a_collumn, int a_row, Letter* a_letter);
-            [[nodiscard]] Letter* removeLetter(int a_collumn, int a_row);
-            void lockProposedLetters();
-            void lockRecentlyLockedLetters();
-            void loadModifiers();
-            void placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite = false);
-            void placeModifiers(std::vector<Modifier*> a_modifiers);
-            void createPlayer(QString a_display_name, QColor a_color);
-            void nextPlayer();
         
+            void reset();
+
         public slots:
-            void play();
-            void pass();
-            void clear();
-            void shuffle();
-            void swap();
-            void confirm();
-            void cancel();
+            void playButton();
+            void passButton();
+            void clearButton();
+            void shuffleButton();
+            void swapButton();
+            void confirmButton();
+            void cancelButton();
             void proposeLetter(Tile* a_tile);
             void unproposeLetter(Tile* a_tile);
             void clearProposed();
@@ -81,9 +72,19 @@ namespace wf
             void removeFromSwapLetters(Tile* a_tile);
 
         private:
+            void loadLetters();
+            void placeLetter(int a_collumn, int a_row, Letter* a_letter);
+            [[nodiscard]] Letter* removeLetter(int a_collumn, int a_row);
+            void lockProposedLetters();
+            void lockRecentlyLockedLetters();
+            void placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite = false);
+            void placeModifiers(std::vector<Modifier*> a_modifiers);
+            void createPlayer(QString a_display_name, QColor a_color);
+            void createPlayers();
+            void deletePlayers();
+            void nextPlayer();
             void initialiseConnections();
             std::vector<Letter*> getAllLetters();
-            std::vector<Modifier*> getAllModifiers();
             void mouseMoveEvent(QMouseEvent* a_event);
             void showCorrectButtons();
             bool isPlacementValid();
@@ -107,7 +108,6 @@ namespace wf
             GameState state = GameState::Play;
             LetterPool letter_pool;
             std::vector<Letter> all_letters;
-            std::vector<Modifier> all_modifiers;
             std::vector<Player*> all_players;
             std::vector<Tile*> proposed_letters;
             std::vector<Letter*> locked_letters;
@@ -118,13 +118,12 @@ namespace wf
             long unsigned int current_player_index = 0;
             Settings* settings;
             QGridLayout game_layout;
+            Tile selection;
             Header header;
             Board board;
             ProposalInfo proposal_info;
             QStackedWidget hands;
             ButtonPanel buttons;
-            Language language;
-            Tile selection;
             std::default_random_engine rng;
             int proposed_words_points = 0;
             bool proposed_words_valid = true;

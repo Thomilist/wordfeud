@@ -1,9 +1,26 @@
 #include "Language.hpp"
 namespace wf
 {
-    Language::Language()
+    Language::Language(LanguageName a_language)
+        : language(a_language)
     {
-        
+        switch (a_language)
+        {
+            case LanguageName::English:
+            {
+                language_string = "English";
+                loadWordListFromFile(":/word-lists/english.txt");
+                loadLettersFromFile(":/letter-sets/english.csv");
+                break;
+            }
+            case LanguageName::Danish:
+            {
+                language_string = "Danish";
+                loadWordListFromFile(":/word-lists/danish.txt");
+                loadLettersFromFile(":/letter-sets/danish.csv");
+                break;
+            }
+        }
     }
     
     Language::~Language()
@@ -69,5 +86,15 @@ namespace wf
     bool Language::isInWordList(QString a_word)
     {
         return word_list.contains(a_word);
+    }
+    
+    const QString& Language::asString() const
+    {
+        return language_string;
+    }
+    
+    const LanguageName& Language::asEnum() const
+    {
+        return language;
     }
 }

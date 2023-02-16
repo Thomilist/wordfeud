@@ -68,6 +68,21 @@ namespace wf
         return;
     }
     
+    void Header::reset()
+    {
+        left_player = nullptr;
+        right_player = nullptr;
+        left_player_name.clear();
+        left_player_score.clear();
+        left_player_your_turn.clear();
+        right_player_name.clear();
+        right_player_score.clear();
+        right_player_your_turn.clear();
+        last_play_type = PlayType::None;
+        last_play_text.clear();
+        last_play_player = nullptr;
+    }
+    
     void Header::paintEvent(QPaintEvent*)
     {
         QFont name_font = settings->getMonospaceFont();

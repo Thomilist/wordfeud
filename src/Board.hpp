@@ -38,6 +38,7 @@ namespace wf
             void setTileInteractMode(TileInteractMode a_mode);
             int getTileCount();
             int getLetterCount();
+            void reset();
 
         private:
             void createEmptyGrid();

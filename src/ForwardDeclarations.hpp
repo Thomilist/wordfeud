@@ -16,6 +16,8 @@ namespace wf
     class ButtonPanel;
     class Header;
     class Word;
+    class SettingsDialog;
+    class Wordfeud;
 
     struct LetterData;
 
@@ -28,6 +30,7 @@ namespace wf
     enum class Direction;
     enum class GameState;
     enum class TileInteractMode;
+    enum class ModifierDistribution;
 
     enum TileNeighbour : unsigned int;
 }

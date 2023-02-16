@@ -26,32 +26,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <iostream>
-
 #include <QApplication>
 #include <QMainWindow>
 #include <QFile>
 #include <QTextStream>
 
-#include "src/Settings.hpp"
-#include "src/Game.hpp"
+#include "src/ForwardDeclarations.hpp"
+#include "src/Wordfeud.hpp"
 
 int main(int argc, char* argv[])
 {
-    QApplication application(argc, argv);
+    QApplication application{argc, argv};
 
     QFile stylesheet{":/dark/stylesheet.qss"};
     stylesheet.open(QFile::ReadOnly | QFile::Text);
     QTextStream stylesheet_stream(&stylesheet);
     application.setStyleSheet(stylesheet_stream.readAll());
 
-    QMainWindow main_window;
-    wf::Settings settings;
-
-    wf::Game game{&settings, &main_window};
-
-    main_window.setCentralWidget(&game);
-    main_window.show();
+    wf::Wordfeud wordfeud;
 
     return application.exec();
 }

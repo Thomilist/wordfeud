@@ -6,24 +6,21 @@ namespace wf
         QString a_display_name,
         QColor a_color,
         Settings* a_settings,
-        Tile* a_selection,
-        QWidget* a_parent)
+        Tile* a_selection)
         : display_name(a_display_name)
         , name_color(a_color)
         , settings(a_settings)
+        , hand(BoardType::Hand, a_settings, a_selection)
     {
-        hand = new Board{BoardType::Hand, a_settings, a_selection, a_parent};
         hand_size = settings->getHandDimensions();
     }
     
     Player::~Player()
-    {
-        delete hand;
-    }
+    { }
     
-    Board* Player::getHand() const
+    Board* Player::getHand()
     {
-        return hand;
+        return &hand;
     }
     
     void Player::fillHand(LetterPool* a_letter_pool)
@@ -32,7 +29,7 @@ namespace wf
         {
             for (int collumn = 0; collumn < hand_size.width(); ++collumn)
             {
-                Tile* tile = hand->getTileAtPosition(collumn, row);
+                Tile* tile = hand.getTileAtPosition(collumn, row);
 
                 if (tile == nullptr)
                 {
@@ -66,7 +63,7 @@ namespace wf
         {
             for (int row = 0; row < hand_size.height(); ++row)
             {
-                Tile* tile = hand->getTileAtPosition(collumn, row);
+                Tile* tile = hand.getTileAtPosition(collumn, row);
 
                 if (tile == nullptr)
                 {
@@ -89,7 +86,7 @@ namespace wf
         {
             for (int row = 0; row < hand_size.height(); ++row)
             {
-                Tile* tile = hand->getTileAtPosition(collumn, row);
+                Tile* tile = hand.getTileAtPosition(collumn, row);
 
                 if (tile == nullptr)
                 {

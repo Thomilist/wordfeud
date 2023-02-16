@@ -3,3 +3,6 @@ build/*
 
 # Environment configuration
 .vscode/*
+
+# Valgrind logs
+valgrind/*

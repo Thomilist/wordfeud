@@ -23,15 +23,7 @@ namespace wf
     }
     
     Board::~Board()
-    {
-        for (int row = 0; row < grid_dimensions.height(); ++row)
-        {
-            for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
-            {
-                delete getTileAtPosition(collumn, row);
-            }
-        }
-    }
+    { }
     
     void Board::createEmptyGrid()
     {
@@ -187,5 +179,18 @@ namespace wf
         }
 
         return count;
+    }
+    
+    void Board::reset()
+    {
+        for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
+        {
+            for (int row = 0; row < getGridDimensions().height(); ++row)
+            {
+                getTileAtPosition(collumn, row)->reset();
+            }
+        }
+
+        setDimmedAndDisabled(false);
     }
 }

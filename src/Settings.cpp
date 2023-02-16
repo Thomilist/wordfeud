@@ -4,7 +4,19 @@
 namespace wf
 {
     Settings::Settings()
+        : languages{
+            Language{LanguageName::Danish},
+            Language{LanguageName::English}}
     {
+        for (auto language : languages)
+        {
+            if (language.asEnum() == LanguageName::English)
+            {
+                setLanguage(language.asEnum());
+                break;
+            }
+        }
+        
         int monospace_font_family_id = QFontDatabase::addApplicationFont(":/fonts/NotoSansMono-Regular.ttf");
         QString monospace_font_family = QFontDatabase::applicationFontFamilies(monospace_font_family_id).at(0);
         monospace_font.setFamily(monospace_font_family);
@@ -14,10 +26,10 @@ namespace wf
     Settings::~Settings()
     { }
     
-    void Settings::setGridDimensions(int rows, int collumns)
+    void Settings::setGridDimensions(int a_rows, int a_collumns)
     {
-        board_dimensions.setHeight(rows);
-        board_dimensions.setWidth(collumns);
+        board_dimensions.setHeight(a_rows);
+        board_dimensions.setWidth(a_collumns);
 
         return;
     }
@@ -30,9 +42,38 @@ namespace wf
         return;
     }
     
-    LanguageName Settings::getLanguage() const
+    void Settings::setLanguage(LanguageName a_language)
     {
-        return language;
+        for (auto& language : languages)
+        {
+            if (language.asEnum() == a_language)
+            {
+                current_language = &language;
+                return;
+            }
+        }
+    }
+    
+    void Settings::setLanguage(QString a_language)
+    {
+        for (auto& language : languages)
+        {
+            if (language.asString() == a_language)
+            {
+                current_language = &language;
+                return;
+            }
+        }
+    }
+    
+    Language* Settings::getLanguage()
+    {
+        return current_language;
+    }
+    
+    std::vector<Language>& Settings::getAvailableLanguages()
+    {
+        return languages;
     }
     
     const QSize& Settings::getBoardDimensions() const
@@ -63,5 +104,10 @@ namespace wf
     QFont Settings::getMonospaceFont() const
     {
         return monospace_font;
+    }
+    
+    ModifierPattern* Settings::getModifierPattern()
+    {
+        return &modifier_pattern;
     }
 }

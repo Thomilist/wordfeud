@@ -186,6 +186,16 @@ namespace wf
         return;
     }
     
+    void Tile::reset()
+    {
+        modifier = nullptr;
+        letter = nullptr;
+        dimmed = false;
+        interact_mode = TileInteractMode::Move;
+        swap_marking = false;
+        return;
+    }
+    
     void Tile::paintEvent(QPaintEvent*)
     {
         QPainter painter(this);

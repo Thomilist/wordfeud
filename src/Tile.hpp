@@ -2,6 +2,7 @@
 #define __TILE_H__
 
 #include <array>
+#include <iostream>
 
 #include <QWidget>
 #include <QSize>
@@ -53,6 +54,7 @@ namespace wf
             void setDimmed(bool a_state);
             void setInteractMode(TileInteractMode a_mode);
             void setSwapMarking(bool a_state);
+            void reset();
         
         signals:
             void proposeLetter(Tile* a_tile);

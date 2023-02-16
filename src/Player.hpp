@@ -21,11 +21,10 @@ namespace wf
                 QString a_display_name,
                 QColor a_color,
                 Settings* a_settings,
-                Tile* a_selection,
-                QWidget* a_parent = nullptr);
+                Tile* a_selection);
             ~Player();
 
-            Board* getHand() const;
+            Board* getHand();
             void fillHand(LetterPool* a_letter_pool);
             int availableSpacesInHand();
             void addLetterToHand(Letter* a_letter);
@@ -44,7 +43,7 @@ namespace wf
             QColor name_color;
             Settings* settings;
             int score = 0;
-            Board* hand;
+            Board hand;
             QSize hand_size;
             bool has_turn = false;
     };

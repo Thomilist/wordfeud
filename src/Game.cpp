@@ -7,23 +7,28 @@ namespace wf
         : QWidget(a_parent)
         , settings(a_settings)
         , game_layout(this)
+        , selection(a_settings, &selection, BoardType::Selection, this, true)
         , header(a_settings, this)
         , board(BoardType::Board, a_settings, &selection, this)
         , proposal_info(a_settings, this)
         , hands(this)
         , buttons(a_settings, this)
-        , selection(a_settings, &selection, BoardType::Selection, this, true)
         , rng(std::default_random_engine{})
     {
         setMouseTracking(true);
         hands.setMouseTracking(true);
 
-        createPlayer("Player 1", QColor{128, 0, 0});
-        createPlayer("Player 2", QColor{0, 0, 128});
+        createPlayers();
 
         header.setLeftPlayer(all_players[0]);
         header.setRightPlayer(all_players[1]);
         all_players[current_player_index]->setTurn(true);
+
+        header.stackUnder(&selection);
+        board.stackUnder(&selection);
+        proposal_info.stackUnder(&selection);
+        hands.stackUnder(&selection);
+        buttons.stackUnder(&selection);
         
         int grid_row = 0;
 
@@ -35,14 +40,12 @@ namespace wf
 
         setLayout(&game_layout);
 
-        loadLanguage();
         loadLetters();
         letter_pool.set(getAllLetters());
 
-        loadModifiers();
-        placeModifiers(getAllModifiers());
+        placeModifiers(settings->getModifierPattern()->getModifiers());
 
-        for (auto player : all_players)
+        for (auto& player : all_players)
         {
             player->fillHand(&letter_pool);
         }
@@ -56,35 +59,14 @@ namespace wf
     
     Game::~Game()
     {
-        for (auto player : all_players)
-        {
-            delete player;
-        }
-    }
-    
-    void Game::loadLanguage()
-    {
-        switch (settings->getLanguage())
-        {
-            case LanguageName::English:
-            {
-                language.loadWordListFromFile(":/word-lists/english.txt");
-                language.loadLettersFromFile(":/letter-sets/english.csv");
-                break;
-            }
-            case LanguageName::Danish:
-            {
-
-                break;
-            }
-        }
+        deletePlayers();
     }
     
     void Game::loadLetters()
     {
         all_letters.clear();
 
-        for (const auto& letter_data : language.getLetterList())
+        for (const auto& letter_data : settings->getLanguage()->getLetterList())
         {
             for (int n = 0; n < letter_data.count; ++n)
             {
@@ -152,27 +134,6 @@ namespace wf
         return;
     }
     
-    void Game::loadModifiers()
-    {
-        all_modifiers = {
-            ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleWord, ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None, ModifierType::TripleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter,
-            ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None,
-            ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None,
-            ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None,
-            ModifierType::TripleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleWord,
-            ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None,
-            ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None,
-            ModifierType::DoubleLetter, ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::Start, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None, ModifierType::DoubleLetter,
-            ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None,
-            ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None,
-            ModifierType::TripleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleWord,
-            ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, 
-            ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleWord, ModifierType::None, ModifierType::None,
-            ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None,
-            ModifierType::TripleLetter, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleWord, ModifierType::None, ModifierType::None, ModifierType::DoubleLetter, ModifierType::None, ModifierType::None, ModifierType::TripleWord, ModifierType::None, ModifierType::None, ModifierType::None, ModifierType::TripleLetter
-        };
-    }
-    
     void Game::placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite)
     {
         Tile* tile = board.getTileAtPosition(a_collumn, a_row);
@@ -228,14 +189,34 @@ namespace wf
     
     void Game::createPlayer(QString a_display_name, QColor a_color)
     {
-        Player* player = new Player{
+        auto player = new Player
+        (
             a_display_name,
             a_color,
             settings,
-            &selection,
-            this};
-        all_players.push_back(player);
+            &selection
+        );
+
         hands.addWidget(player->getHand());
+        all_players.push_back(player);
+        return;
+    }
+    
+    void Game::createPlayers()
+    {
+        createPlayer("Player 1", QColor{128, 0, 0});
+        createPlayer("Player 2", QColor{0, 0, 128});
+        return;
+    }
+    
+    void Game::deletePlayers()
+    {
+        for (auto player : all_players)
+        {
+            delete player;
+        }
+
+        all_players.clear();
         return;
     }
     
@@ -284,7 +265,54 @@ namespace wf
         return;
     }
     
-    void Game::play()
+    void Game::reset()
+    {
+        state = GameState::Play;
+        current_player_index = 0;
+        proposed_words_points = 0;
+        proposed_words_valid = true;
+        consecutive_passes = 0;
+
+        all_letters.clear();
+        proposed_letters.clear();
+        locked_letters.clear();
+        swap_letters.clear();
+        checked_tiles.clear();
+        proposed_words.clear();
+        invalid_words.clear();
+
+        deletePlayers();
+
+        header.reset();
+        board.reset();
+        proposal_info.setProposedPlay(true, 0);
+
+        createPlayers();
+
+        header.setLeftPlayer(all_players[0]);
+        header.setRightPlayer(all_players[1]);
+        all_players[current_player_index]->setTurn(true);
+
+        loadLetters();
+        letter_pool.set(getAllLetters());
+
+        placeModifiers(settings->getModifierPattern()->getModifiers());
+
+        for (auto& player : all_players)
+        {
+            player->fillHand(&letter_pool);
+        }
+
+        buttons.setTileCount(letter_pool.getRemainingCount());
+        setCorrectButtonState();
+        showCorrectButtons();
+
+        repaint();
+
+        return;
+    }
+    
+    void Game::playButton()
     {
         // Placement check
         if (!isPlacementValid())
@@ -371,7 +399,7 @@ namespace wf
         return;
     }
     
-    void Game::pass()
+    void Game::passButton()
     {
         lockRecentlyLockedLetters();
         ++consecutive_passes;
@@ -382,7 +410,7 @@ namespace wf
         return;
     }
     
-    void Game::clear()
+    void Game::clearButton()
     {
         Letter* letter;
         Tile* tile;
@@ -409,7 +437,7 @@ namespace wf
         return;
     }
     
-    void Game::shuffle()
+    void Game::shuffleButton()
     {
         Board* hand = all_players[current_player_index]->getHand();
         QSize hand_size = hand->size();
@@ -446,14 +474,14 @@ namespace wf
         return;
     }
     
-    void Game::swap()
+    void Game::swapButton()
     {
         setGameState(GameState::Swap);
         showCorrectButtons();
         return;
     }
     
-    void Game::confirm()
+    void Game::confirmButton()
     {
         int swap_count = swapLetters();
         clearSwapList();
@@ -472,7 +500,7 @@ namespace wf
         return;
     }
     
-    void Game::cancel()
+    void Game::cancelButton()
     {
         clearSwapList();
         setGameState(GameState::Play);
@@ -529,13 +557,13 @@ namespace wf
     void Game::initialiseConnections()
     {
         connect(&letter_pool, &LetterPool::remainingCountChanged, &buttons, &ButtonPanel::setTileCount);
-        connect(buttons.getPlayButton(), &QPushButton::clicked, this, &Game::play);
-        connect(buttons.getPassButton(), &QPushButton::clicked, this, &Game::pass);
-        connect(buttons.getClearButton(), &QPushButton::clicked, this, &Game::clear);
-        connect(buttons.getShuffleButton(), &QPushButton::clicked, this, &Game::shuffle);
-        connect(buttons.getSwapButton(), &QPushButton::clicked, this, &Game::swap);
-        connect(buttons.getConfirmButton(), &QPushButton::clicked, this, &Game::confirm);
-        connect(buttons.getCancelButton(), &QPushButton::clicked, this, &Game::cancel);
+        connect(buttons.getPlayButton(), &QPushButton::clicked, this, &Game::playButton);
+        connect(buttons.getPassButton(), &QPushButton::clicked, this, &Game::passButton);
+        connect(buttons.getClearButton(), &QPushButton::clicked, this, &Game::clearButton);
+        connect(buttons.getShuffleButton(), &QPushButton::clicked, this, &Game::shuffleButton);
+        connect(buttons.getSwapButton(), &QPushButton::clicked, this, &Game::swapButton);
+        connect(buttons.getConfirmButton(), &QPushButton::clicked, this, &Game::confirmButton);
+        connect(buttons.getCancelButton(), &QPushButton::clicked, this, &Game::cancelButton);
         connect(&selection, &Tile::letterAddedRemoved, this, &Game::setCorrectButtonState);
 
         // Board
@@ -552,7 +580,7 @@ namespace wf
         }
 
         // Hands
-        for (auto player : all_players)
+        for (auto& player : all_players)
         {
             for (int collumn = 0; collumn < settings->getHandDimensions().width(); ++collumn)
             {
@@ -800,7 +828,7 @@ namespace wf
 
         for (auto& word : proposed_words)
         {
-            if (!language.isInWordList(word.getWordAsText().toLower()))
+            if (!settings->getLanguage()->isInWordList(word.getWordAsText().toLower()))
             {
                 invalid_words.push_back(&word);
             }
@@ -942,7 +970,7 @@ namespace wf
             return true;
         }
 
-        for (auto player : all_players)
+        for (auto& player : all_players)
         {
             if (player->getHand()->getLetterCount() == 0)
             {
@@ -958,7 +986,7 @@ namespace wf
         Player* highest_scoring_player = nullptr;
         int high_score = INT_MIN;
         
-        for (auto player : all_players)
+        for (auto& player : all_players)
         {
             if (player->getScore() > high_score)
             {
@@ -976,13 +1004,13 @@ namespace wf
     
     void Game::finalisePoints()
     {
-        for (auto player : all_players)
+        for (auto& player : all_players)
         {
             player->addPoints(- player->getLetterPenaltyPoints());
 
             if (player->getHand()->getLetterCount() == 0)
             {
-                for (auto other_player : all_players)
+                for (auto& other_player : all_players)
                 {
                     if (other_player == player)
                     {
@@ -1007,17 +1035,5 @@ namespace wf
         }
 
         return letter_pointers;
-    }
-
-    std::vector<Modifier*> Game::getAllModifiers()
-    {
-        std::vector<Modifier*> modifier_pointers;
-
-        for (auto& modifier : all_modifiers)
-        {
-            modifier_pointers.push_back(&modifier);
-        }
-
-        return modifier_pointers;
     }
 }

@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>
+#include <QString>
 
 #include <vector>
 #include <unordered_map>
@@ -20,18 +21,22 @@ namespace wf
     class Language
     {
         public:
-            Language();
+            Language(LanguageName a_language);
             ~Language();
 
-            void loadLettersFromFile(QString a_file_path);
-            void loadWordListFromFile(QString a_file_path);
             const std::vector<LetterData>& getLetterList() const;
             bool isInWordList(QString a_word);
+            const QString& asString() const;
+            const LanguageName& asEnum() const;
 
         private:
+            void loadLettersFromFile(QString a_file_path);
+            void loadWordListFromFile(QString a_file_path);
             std::vector<LetterData> letter_list;
             std::unordered_map<QString, QString> letter_transformations;
             std::unordered_set<QString> word_list;
+            QString language_string;
+            LanguageName language;
     };
 }
 #endif // __LANGUAGE_H__

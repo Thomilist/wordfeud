@@ -15,6 +15,7 @@ namespace wf
         main_window.setCentralWidget(&game);
         main_window.setMouseTracking(true);
         main_window.menuBar()->setMouseTracking(true);
+        main_window.setWindowIcon(QIcon{":/icon/icon.ico"});
 
         initialiseGameMenu();
         initialiseAboutMenu();

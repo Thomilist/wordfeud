@@ -9,6 +9,7 @@
 #include <QKeySequence>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QIcon>
 
 #include "ForwardDeclarations.hpp"
 #include "Settings.hpp"

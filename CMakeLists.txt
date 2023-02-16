@@ -8,10 +8,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-if (MINGW)
-    set(CMAKE_CXX_FLAGS "-mwindows")
-endif (MINGW)
-
 add_compile_options(
     -Wall
     -Wextra
@@ -19,12 +15,24 @@ add_compile_options(
     -Werror
 )
 
-add_executable(
-    ${PROJECT_NAME}
-    main.cpp
-    resources/resources.qrc
-    resources/styles/breeze/breeze.qrc
-)
+if(MINGW)
+    set(CMAKE_CXX_FLAGS "-mwindows")    
+    set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon/icon.rc")
+    add_executable(
+        ${PROJECT_NAME}
+        main.cpp
+        resources/resources.qrc
+        resources/styles/breeze/breeze.qrc
+        ${APP_ICON_RESOURCE_WINDOWS}
+    )
+else()
+    add_executable(
+        ${PROJECT_NAME}
+        main.cpp
+        resources/resources.qrc
+        resources/styles/breeze/breeze.qrc
+    )
+endif()
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 add_subdirectory(src)

@@ -306,9 +306,9 @@ namespace wf
             // Alignment boxes for letter text and points
             QRect letter_alignment{
                 size().width() * 2 / 10,
-                size().height() * 2 / 10,
+                size().height() * 0 / 10,
                 size().width() * 45 / 100,
-                size().height() * 6 / 10
+                size().height() * 10 / 10
             };
             QRect points_alignment{
                 size().width() * 1 / 10,

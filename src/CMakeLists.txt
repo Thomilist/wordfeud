@@ -72,6 +72,7 @@ target_link_libraries(
     Word
     ProposalInfo
     ModifierPattern
+    PlayerAI
 )
 
 add_library(ButtonPanel ButtonPanel.cpp)
@@ -121,4 +122,11 @@ add_library(ModifierPattern ModifierPattern.cpp)
 target_link_libraries(
     ModifierPattern
     Qt5::Widgets
+)
+
+add_library(PlayerAI PlayerAI.cpp)
+target_link_libraries(
+    PlayerAI
+    Qt5::Widgets
+    Player
 )

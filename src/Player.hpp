@@ -1,6 +1,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
+#include <QObject>
 #include <QWidget>
 #include <QSize>
 #include <QString>
@@ -15,8 +16,10 @@
 
 namespace wf
 {
-    class Player
+    class Player : public QObject
     {
+        Q_OBJECT
+        
         public:
             Player(
                 QString a_display_name,

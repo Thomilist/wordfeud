@@ -991,7 +991,7 @@ namespace wf
 
         for (auto& player : all_players)
         {
-            if (player->getHand()->getLetterCount() == 0)
+            if (player->getHand()->getLetterCount() == 0 && proposed_letters.empty())
             {
                 return true;
             }

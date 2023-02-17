@@ -4,33 +4,34 @@
 namespace wf
 {
     class Board;
+    class ButtonPanel;
     class Game;
     class Hand;
+    class Header;
     class Language;
     class Letter;
     class LetterPool;
     class Modifier;
-    class Settings;
-    class Tile;
     class Player;
-    class ButtonPanel;
-    class Header;
-    class Word;
+    class PlayerAI;
+    class Settings;
     class SettingsDialog;
+    class Tile;
+    class Word;
     class Wordfeud;
 
     struct LetterData;
 
-    enum class LanguageName;
-    enum class LetterType;
-    enum class LetterStatus;
-    enum class ModifierType;
     enum class BoardType;
-    enum class PlayType;
     enum class Direction;
     enum class GameState;
-    enum class TileInteractMode;
+    enum class LanguageName;
+    enum class LetterStatus;
+    enum class LetterType;
     enum class ModifierDistribution;
+    enum class ModifierType;
+    enum class PlayType;
+    enum class TileInteractMode;
 
     enum TileNeighbour : unsigned int;
 }

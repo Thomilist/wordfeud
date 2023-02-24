@@ -12,6 +12,7 @@
 #include <QIcon>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Settings.hpp"
 #include "Game.hpp"
 #include "SettingsDialog.hpp"

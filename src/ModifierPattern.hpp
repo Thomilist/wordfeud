@@ -9,6 +9,7 @@
 #include <QString>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Modifier.hpp"
 
 #include "ModifierDistribution.hpp"

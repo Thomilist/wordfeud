@@ -7,27 +7,27 @@ namespace wf
     }
 
     Letter::Letter(
-        QString a_letter,
+        QChar a_letter,
         int a_points)
         : text(a_letter)
         , points(a_points)
     {
-        if (a_letter.length() == 0)
+        if (a_letter.isLetter())
         {
-            type = LetterType::Wildcard;
+            type = LetterType::Letter;
         }
         else
         {
-            type = LetterType::Letter;
+            type = LetterType::Wildcard;
         }
     }
     
     Letter::~Letter()
     { }
     
-    QString Letter::getText() const
+    QChar Letter::getText() const
     {
-        if (getType() == LetterType::Wildcard && wildcard_text.length() > 0)
+        if (getType() == LetterType::Wildcard && wildcard_text.isLetter())
         {
             return wildcard_text;
         }
@@ -63,13 +63,13 @@ namespace wf
         return status;
     }
     
-    void Letter::setWildcardText(QString a_text)
+    void Letter::setWildcardText(QChar a_text)
     {
         wildcard_text = a_text;
         return;
     }
     
-    QString Letter::getWildcardText() const
+    QChar Letter::getWildcardText() const
     {
         return wildcard_text;
     }

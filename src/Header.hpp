@@ -14,6 +14,7 @@
 #include <QTextOption>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Player.hpp"
 #include "Settings.hpp"
 

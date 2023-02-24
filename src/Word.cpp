@@ -3,14 +3,10 @@
 namespace wf
 {
     Word::Word()
-    {
-        
-    }
+    { }
     
     Word::~Word()
-    {
-        
-    }
+    { }
     
     void Word::appendLetter(Tile* a_tile)
     {

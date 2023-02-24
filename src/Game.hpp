@@ -17,8 +17,11 @@
 #include <QMessageBox>
 #include <QColor>
 #include <QInputDialog>
+#include <QChar>
+#include <QString>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Settings.hpp"
 #include "Letter.hpp"
 #include "Modifier.hpp"

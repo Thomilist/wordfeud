@@ -15,6 +15,7 @@
 #include <QString>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Settings.hpp"
 
 namespace wf

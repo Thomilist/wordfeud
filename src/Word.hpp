@@ -6,6 +6,7 @@
 #include <QString>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Tile.hpp"
 #include "Letter.hpp"
 #include "Modifier.hpp"

@@ -17,10 +17,13 @@ namespace wf
     class Settings;
     class SettingsDialog;
     class Tile;
+    class VirtualBoard;
+    class VirtualTile;
     class Word;
     class Wordfeud;
 
     struct LetterData;
+    struct QCharHash;
 
     enum class BoardType;
     enum class Direction;
@@ -30,6 +33,7 @@ namespace wf
     enum class LetterType;
     enum class ModifierDistribution;
     enum class ModifierType;
+    enum class PlayerType;
     enum class PlayType;
     enum class TileInteractMode;
 

@@ -4,6 +4,7 @@
 #include <QString>
 
 #include "ForwardDeclarations.hpp"
+
 #include "ModifierType.hpp"
 
 namespace wf

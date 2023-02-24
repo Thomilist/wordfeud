@@ -8,6 +8,7 @@
 #include <QStringList>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Letter.hpp"
 #include "Language.hpp"
 

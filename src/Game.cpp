@@ -205,8 +205,8 @@ namespace wf
     
     void Game::createPlayers()
     {
-        createPlayer("Player 1", QColor{128, 0, 0});
-        createPlayer("Player 2", QColor{0, 0, 128});
+        createPlayer(settings->getLeftPlayer().first, QColor{128, 0, 0});
+        createPlayer(settings->getRightPlayer().first, QColor{0, 0, 128});
         return;
     }
     
@@ -900,14 +900,14 @@ namespace wf
     
     void Game::assignWildcardLetter(Tile* a_tile)
     {
-        if (a_tile->getLetter()->getWildcardText() != "")
+        if (a_tile->getLetter()->getWildcardText().isLetter())
         {
             return;
         }
         
         bool dialog_ok;
         
-        QString wildcard_letter = QInputDialog::getItem
+        QString wildcard_string = QInputDialog::getItem
         (
             this,
             "Wordfeud",
@@ -918,7 +918,9 @@ namespace wf
             &dialog_ok
         );
 
-        if (dialog_ok && !wildcard_letter.isEmpty())
+        QChar wildcard_letter = wildcard_string.at(0);
+
+        if (dialog_ok && wildcard_letter.isLetter())
         {
             a_tile->getLetter()->setWildcardText(wildcard_letter);
         }

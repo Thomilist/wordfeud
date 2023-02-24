@@ -13,6 +13,7 @@
 #include <unordered_set>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Letter.hpp"
 #include "LanguageName.hpp"
 
@@ -25,13 +26,15 @@ namespace wf
             ~Language();
 
             const std::vector<LetterData>& getLetterList() const;
+            const std::unordered_set<QString>& getWordList() const;
             bool isInWordList(QString a_word);
             const QString& asString() const;
             const LanguageName& asEnum() const;
 
         private:
             void loadLettersFromFile(QString a_file_path);
-            void loadWordListFromFile(QString a_file_path);
+            void loadWordListFromFilePlain(QString a_file_path);
+            void loadWordListFromFileCOR(QString a_file_path);
             std::vector<LetterData> letter_list;
             std::unordered_map<QString, QString> letter_transformations;
             std::unordered_set<QString> word_list;

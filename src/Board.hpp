@@ -14,6 +14,7 @@
 #include "Settings.hpp"
 
 #include "ForwardDeclarations.hpp"
+
 #include "Tile.hpp"
 #include "BoardType.hpp"
 #include "TileNeighbours.hpp"

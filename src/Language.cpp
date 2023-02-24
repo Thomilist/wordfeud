@@ -9,15 +9,15 @@ namespace wf
             case LanguageName::English:
             {
                 language_string = "English";
-                loadWordListFromFile(":/word-lists/english.txt");
-                loadLettersFromFile(":/letter-sets/english.csv");
+                loadWordListFromFilePlain(":/words/english.txt");
+                loadLettersFromFile(":/letters/english.csv");
                 break;
             }
             case LanguageName::Danish:
             {
                 language_string = "Danish";
-                loadWordListFromFile(":/word-lists/danish.txt");
-                loadLettersFromFile(":/letter-sets/danish.csv");
+                loadWordListFromFileCOR(":/words/cor1.02.tsv");
+                loadLettersFromFile(":/letters/danish.csv");
                 break;
             }
         }
@@ -45,7 +45,7 @@ namespace wf
                 {
                     LetterData letter_data = 
                     {
-                        letter_data_split.at(0),
+                        letter_data_split.at(0).size() == 0 ? QChar{} : letter_data_split.at(0).front(),
                         letter_data_split.at(1).toInt(),
                         letter_data_split.at(2).toInt()
                     };
@@ -56,9 +56,11 @@ namespace wf
 
             letter_file.close();
         }
+
+        return;
     }
     
-    void Language::loadWordListFromFile(QString a_file_path)
+    void Language::loadWordListFromFilePlain(QString a_file_path)
     {
         QFile word_list_file{a_file_path};
 
@@ -76,11 +78,40 @@ namespace wf
 
             word_list_file.close();
         }
+
+        return;
+    }
+    
+    void Language::loadWordListFromFileCOR(QString a_file_path)
+    {
+        QFile word_list_file{a_file_path};
+
+        if (word_list_file.open(QIODevice::ReadOnly))
+        {
+            QTextStream words{&word_list_file};
+
+            while (!words.atEnd())
+            {
+                QString line = word_list_file.readLine();
+                QStringList line_split = line.split('\t');
+                QString word = line_split.at(4);
+                word_list.insert(word.trimmed());
+            }
+
+            word_list_file.close();
+        }
+
+        return;
     }
     
     const std::vector<LetterData>& Language::getLetterList() const
     {
         return letter_list;
+    }
+    
+    const std::unordered_set<QString>& Language::getWordList() const
+    {
+        return word_list;
     }
     
     bool Language::isInWordList(QString a_word)

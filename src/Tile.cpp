@@ -71,7 +71,7 @@ namespace wf
             {
                 if (letter->getType() == LetterType::Wildcard)
                 {
-                    letter->setWildcardText("");
+                    letter->setWildcardText(QChar{});
                 }
 
                 break;

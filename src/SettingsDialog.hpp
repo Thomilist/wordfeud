@@ -11,6 +11,7 @@
 #include <QIcon>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Settings.hpp"
 
 namespace wf

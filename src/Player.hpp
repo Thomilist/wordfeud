@@ -9,6 +9,7 @@
 #include <QGridLayout>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Board.hpp"
 #include "LetterPool.hpp"
 #include "Letter.hpp"
@@ -43,10 +44,12 @@ namespace wf
             QColor getColor();
             int getLetterPenaltyPoints();
         
+        protected:
+            Settings* settings;
+
         private:
             QString display_name;
             QColor name_color;
-            Settings* settings;
             int score = 0;
             QWidget hand_widget;
             QGridLayout hand_layout;

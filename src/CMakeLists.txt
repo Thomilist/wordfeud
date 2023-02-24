@@ -129,4 +129,21 @@ target_link_libraries(
     PlayerAI
     Qt5::Widgets
     Player
+    VirtualBoard
+    VirtualTile
+)
+
+add_library(VirtualBoard VirtualBoard.cpp)
+target_link_libraries(
+    VirtualBoard
+    VirtualTile
+    Board
+)
+
+add_library(VirtualTile VirtualTile.cpp)
+target_link_libraries(
+    VirtualTile
+    Tile
+    Letter
+    Modifier
 )

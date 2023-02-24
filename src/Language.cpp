@@ -95,6 +95,13 @@ namespace wf
                 QString line = word_list_file.readLine();
                 QStringList line_split = line.split('\t');
                 QString word = line_split.at(4);
+
+                // Words containing whitespace are not included (each part should appear on their own)
+                if (word.contains("\\s"))
+                {
+                    continue;
+                }
+
                 word_list.insert(word.trimmed());
             }
 

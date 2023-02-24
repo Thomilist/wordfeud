@@ -7,9 +7,9 @@ namespace wf
         QColor a_color,
         Settings* a_settings,
         Tile* a_selection)
-        : display_name(a_display_name)
+        : settings(a_settings)
+        , display_name(a_display_name)
         , name_color(a_color)
-        , settings(a_settings)
         , hand(BoardType::Hand, a_settings, a_selection)
     {
         hand_size = settings->getHandDimensions();

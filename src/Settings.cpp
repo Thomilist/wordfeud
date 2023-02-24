@@ -8,14 +8,7 @@ namespace wf
             Language{LanguageName::Danish},
             Language{LanguageName::English}}
     {
-        for (auto language : languages)
-        {
-            if (language.asEnum() == LanguageName::English)
-            {
-                setLanguage(language.asEnum());
-                break;
-            }
-        }
+        setLanguage(LanguageName::English);
         
         int monospace_font_family_id = QFontDatabase::addApplicationFont(":/fonts/NotoSansMono-Regular.ttf");
         QString monospace_font_family = QFontDatabase::applicationFontFamilies(monospace_font_family_id).at(0);
@@ -52,6 +45,8 @@ namespace wf
                 return;
             }
         }
+
+        return;
     }
     
     void Settings::setLanguage(QString a_language)
@@ -64,6 +59,8 @@ namespace wf
                 return;
             }
         }
+
+        return;
     }
     
     Language* Settings::getLanguage()
@@ -109,5 +106,29 @@ namespace wf
     ModifierPattern* Settings::getModifierPattern()
     {
         return &modifier_pattern;
+    }
+    
+    void Settings::setLeftPlayer(QString a_player_name, PlayerType a_player_type)
+    {
+        left_player_name = a_player_name;
+        left_player_type = a_player_type;
+        return;
+    }
+    
+    void Settings::setRightPlayer(QString a_player_name, PlayerType a_player_type)
+    {
+        right_player_name = a_player_name;
+        right_player_type = a_player_type;
+        return;
+    }
+    
+    const std::pair<QString, PlayerType> Settings::getLeftPlayer() const
+    {
+        return {left_player_name, left_player_type};
+    }
+    
+    const std::pair<QString, PlayerType> Settings::getRightPlayer() const
+    {
+        return {right_player_name, right_player_type};
     }
 }

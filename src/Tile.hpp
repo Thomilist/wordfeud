@@ -15,6 +15,7 @@
 #include <QMouseEvent>
 
 #include "ForwardDeclarations.hpp"
+
 #include "Letter.hpp"
 #include "Modifier.hpp"
 #include "Settings.hpp"

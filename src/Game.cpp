@@ -293,6 +293,7 @@ namespace wf
         hands.setDisabled(false);
 
         createPlayers();
+        initialisePlayerConnections();
 
         header.setLeftPlayer(all_players[0]);
         header.setRightPlayer(all_players[1]);
@@ -598,6 +599,13 @@ namespace wf
             }
         }
 
+        initialisePlayerConnections();
+
+        return;
+    }
+    
+    void Game::initialisePlayerConnections()
+    {
         // Hands
         for (auto& player : all_players)
         {

@@ -87,6 +87,7 @@ namespace wf
             void deletePlayers();
             void nextPlayer();
             void initialiseConnections();
+            void initialisePlayerConnections();
             std::vector<Letter*> getAllLetters();
             void mouseMoveEvent(QMouseEvent* a_event);
             void showCorrectButtons();

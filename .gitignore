@@ -6,3 +6,6 @@ build/*
 
 # Valgrind logs
 valgrind/*
+
+# Releases
+releases/*

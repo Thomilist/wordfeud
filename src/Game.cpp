@@ -778,7 +778,7 @@ namespace wf
             
         for (int index = 0; index < a_max_index; ++index)
         {
-            Tile* tile;
+            Tile* tile = nullptr;
 
             switch (a_direction)
             {

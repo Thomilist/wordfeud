@@ -8,7 +8,7 @@ namespace wf
     Word::~Word()
     { }
     
-    void Word::appendLetter(Tile* a_tile)
+    void Word::appendLetter(VirtualTile* a_tile)
     {
         tiles.push_back(a_tile);
         return;
@@ -91,12 +91,12 @@ namespace wf
         return points;
     }
     
-    bool Word::contains(Tile* a_tile) const
+    bool Word::contains(VirtualTile* a_tile) const
     {
         return std::find(tiles.begin(), tiles.end(), a_tile) != tiles.end();
     }
     
-    bool Word::containsAnyOf(std::vector<Tile*> a_tiles) const
+    bool Word::containsAnyOf(std::vector<VirtualTile*> a_tiles) const
     {
         for (const auto tile : a_tiles)
         {
@@ -109,7 +109,7 @@ namespace wf
         return false;
     }
     
-    int Word::containsHowManyOf(std::vector<Tile*> a_tiles) const
+    int Word::containsHowManyOf(std::vector<VirtualTile*> a_tiles) const
     {
         int count = 0;
         
@@ -135,7 +135,7 @@ namespace wf
         return;
     }
 
-    std::vector<Tile*> Word::getTiles() const
+    std::vector<VirtualTile*> Word::getTiles() const
     {
         return tiles;
     }

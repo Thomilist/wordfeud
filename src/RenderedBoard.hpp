@@ -1,5 +1,5 @@
-#ifndef __BOARD_H__
-#define __BOARD_H__
+#ifndef __RENDEREDBOARD_H__
+#define __RENDEREDBOARD_H__
 
 #include <QWidget>
 #include <QGridLayout>
@@ -11,34 +11,32 @@
 #include <QPoint>
 #include <QColor>
 
-#include "Settings.hpp"
-
 #include "ForwardDeclarations.hpp"
 
-#include "Tile.hpp"
+#include "RenderedTile.hpp"
+#include "Settings.hpp"
+#include "VirtualBoard.hpp"
+
 #include "BoardType.hpp"
 #include "TileNeighbours.hpp"
 #include "TileInteractMode.hpp"
 
 namespace wf
 {
-    class Board : public QWidget
+    class RenderedBoard : public QWidget, public VirtualBoard
     {
         public:
-            Board(
+            RenderedBoard(
                 BoardType a_board_type,
                 Settings* a_settings,
-                Tile* a_selection,
+                RenderedTile* a_selection,
                 QWidget* a_parent = nullptr);
-            ~Board();
+            ~RenderedBoard();
 
-            Tile* getTileAtPosition(int a_collumn, int a_row) const;
-            QSize getGridDimensions() const;
+            RenderedTile* getTileAtPosition(int a_collumn, int a_row);
             BoardType getType() const;
             void setDimmedAndDisabled(bool a_state);
             void setTileInteractMode(TileInteractMode a_mode);
-            int getTileCount();
-            int getLetterCount();
             void reset();
 
         private:
@@ -48,13 +46,12 @@ namespace wf
 
             Settings* settings;
             QGridLayout grid;
-            QSize grid_dimensions;
             QSize tile_size;
             QSize board_size;
-            Tile* selection;
+            RenderedTile* selection;
             BoardType type;
             bool dimmed_and_disabled = false;
 
     };
 }
-#endif // __BOARD_H__
+#endif // __RENDEREDBOARD_H__

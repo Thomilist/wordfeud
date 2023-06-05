@@ -1,11 +1,11 @@
 /*
 wordfeud clone
-version 1.0.0
+version 0.1.0
 https://github.com/Thomilist/wordfeud
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>
 SPDX-License-Identifier: MIT
-Copyright (c) 2022 Thomas Emil Jensen
+Copyright (c) 2022-2023 Thomas Emil Jensen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

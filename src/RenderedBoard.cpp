@@ -1,13 +1,14 @@
-#include "Board.hpp"
+#include "RenderedBoard.hpp"
 
 namespace wf
 {
-    Board::Board(
+    RenderedBoard::RenderedBoard(
         BoardType a_board_type,
         Settings* a_settings, 
-        Tile* a_selection,
+        RenderedTile* a_selection,
         QWidget* a_parent)
         : QWidget(a_parent)
+        , VirtualBoard(a_settings)
         , settings(a_settings)
         , selection(a_selection)
         , type(a_board_type)
@@ -22,23 +23,23 @@ namespace wf
         adjustSize();
     }
     
-    Board::~Board()
+    RenderedBoard::~RenderedBoard()
     { }
     
-    void Board::createEmptyGrid()
+    void RenderedBoard::createEmptyGrid()
     {
         for (int row = 0; row < grid_dimensions.height(); ++row)
         {
             for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
             {
-                Tile* tile = new Tile(settings, selection, type, this);
+                RenderedTile* tile = new RenderedTile(settings, selection, type, this);
                 tile->setGridPosition(collumn, row);
                 grid.addWidget(tile, row, collumn);
             }
         }
     }
     
-    void Board::updateBoardSize()
+    void RenderedBoard::updateBoardSize()
     {
         switch (type)
         {
@@ -69,13 +70,13 @@ namespace wf
         return;
     }
     
-    void Board::assignNeighbours()
+    void RenderedBoard::assignNeighbours()
     {
         for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
         {
             for (int row = 0; row < grid_dimensions.height(); ++row)
             {
-                Tile* tile = getTileAtPosition(collumn, row);
+                RenderedTile* tile = getTileAtPosition(collumn, row);
 
                 tile->setNeighbour(getTileAtPosition(collumn, row - 1), TileNeighbour::Top);
                 tile->setNeighbour(getTileAtPosition(collumn + 1, row), TileNeighbour::Right);
@@ -87,7 +88,7 @@ namespace wf
         return;
     }
     
-    Tile* Board::getTileAtPosition(int a_collumn, int a_row) const
+    RenderedTile* RenderedBoard::getTileAtPosition(int a_collumn, int a_row)
     {
         if (    a_collumn < 0
             ||  a_row < 0
@@ -111,21 +112,16 @@ namespace wf
             return nullptr;
         }
 
-        Tile* tile = dynamic_cast<Tile*>(widget);
+        RenderedTile* tile = dynamic_cast<RenderedTile*>(widget);
         return tile;
     }
     
-    QSize Board::getGridDimensions() const
-    {
-        return grid_dimensions;
-    }
-    
-    BoardType Board::getType() const
+    BoardType RenderedBoard::getType() const
     {
         return type;
     }
     
-    void Board::setDimmedAndDisabled(bool a_state)
+    void RenderedBoard::setDimmedAndDisabled(bool a_state)
     {
         dimmed_and_disabled = a_state;
         setDisabled(dimmed_and_disabled);
@@ -142,7 +138,7 @@ namespace wf
         return;
     }
     
-    void Board::setTileInteractMode(TileInteractMode a_mode)
+    void RenderedBoard::setTileInteractMode(TileInteractMode a_mode)
     {
         for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
         {
@@ -155,33 +151,7 @@ namespace wf
         return;
     }
     
-    int Board::getTileCount()
-    {
-        return getGridDimensions().width() * getGridDimensions().height();
-    }
-    
-    int Board::getLetterCount()
-    {
-        int count = 0;
-        Letter* letter;
-        
-        for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
-        {
-            for (int row = 0; row < getGridDimensions().height(); ++row)
-            {
-                letter = getTileAtPosition(collumn, row)->getLetter();
-
-                if (letter != nullptr)
-                {
-                    ++count;
-                }
-            }
-        }
-
-        return count;
-    }
-    
-    void Board::reset()
+    void RenderedBoard::reset()
     {
         for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
         {

@@ -1,14 +1,14 @@
 #ifndef __SETTINGSDIALOG_H__
 #define __SETTINGSDIALOG_H__
 
-#include <QDialog>
-#include <QWidget>
-#include <QGridLayout>
-#include <QLabel>
 #include <QComboBox>
+#include <QDialog>
 #include <QDialogButtonBox>
-#include <QPushButton>
+#include <QGridLayout>
 #include <QIcon>
+#include <QLabel>
+#include <QPushButton>
+#include <QWidget>
 
 #include "ForwardDeclarations.hpp"
 

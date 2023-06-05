@@ -3,10 +3,9 @@
 
 namespace wf
 {
-    class Board;
+    class RenderedBoard;
     class ButtonPanel;
     class Game;
-    class Hand;
     class Header;
     class Language;
     class Letter;
@@ -16,7 +15,7 @@ namespace wf
     class PlayerAI;
     class Settings;
     class SettingsDialog;
-    class Tile;
+    class RenderedTile;
     class VirtualBoard;
     class VirtualTile;
     class Word;

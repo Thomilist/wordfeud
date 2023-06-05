@@ -1,20 +1,20 @@
 #ifndef __WORDFEUD_H__
 #define __WORDFEUD_H__
 
-#include <QObject>
+#include <QAction>
+#include <QDesktopServices>
+#include <QIcon>
+#include <QKeySequence>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
-#include <QAction>
-#include <QKeySequence>
-#include <QDesktopServices>
+#include <QObject>
 #include <QUrl>
-#include <QIcon>
 
 #include "ForwardDeclarations.hpp"
 
-#include "Settings.hpp"
 #include "Game.hpp"
+#include "Settings.hpp"
 #include "SettingsDialog.hpp"
 
 namespace wf

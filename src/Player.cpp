@@ -6,7 +6,7 @@ namespace wf
         QString a_display_name,
         QColor a_color,
         Settings* a_settings,
-        Tile* a_selection)
+        RenderedTile* a_selection)
         : settings(a_settings)
         , display_name(a_display_name)
         , name_color(a_color)
@@ -21,7 +21,7 @@ namespace wf
     Player::~Player()
     { }
     
-    Board* Player::getHand()
+    RenderedBoard* Player::getHand()
     {
         return &hand;
     }
@@ -37,7 +37,7 @@ namespace wf
         {
             for (int collumn = 0; collumn < hand_size.width(); ++collumn)
             {
-                Tile* tile = hand.getTileAtPosition(collumn, row);
+                RenderedTile* tile = hand.getTileAtPosition(collumn, row);
 
                 if (tile == nullptr)
                 {
@@ -71,7 +71,7 @@ namespace wf
         {
             for (int row = 0; row < hand_size.height(); ++row)
             {
-                Tile* tile = hand.getTileAtPosition(collumn, row);
+                RenderedTile* tile = hand.getTileAtPosition(collumn, row);
 
                 if (tile == nullptr)
                 {
@@ -94,7 +94,7 @@ namespace wf
         {
             for (int row = 0; row < hand_size.height(); ++row)
             {
-                Tile* tile = hand.getTileAtPosition(collumn, row);
+                RenderedTile* tile = hand.getTileAtPosition(collumn, row);
 
                 if (tile == nullptr)
                 {
@@ -165,7 +165,7 @@ namespace wf
         }
         
         int penalty = 0;
-        Tile* tile;
+        RenderedTile* tile;
         
         for (int collumn = 0; collumn < getHand()->getGridDimensions().width(); ++collumn)
         {

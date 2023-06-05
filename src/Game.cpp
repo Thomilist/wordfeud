@@ -81,7 +81,7 @@ namespace wf
     
     void Game::placeLetter(int a_collumn, int a_row, Letter* a_letter)
     {
-        Tile* tile = board.getTileAtPosition(a_collumn, a_row);
+        RenderedTile* tile = board.getTileAtPosition(a_collumn, a_row);
 
         if (tile == nullptr)
         {
@@ -95,7 +95,7 @@ namespace wf
     
     Letter* Game::removeLetter(int a_collumn, int a_row)
     {
-        Tile* tile = board.getTileAtPosition(a_collumn, a_row);
+        RenderedTile* tile = board.getTileAtPosition(a_collumn, a_row);
 
         if (tile == nullptr)
         {
@@ -105,39 +105,9 @@ namespace wf
         return tile->removeLetter();
     }
     
-    void Game::lockProposedLetters()
-    {
-        for (auto tile : proposed_letters)
-        {
-            Letter* letter = tile->getLetter();
-            letter->setStatus(LetterStatus::LockedRecently);
-            locked_letters.push_back(letter);
-
-            Modifier* modifier = tile->getModifier();
-            modifier->setUsed(true);
-        }
-
-        clearProposed();
-
-        return;
-    }
-    
-    void Game::lockRecentlyLockedLetters()
-    {
-        for (auto letter : locked_letters)
-        {
-            if (letter->getStatus() == LetterStatus::LockedRecently)
-            {
-                letter->setStatus(LetterStatus::Locked);
-            }
-        }
-
-        return;
-    }
-    
     void Game::placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite)
     {
-        Tile* tile = board.getTileAtPosition(a_collumn, a_row);
+        RenderedTile* tile = board.getTileAtPosition(a_collumn, a_row);
 
         if (tile == nullptr)
         {
@@ -170,7 +140,7 @@ namespace wf
         {
             for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
             {
-                Tile* tile = board.getTileAtPosition(collumn, row);
+                RenderedTile* tile = board.getTileAtPosition(collumn, row);
 
                 if (tile == nullptr)
                 {
@@ -223,17 +193,18 @@ namespace wf
     
     void Game::nextPlayer()
     {
-        if (all_players.size() == 0)
+        if (all_players.empty())
         {
             return;
         }
 
         all_players[current_player_index]->setTurn(false);
+        setCorrectButtonState();
+        showCorrectButtons();
 
         if (isGameOver())
         {
             hands.setDisabled(true);
-            setCorrectButtonState();
 
             finalisePoints();
             Player* winning_player = getHighestScoringPlayer();
@@ -273,17 +244,10 @@ namespace wf
     {
         state = GameState::Play;
         current_player_index = 0;
-        proposed_words_points = 0;
-        proposed_words_valid = true;
         consecutive_passes = 0;
 
         all_letters.clear();
-        proposed_letters.clear();
-        locked_letters.clear();
         swap_letters.clear();
-        checked_tiles.clear();
-        proposed_words.clear();
-        invalid_words.clear();
 
         deletePlayers();
 
@@ -320,8 +284,10 @@ namespace wf
     
     void Game::playButton()
     {
+        board.evaluateProposedPlay();
+        
         // Placement check
-        if (!isPlacementValid())
+        if (!board.isPlacementValid())
         {
             QMessageBox invalid_placement_warning;
             invalid_placement_warning.setText("Invalid placement.");
@@ -332,11 +298,10 @@ namespace wf
         }
 
         // Dictionary check
-        findProposedWords();
-        findInvalidProposedWords();
-        
-        if (invalid_words.size() > 0)
+        if (!board.areProposedWordsValid())
         {
+            auto invalid_words = board.getInvalidProposedWords();
+            
             QString invalid_words_message{"Word(s) not found in dictionary:"};
 
             for (const auto word : invalid_words)
@@ -354,44 +319,14 @@ namespace wf
         }
 
         // Points calculation
-        int points = 0;
-
-        for (const auto& word : proposed_words)
-        {
-            points += word.calculatePoints();
-        }
-
-        // 40 point bonus for using all letters in hand
-        if (proposed_letters.size() == static_cast<long unsigned int>(all_players[current_player_index]->getHand()->getTileCount()))
-        {
-            points += 40;
-        }
-
+        int points = board.getProposedPlayPoints();
         all_players[current_player_index]->addPoints(points);
 
         // Find most relevant word
-        int highest_match_count = 0;
-        Word most_relevant_word;
-
-        for (const auto& word : proposed_words)
-        {
-            int match_count = word.containsHowManyOf(proposed_letters);
-
-            if (match_count > highest_match_count)
-            {
-                highest_match_count = match_count;
-                most_relevant_word = word;
-            }
-        }
+        Word most_relevant_word = board.getMostRelevantWord();
         
         // Cleanup
-        for (const auto tile : proposed_letters)
-        {
-            tile->getModifier()->setUsed(true);
-        }
-
-        lockRecentlyLockedLetters();
-        lockProposedLetters();
+        board.lockProposedPlay();
 
         // Next turn
         consecutive_passes = 0;
@@ -407,7 +342,7 @@ namespace wf
     
     void Game::passButton()
     {
-        lockRecentlyLockedLetters();
+        board.lockRecentlyLockedLetters();
         ++consecutive_passes;
         header.updateWithPlay(
             PlayType::Pass,
@@ -418,24 +353,6 @@ namespace wf
     
     void Game::clearButton()
     {
-        Letter* letter;
-        Tile* tile;
-
-        while (proposed_letters.size() > 0)
-        {
-            tile = proposed_letters.at(0);
-            
-            if (all_players[current_player_index]->availableSpacesInHand() > 0)
-            {
-                letter = tile->removeLetter();
-                all_players[current_player_index]->addLetterToHand(letter);
-            }
-            else
-            {
-                break;
-            }
-        }
-
         clearProposed();
         board.repaint();
         all_players[current_player_index]->getHand()->repaint();
@@ -445,16 +362,16 @@ namespace wf
     
     void Game::shuffleButton()
     {
-        Board* hand = all_players[current_player_index]->getHand();
+        RenderedBoard* hand = all_players[current_player_index]->getHand();
         QSize hand_size = hand->size();
-        std::vector<Tile*> tiles;
+        std::vector<RenderedTile*> tiles;
         std::vector<Letter*> letters;
 
         for (int row = 0; row < hand_size.width(); ++row)
         {
             for (int collumn = 0; collumn < hand_size.height(); ++collumn)
             {
-                Tile* tile = hand->getTileAtPosition(collumn, row);
+                RenderedTile* tile = hand->getTileAtPosition(collumn, row);
 
                 if (tile == nullptr || tile->getLetter() == nullptr)
                 {
@@ -514,18 +431,18 @@ namespace wf
         return;
     }
     
-    void Game::proposeLetter(Tile* a_tile)
+    void Game::proposeLetter(RenderedTile* a_tile)
     {
-        proposed_letters.push_back(a_tile);
+        board.proposeLetter(a_tile);
         showCorrectButtons();
         setCorrectButtonState();
         displayProposedPlayValue();
         return;
     }
     
-    void Game::unproposeLetter(Tile* a_tile)
+    void Game::unproposeLetter(RenderedTile* a_tile)
     {
-        proposed_letters.erase(std::remove(proposed_letters.begin(), proposed_letters.end(), a_tile), proposed_letters.end());
+        board.unproposeLetter(a_tile);
         showCorrectButtons();
         setCorrectButtonState();
         displayProposedPlayValue();
@@ -534,7 +451,13 @@ namespace wf
     
     void Game::clearProposed()
     {
-        proposed_letters.clear();
+        auto letters = board.clearProposed();
+
+        for (auto letter : letters)
+        {
+            all_players[current_player_index]->addLetterToHand(letter);
+        }
+
         showCorrectButtons();
         setCorrectButtonState();
         displayProposedPlayValue();
@@ -564,12 +487,33 @@ namespace wf
         buttons.getConfirmButton()->setDisabled(button_state);
         buttons.getCancelButton()->setDisabled(button_state);
 
+        RenderedBoard* current_hand = all_players[current_player_index]->getHand();
+        
         bool swap_button_state
             =   button_state 
-            ||  (letter_pool.getRemainingCount() < (all_players[current_player_index]->getHand()->getTileCount()))
-            ||  (proposed_letters.size() != 0);
+            ||  (letter_pool.getRemainingCount() < (current_hand->getTileCount()))
+            ||  (board.getProposedLetterCount() != 0);
 
         buttons.getSwapButton()->setDisabled(swap_button_state);
+
+        bool confirm_button_state = true;
+        
+        for (int collumn = 0; collumn < current_hand->getGridDimensions().width(); ++collumn)
+        {
+            for (int row = 0; row < current_hand->getGridDimensions().height(); ++row)
+            {
+                if (current_hand->getTileAtPosition(collumn, row)->getSwapMarking() == true)
+                {
+                    confirm_button_state = false;
+                    goto l_found_swap_marking;
+                }
+            }
+        }
+
+        l_found_swap_marking:
+        {
+            buttons.getConfirmButton()->setDisabled(confirm_button_state);
+        }
 
         return;
     }
@@ -584,18 +528,18 @@ namespace wf
         connect(buttons.getSwapButton(), &QPushButton::clicked, this, &Game::swapButton);
         connect(buttons.getConfirmButton(), &QPushButton::clicked, this, &Game::confirmButton);
         connect(buttons.getCancelButton(), &QPushButton::clicked, this, &Game::cancelButton);
-        connect(&selection, &Tile::letterAddedRemoved, this, &Game::setCorrectButtonState);
+        connect(&selection, &RenderedTile::letterAddedRemoved, this, &Game::setCorrectButtonState);
 
         // Board
         for (int collumn = 0; collumn < board.getGridDimensions().width(); ++collumn)
         {
             for (int row = 0; row < board.getGridDimensions().height(); ++row)
             {
-                Tile* tile = board.getTileAtPosition(collumn, row);
+                RenderedTile* tile = board.getTileAtPosition(collumn, row);
 
-                connect(tile, &Tile::proposeLetter, this, &Game::proposeLetter);
-                connect(tile, &Tile::unproposeLetter, this, &Game::unproposeLetter);
-                connect(tile, &Tile::wildcardPlacedOnBoard, this, &Game::assignWildcardLetter);
+                connect(tile, &RenderedTile::proposeLetter, this, &Game::proposeLetter);
+                connect(tile, &RenderedTile::unproposeLetter, this, &Game::unproposeLetter);
+                connect(tile, &RenderedTile::wildcardPlacedOnBoard, this, &Game::assignWildcardLetter);
             }
         }
 
@@ -613,10 +557,10 @@ namespace wf
             {
                 for (int row = 0; row < settings->getHandDimensions().height(); ++row)
                 {
-                    Tile* tile = player->getHand()->getTileAtPosition(collumn, row);
+                    RenderedTile* tile = player->getHand()->getTileAtPosition(collumn, row);
 
-                    connect(tile, &Tile::markForSwap, this, &Game::addToSwapLetters);
-                    connect(tile, &Tile::unmarkForSwap, this, &Game::removeFromSwapLetters);
+                    connect(tile, &RenderedTile::markForSwap, this, &Game::addToSwapLetters);
+                    connect(tile, &RenderedTile::unmarkForSwap, this, &Game::removeFromSwapLetters);
                 }
             }
         }
@@ -632,7 +576,7 @@ namespace wf
     
     void Game::showCorrectButtons()
     {
-        if (proposed_letters.size() > 0)
+        if (board.getProposedLetterCount() != 0)
         {
             buttons.showPlayClearSwapButtons();
         }
@@ -648,238 +592,10 @@ namespace wf
         return;
     }
     
-    bool Game::isPlacementValid()
-    {
-        if (!isPlacementLinear())
-        {
-            return false;
-        }
-
-        for (const auto letter : proposed_letters)
-        {
-            checked_tiles.clear();
-            
-            if (!isPlacementConnectedToStart(letter))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    
-    bool Game::isPlacementConnectedToStart(Tile* a_tile)
-    {
-        checked_tiles.push_back(a_tile);
-        
-        if (a_tile->getModifier()->getType() == ModifierType::Start)
-        {
-            return true;
-        }
-
-        std::array<Tile*, 4> neighbours = a_tile->getNeighbours();
-        bool start_found = false;
-
-        for (const auto neighbour : neighbours)
-        {
-            if (neighbour == nullptr)
-            {
-                continue;
-            }
-            
-            if (std::find(checked_tiles.begin(), checked_tiles.end(), neighbour) != checked_tiles.end())
-            {
-                continue;
-            }
-            
-            if (neighbour->getLetter() != nullptr)
-            {
-                start_found = start_found || isPlacementConnectedToStart(neighbour);
-            }
-        }
-
-        return start_found;
-    }
-    
-    bool Game::isPlacementLinear()
-    {
-        return isPlacementInOneCollumn() || isPlacementInOneRow();
-    }
-    
-    bool Game::isPlacementInOneCollumn()
-    {
-        std::vector<int> collumns;
-        
-        for (const auto tile : proposed_letters)
-        {
-            collumns.push_back(tile->getGridPosition().x());
-        }
-
-        return std::adjacent_find(collumns.begin(), collumns.end(), std::not_equal_to<>()) == collumns.end();
-    }
-    
-    bool Game::isPlacementInOneRow()
-    {
-        std::vector<int> rows;
-        
-        for (const auto tile : proposed_letters)
-        {
-            rows.push_back(tile->getGridPosition().y());
-        }
-
-        return std::adjacent_find(rows.begin(), rows.end(), std::not_equal_to<>()) == rows.end();
-    }
-    
-    void Game::findProposedWords()
-    {
-        proposed_words.clear();
-        
-        if (proposed_letters.size() == 0)
-        {
-            return;
-        }
-        // Single-letter words are allowed only as an opener
-        else if (   proposed_letters.size() == 1
-                &&  proposed_letters[0]->getModifier()->getType() == ModifierType::Start)
-        {
-            Word word;
-            word.appendLetter(proposed_letters[0]);
-            proposed_words.push_back(word);
-            return;
-        }
-
-        std::unordered_set<int> collumns;
-        std::unordered_set<int> rows;
-
-        for (const auto tile : proposed_letters)
-        {
-            QPoint grid_position = tile->getGridPosition();
-
-            collumns.insert(grid_position.x());
-            rows.insert(grid_position.y());
-        }
-
-        for (const auto collumn : collumns)
-        {
-            findProposedWordInLine(collumn, settings->getBoardDimensions().height(), Direction::Vertical);
-        }
-
-        for (const auto row : rows)
-        {
-            findProposedWordInLine(row, settings->getBoardDimensions().width(), Direction::Horisontal);
-        }
-
-        return;
-    }
-    
-    void Game::findProposedWordInLine(int a_line, int a_max_index, Direction a_direction)
-    {
-        Word word;
-            
-        for (int index = 0; index < a_max_index; ++index)
-        {
-            Tile* tile = nullptr;
-
-            switch (a_direction)
-            {
-                case Direction::Horisontal:
-                {
-                    tile = board.getTileAtPosition(index, a_line);
-                    break;
-                }
-                case Direction::Vertical:
-                {
-                    tile = board.getTileAtPosition(a_line, index);
-                    break;
-                }
-            }
-
-            if (tile->getLetter() == nullptr)
-            {
-                if (word.containsAnyOf(proposed_letters))
-                {
-                    if (word.getLength() > 1)
-                    {
-                        proposed_words.push_back(word);
-                    }
-                    
-                    break;
-                }
-                else
-                {
-                    word.clear();
-                }
-            }
-            else
-            {
-                word.appendLetter(tile);
-
-                if (index == a_max_index - 1)
-                {
-                    if (    word.containsAnyOf(proposed_letters)
-                        &&  word.getLength() > 1)
-                    {
-                        proposed_words.push_back(word);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return;
-    }
-    
-    void Game::checkProposedWords()
-    {
-        // Placement check
-        proposed_words_valid = isPlacementValid();
-
-        // Dictionary check
-        findProposedWords();
-        findInvalidProposedWords();
-
-        if (invalid_words.size() > 0)
-        {
-            proposed_words_valid = false;
-        }
-
-        // Points calculation
-        calculateProposedPoints();
-
-        return;
-    }
-    
-    void Game::findInvalidProposedWords()
-    {
-        invalid_words.clear();
-
-        for (auto& word : proposed_words)
-        {
-            if (!settings->getLanguage()->isInWordList(word.getWordAsText().toLower()))
-            {
-                invalid_words.push_back(&word);
-            }
-        }
-
-        return;
-    }
-    
-    void Game::calculateProposedPoints()
-    {
-        proposed_words_points = 0;
-
-        for (const auto& word : proposed_words)
-        {
-            proposed_words_points += word.calculatePoints();
-        }
-
-        return;
-    }
-    
     void Game::displayProposedPlayValue()
     {
-        checkProposedWords();
-        proposal_info.setProposedPlay(proposed_words_valid, proposed_words_points);
+        board.evaluateProposedPlay();
+        proposal_info.setProposedPlay(board.isProposedPlayValid(), board.getProposedPlayPoints());
         return;
     }
     
@@ -906,7 +622,7 @@ namespace wf
         return;
     }
     
-    void Game::assignWildcardLetter(Tile* a_tile)
+    void Game::assignWildcardLetter(RenderedTile* a_tile)
     {
         if (a_tile->getLetter()->getWildcardText().isLetter())
         {
@@ -941,19 +657,21 @@ namespace wf
         return;
     }
     
-    void Game::addToSwapLetters(Tile* a_tile)
+    void Game::addToSwapLetters(RenderedTile* a_tile)
     {
         swap_letters.push_back(a_tile);
+        setCorrectButtonState();
         return;
     }
     
-    void Game::removeFromSwapLetters(Tile* a_tile)
+    void Game::removeFromSwapLetters(RenderedTile* a_tile)
     {
-        std::vector<Tile*>::iterator position = std::find(swap_letters.begin(), swap_letters.end(), a_tile);
+        std::vector<RenderedTile*>::iterator position = std::find(swap_letters.begin(), swap_letters.end(), a_tile);
 
         if (position != swap_letters.end())
         {
             swap_letters.erase(position);
+            setCorrectButtonState();
         }
 
         return;
@@ -1001,7 +719,7 @@ namespace wf
 
         for (auto& player : all_players)
         {
-            if (player->getHand()->getLetterCount() == 0 && proposed_letters.empty())
+            if (player->getHand()->getLetterCount() == 0 && board.getProposedLetterCount() == 0)
             {
                 return true;
             }

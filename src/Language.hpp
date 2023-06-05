@@ -1,12 +1,11 @@
 #ifndef __LANGUAGE_H__
 #define __LANGUAGE_H__
 
-#include <QString>
-#include <QHash>
 #include <QFile>
-#include <QTextStream>
-#include <QStringList>
+#include <QHash>
 #include <QString>
+#include <QStringList>
+#include <QTextStream>
 
 #include <vector>
 #include <unordered_map>
@@ -15,6 +14,7 @@
 #include "ForwardDeclarations.hpp"
 
 #include "Letter.hpp"
+
 #include "LanguageName.hpp"
 
 namespace wf

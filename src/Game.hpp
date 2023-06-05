@@ -1,48 +1,48 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include <vector>
 #include <algorithm>
-#include <random>
 #include <array>
+#include <random>
 #include <unordered_set>
+#include <vector>
 
-#include <QWidget>
+#include <QChar>
+#include <QColor>
 #include <QGridLayout>
-#include <QSize>
+#include <QInputDialog>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QPoint>
-#include <QStackedWidget>
 #include <QPushButton>
-#include <QMessageBox>
-#include <QColor>
-#include <QInputDialog>
-#include <QChar>
+#include <QSize>
+#include <QStackedWidget>
 #include <QString>
+#include <QWidget>
 
 #include "ForwardDeclarations.hpp"
 
-#include "Settings.hpp"
-#include "Letter.hpp"
-#include "Modifier.hpp"
-#include "Board.hpp"
-#include "Language.hpp"
-#include "LetterPool.hpp"
-#include "Player.hpp"
 #include "ButtonPanel.hpp"
-#include "Tile.hpp"
 #include "Header.hpp"
-#include "Word.hpp"
-#include "ProposalInfo.hpp"
+#include "Language.hpp"
+#include "Letter.hpp"
+#include "LetterPool.hpp"
+#include "Modifier.hpp"
 #include "ModifierPattern.hpp"
+#include "Player.hpp"
+#include "ProposalInfo.hpp"
+#include "RenderedBoard.hpp"
+#include "RenderedTile.hpp"
+#include "Settings.hpp"
+#include "Word.hpp"
 
 #include "BoardType.hpp"
+#include "Direction.hpp"
+#include "GameState.hpp"
 #include "LanguageName.hpp"
 #include "LetterStatus.hpp"
 #include "ModifierType.hpp"
 #include "PlayType.hpp"
-#include "Direction.hpp"
-#include "GameState.hpp"
 
 namespace wf
 {
@@ -66,20 +66,18 @@ namespace wf
             void swapButton();
             void confirmButton();
             void cancelButton();
-            void proposeLetter(Tile* a_tile);
-            void unproposeLetter(Tile* a_tile);
+            void proposeLetter(RenderedTile* a_tile);
+            void unproposeLetter(RenderedTile* a_tile);
             void clearProposed();
             void setCorrectButtonState();
-            void assignWildcardLetter(Tile* a_tile);
-            void addToSwapLetters(Tile* a_tile);
-            void removeFromSwapLetters(Tile* a_tile);
+            void assignWildcardLetter(RenderedTile* a_tile);
+            void addToSwapLetters(RenderedTile* a_tile);
+            void removeFromSwapLetters(RenderedTile* a_tile);
 
         private:
             void loadLetters();
             void placeLetter(int a_collumn, int a_row, Letter* a_letter);
             [[nodiscard]] Letter* removeLetter(int a_collumn, int a_row);
-            void lockProposedLetters();
-            void lockRecentlyLockedLetters();
             void placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite = false);
             void placeModifiers(std::vector<Modifier*> a_modifiers);
             void createPlayer(QString a_display_name, QColor a_color);
@@ -91,16 +89,6 @@ namespace wf
             std::vector<Letter*> getAllLetters();
             void mouseMoveEvent(QMouseEvent* a_event);
             void showCorrectButtons();
-            bool isPlacementValid();
-            bool isPlacementConnectedToStart(Tile* a_tile);
-            bool isPlacementLinear();
-            bool isPlacementInOneCollumn();
-            bool isPlacementInOneRow();
-            void findProposedWords();
-            void findProposedWordInLine(int a_line, int a_max_index, Direction a_direction);
-            void checkProposedWords();
-            void findInvalidProposedWords();
-            void calculateProposedPoints();
             void displayProposedPlayValue();
             void setGameState(GameState a_state);
             int swapLetters();
@@ -113,24 +101,17 @@ namespace wf
             LetterPool letter_pool;
             std::vector<Letter> all_letters;
             std::vector<Player*> all_players;
-            std::vector<Tile*> proposed_letters;
-            std::vector<Letter*> locked_letters;
-            std::vector<Tile*> swap_letters;
-            std::vector<Tile*> checked_tiles;
-            std::vector<Word> proposed_words;
-            std::vector<Word*> invalid_words;
+            std::vector<RenderedTile*> swap_letters;
             long unsigned int current_player_index = 0;
             Settings* settings;
             QGridLayout game_layout;
-            Tile selection;
+            RenderedTile selection;
             Header header;
-            Board board;
+            RenderedBoard board;
             ProposalInfo proposal_info;
             QStackedWidget hands;
             ButtonPanel buttons;
             std::default_random_engine rng;
-            int proposed_words_points = 0;
-            bool proposed_words_valid = true;
             int consecutive_passes = 0;
     };
 }

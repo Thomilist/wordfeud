@@ -3,15 +3,15 @@
 
 #include <memory>
 
-#include <QWidget>
-#include <QGridLayout>
-#include <QSize>
-#include <QLabel>
 #include <QFont>
-#include <QPaintEvent>
+#include <QGridLayout>
+#include <QLabel>
 #include <QPainter>
+#include <QPaintEvent>
 #include <QPixmap>
+#include <QSize>
 #include <QTextOption>
+#include <QWidget>
 
 #include "ForwardDeclarations.hpp"
 

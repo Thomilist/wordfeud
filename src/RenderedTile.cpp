@@ -1,10 +1,10 @@
-#include "Tile.hpp"
+#include "RenderedTile.hpp"
 
 namespace wf
 {
-    Tile::Tile(
+    RenderedTile::RenderedTile(
         Settings* a_settings,
-        Tile* a_selection,
+        RenderedTile* a_selection,
         BoardType a_board_type,
         QWidget* a_parent,
         bool a_follows_mouse)
@@ -39,10 +39,10 @@ namespace wf
         repaint();
     }
     
-    Tile::~Tile()
+    RenderedTile::~RenderedTile()
     { }
     
-    void Tile::placeLetter(Letter* a_letter)
+    void RenderedTile::placeLetter(Letter* a_letter)
     {
         if (letter == nullptr)
         {
@@ -92,7 +92,7 @@ namespace wf
         return;
     }
     
-    Letter* Tile::removeLetter()
+    Letter* RenderedTile::removeLetter()
     {
         if (    letter->getStatus() == LetterStatus::Locked 
             ||  letter->getStatus() == LetterStatus::LockedRecently)
@@ -121,72 +121,35 @@ namespace wf
         return current_letter;
     }
     
-    Letter* Tile::getLetter() const
-    {
-        return letter;
-    }
-    
-    void Tile::setModifier(Modifier* a_modifier)
-    {
-        modifier = a_modifier;
-        return;
-    }
-    
-    Modifier* Tile::getModifier() const
-    {
-        return modifier;
-    }
-    
-    std::array<Tile*, 4> Tile::getNeighbours() const
-    {
-        return neighbours;
-    }
-    
-    Tile* Tile::getNeighbour(TileNeighbour a_index) const
-    {
-        return neighbours[a_index];
-    }
-    
-    void Tile::setNeighbour(Tile* a_tile, TileNeighbour a_index)
-    {
-        neighbours[a_index] = a_tile;
-    }
-    
-    void Tile::setGridPosition(int a_collumn, int a_row)
-    {
-        grid_position = QPoint{a_collumn, a_row};
-        return;
-    }
-    
-    QPoint Tile::getGridPosition() const
-    {
-        return grid_position;
-    }
-    
-    BoardType Tile::getBoardType() const
+    BoardType RenderedTile::getBoardType() const
     {
         return board_type;
     }
     
-    void Tile::setDimmed(bool a_state)
+    void RenderedTile::setDimmed(bool a_state)
     {
         dimmed = a_state;
         return;
     }
     
-    void Tile::setInteractMode(TileInteractMode a_mode)
+    void RenderedTile::setInteractMode(TileInteractMode a_mode)
     {
         interact_mode = a_mode;
         return;
     }
     
-    void Tile::setSwapMarking(bool a_state)
+    void RenderedTile::setSwapMarking(bool a_state)
     {
         swap_marking = a_state;
         return;
     }
     
-    void Tile::reset()
+    bool RenderedTile::getSwapMarking()
+    {
+        return swap_marking;
+    }
+    
+    void RenderedTile::reset()
     {
         modifier = nullptr;
         letter = nullptr;
@@ -196,7 +159,7 @@ namespace wf
         return;
     }
     
-    void Tile::paintEvent(QPaintEvent*)
+    void RenderedTile::paintEvent(QPaintEvent*)
     {
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing, true);
@@ -364,7 +327,7 @@ namespace wf
         return;
     }
     
-    void Tile::mousePressEvent(QMouseEvent*)
+    void RenderedTile::mousePressEvent(QMouseEvent*)
     {
         if (follows_mouse)
         {

@@ -7,9 +7,9 @@
 
 #include "ForwardDeclarations.hpp"
 
-#include "Tile.hpp"
 #include "Letter.hpp"
 #include "Modifier.hpp"
+#include "VirtualTile.hpp"
 
 #include "ModifierType.hpp"
 
@@ -21,18 +21,18 @@ namespace wf
             Word();
             ~Word();
 
-            void appendLetter(Tile* a_tile);
+            void appendLetter(VirtualTile* a_tile);
             QString getWordAsText() const;
             int calculatePoints() const;
-            std::vector<Tile*> getTiles() const;
-            bool contains(Tile* a_tile) const;
-            bool containsAnyOf(std::vector<Tile*> a_tiles) const;
-            int containsHowManyOf(std::vector<Tile*> a_tiles) const;
+            std::vector<VirtualTile*> getTiles() const;
+            bool contains(VirtualTile* a_tile) const;
+            bool containsAnyOf(std::vector<VirtualTile*> a_tiles) const;
+            int containsHowManyOf(std::vector<VirtualTile*> a_tiles) const;
             int getLength() const;
             void clear();
 
         private:
-            std::vector<Tile*> tiles;
+            std::vector<VirtualTile*> tiles;
     };
 }
 

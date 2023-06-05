@@ -1,18 +1,19 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-#include <QObject>
-#include <QWidget>
-#include <QSize>
-#include <QString>
 #include <QColor>
 #include <QGridLayout>
+#include <QObject>
+#include <QSize>
+#include <QString>
+#include <QWidget>
 
 #include "ForwardDeclarations.hpp"
 
-#include "Board.hpp"
-#include "LetterPool.hpp"
 #include "Letter.hpp"
+#include "LetterPool.hpp"
+#include "RenderedBoard.hpp"
+#include "RenderedTile.hpp"
 #include "Settings.hpp"
 
 namespace wf
@@ -26,10 +27,10 @@ namespace wf
                 QString a_display_name,
                 QColor a_color,
                 Settings* a_settings,
-                Tile* a_selection);
+                RenderedTile* a_selection);
             ~Player();
 
-            Board* getHand();
+            RenderedBoard* getHand();
             QWidget* getHandCentered();
             void fillHand(LetterPool* a_letter_pool);
             int availableSpacesInHand();
@@ -53,7 +54,7 @@ namespace wf
             int score = 0;
             QWidget hand_widget;
             QGridLayout hand_layout;
-            Board hand;
+            RenderedBoard hand;
             QSize hand_size;
             bool has_turn = false;
     };

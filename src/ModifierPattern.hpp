@@ -1,10 +1,10 @@
 #ifndef __MODIFIERPATTERN_H__
 #define __MODIFIERPATTERN_H__
 
-#include <vector>
-#include <utility>
 #include <algorithm>
 #include <random>
+#include <utility>
+#include <vector>
 
 #include <QString>
 

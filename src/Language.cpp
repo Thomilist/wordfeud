@@ -9,6 +9,7 @@ namespace wf
             case LanguageName::English:
             {
                 language_string = "English";
+                word_list.reserve(370105);
                 loadWordListFromFilePlain(":/words/english.txt");
                 loadLettersFromFile(":/letters/english.csv");
                 break;
@@ -16,6 +17,7 @@ namespace wf
             case LanguageName::Danish:
             {
                 language_string = "Danish";
+                word_list.reserve(530916);
                 loadWordListFromFileCOR(":/words/cor1.02.tsv");
                 loadLettersFromFile(":/letters/danish.csv");
                 break;
@@ -88,6 +90,8 @@ namespace wf
 
         if (word_list_file.open(QIODevice::ReadOnly))
         {
+            word_list.clear();
+            
             QTextStream words{&word_list_file};
 
             while (!words.atEnd())

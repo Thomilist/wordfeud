@@ -1,16 +1,16 @@
 #ifndef __LETTERPOOL_H__
 #define __LETTERPOOL_H__
 
-#include <vector>
 #include <random>
+#include <vector>
 
 #include <QObject>
 #include <QStringList>
 
 #include "ForwardDeclarations.hpp"
 
-#include "Letter.hpp"
 #include "Language.hpp"
+#include "Letter.hpp"
 
 namespace wf
 {

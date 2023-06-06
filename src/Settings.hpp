@@ -1,29 +1,35 @@
 #ifndef __SETTINGS_H__
 #define __SETTINGS_H__
 
-#include <vector>
 #include <utility>
+#include <vector>
 
-#include <QSize>
 #include <QFont>
 #include <QFontDatabase>
+#include <QMainWindow>
+#include <QSettings>
+#include <QSize>
 #include <QString>
 
 #include "ForwardDeclarations.hpp"
 
 #include "Language.hpp"
 #include "ModifierPattern.hpp"
+#include "PlayerSettings.hpp"
 
+#include "LanguageName.hpp"
 #include "PlayerType.hpp"
 
 namespace wf
 {
-    class Settings
+    class Settings : public QSettings
     {
         public:
-            Settings();
+            Settings(QMainWindow* a_main_window);
             ~Settings();
 
+            void save();
+            void load();
             void setGridDimensions(int a_rows, int a_collumns);
             void setTileSize(int a_size);
             void setLanguage(LanguageName a_language);
@@ -37,12 +43,11 @@ namespace wf
             const QSize& getSelectionTileSize() const;
             QFont getMonospaceFont() const;
             ModifierPattern* getModifierPattern();
-            void setLeftPlayer(QString a_player_name, PlayerType a_player_type);
-            void setRightPlayer(QString a_player_name, PlayerType a_player_type);
-            const std::pair<QString, PlayerType> getLeftPlayer() const;
-            const std::pair<QString, PlayerType> getRightPlayer() const;
+            PlayerSettings* getLeftPlayer();
+            PlayerSettings* getRightPlayer();
 
         private:
+            QMainWindow* main_window;
             std::vector<Language> languages;
             Language* current_language;
             QSize board_dimensions{15,15};
@@ -52,10 +57,8 @@ namespace wf
             QSize selection_tile_size{64,64};
             QFont monospace_font;
             ModifierPattern modifier_pattern;
-            QString left_player_name{"Player 1"};
-            QString right_player_name{"Player 2"};
-            PlayerType left_player_type = PlayerType::Human;
-            PlayerType right_player_type = PlayerType::AI;
+            PlayerSettings left_player;
+            PlayerSettings right_player;
     };
 }
 #endif // __SETTINGS_H__

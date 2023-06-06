@@ -88,6 +88,12 @@ target_link_libraries(
     VirtualTile
 )
 
+add_library(PlayerSettings PlayerSettings.cpp)
+target_link_libraries(
+    PlayerSettings
+    Qt5::Widgets
+)
+
 add_library(ProposalInfo ProposalInfo.cpp)
 target_link_libraries(
     ProposalInfo
@@ -120,6 +126,7 @@ target_link_libraries(
     Qt5::Widgets
     Language
     ModifierPattern
+    PlayerSettings
 )
 
 add_library(SettingsDialog SettingsDialog.cpp)

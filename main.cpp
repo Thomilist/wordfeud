@@ -27,16 +27,22 @@ SOFTWARE.
 */
 
 #include <QApplication>
-#include <QMainWindow>
+#include <QCoreApplication>
 #include <QFile>
+#include <QMainWindow>
 #include <QTextStream>
 
 #include "src/ForwardDeclarations.hpp"
+
 #include "src/Wordfeud.hpp"
 
 int main(int argc, char* argv[])
 {
     QApplication application{argc, argv};
+
+    QCoreApplication::setOrganizationName("Thomilist");
+    QCoreApplication::setApplicationName("wordfeud");
+    QCoreApplication::setApplicationVersion("0.1.0");
 
     QFile stylesheet{":/dark/stylesheet.qss"};
     stylesheet.open(QFile::ReadOnly | QFile::Text);

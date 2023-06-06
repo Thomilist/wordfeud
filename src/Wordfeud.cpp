@@ -4,7 +4,8 @@
 namespace wf
 {
     Wordfeud::Wordfeud()
-    : game(&settings, &main_window)
+    : settings(&main_window)
+    , game(&settings, &main_window)
     , game_menu("Game", &main_window)
     , start_new_game("New game", &game_menu)
     , open_settings("Settings...", &game_menu)

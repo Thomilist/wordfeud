@@ -9,3 +9,6 @@ valgrind/*
 
 # Releases
 releases/*
+
+# Sourcetrail project files
+*.srctrl*

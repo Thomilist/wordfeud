@@ -3,21 +3,79 @@
 
 namespace wf
 {
-    Settings::Settings()
-        : languages{
+    Settings::Settings(QMainWindow* a_main_window)
+        : main_window(a_main_window)
+        , languages{
             Language{LanguageName::Danish},
             Language{LanguageName::English}}
     {
-        setLanguage(LanguageName::English);
-        
         int monospace_font_family_id = QFontDatabase::addApplicationFont(":/fonts/NotoSansMono-Regular.ttf");
         QString monospace_font_family = QFontDatabase::applicationFontFamilies(monospace_font_family_id).at(0);
         monospace_font.setFamily(monospace_font_family);
         monospace_font.setStyleHint(QFont::TypeWriter);
+
+        load();
     }
     
     Settings::~Settings()
-    { }
+    {
+        save();
+    }
+    
+    void Settings::save()
+    {
+        // Save main window dimensions and position
+        setValue("window/geometry", main_window->saveGeometry());
+
+        // Save dictionary language
+        setValue("settings/dictionary", getLanguage()->asString());
+
+        // Save modifier distribution
+        setValue("settings/modifiers", getModifierPattern()->getDistributionAsText());
+
+        // Save left player
+        setValue("player_left/name", getLeftPlayer()->getName());
+        setValue("player_left/type", getLeftPlayer()->getTypeAsString());
+
+        // Save right player
+        setValue("player_right/name", getRightPlayer()->getName());
+        setValue("player_right/type", getRightPlayer()->getTypeAsString());
+
+        return;
+    }
+    
+    void Settings::load()
+    {
+        // Load main window dimensions and position
+        const QByteArray geometry = value("window/geometry", QByteArray()).toByteArray();
+        
+        if (!geometry.isEmpty())
+        {
+            main_window->restoreGeometry(geometry);
+        }
+
+        // Load dictionary language
+        QString dictionary = value("settings/dictionary", "English").toString();
+        setLanguage(dictionary);
+
+        // Load modifier distribution
+        QString modifier_distribution = value("settings/modifiers", "Default").toString();
+        getModifierPattern()->setDistribution(modifier_distribution);
+
+        // Load left player
+        QString left_player_name = value("player_left/name", "Player 1").toString();
+        QString left_player_type = value("player_left/type", "Human").toString();
+        getLeftPlayer()->setName(left_player_name);
+        getLeftPlayer()->setTypeWithString(left_player_type);
+
+        // Load right player
+        QString right_player_name = value("player_right/name", "Player 2").toString();
+        QString right_player_type = value("player_right/type", "AI").toString();
+        getRightPlayer()->setName(right_player_name);
+        getRightPlayer()->setTypeWithString(right_player_type);
+
+        return;
+    }
     
     void Settings::setGridDimensions(int a_rows, int a_collumns)
     {
@@ -108,27 +166,13 @@ namespace wf
         return &modifier_pattern;
     }
     
-    void Settings::setLeftPlayer(QString a_player_name, PlayerType a_player_type)
+    PlayerSettings* Settings::getLeftPlayer()
     {
-        left_player_name = a_player_name;
-        left_player_type = a_player_type;
-        return;
+        return &left_player;
     }
     
-    void Settings::setRightPlayer(QString a_player_name, PlayerType a_player_type)
+    PlayerSettings* Settings::getRightPlayer()
     {
-        right_player_name = a_player_name;
-        right_player_type = a_player_type;
-        return;
-    }
-    
-    const std::pair<QString, PlayerType> Settings::getLeftPlayer() const
-    {
-        return {left_player_name, left_player_type};
-    }
-    
-    const std::pair<QString, PlayerType> Settings::getRightPlayer() const
-    {
-        return {right_player_name, right_player_type};
+        return &right_player;
     }
 }

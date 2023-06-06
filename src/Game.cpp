@@ -175,8 +175,8 @@ namespace wf
     
     void Game::createPlayers()
     {
-        createPlayer(settings->getLeftPlayer().first, QColor{128, 0, 0});
-        createPlayer(settings->getRightPlayer().first, QColor{0, 0, 128});
+        createPlayer(settings->getLeftPlayer()->getName(), QColor{128, 0, 0});
+        createPlayer(settings->getRightPlayer()->getName(), QColor{0, 0, 128});
         return;
     }
     

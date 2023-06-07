@@ -33,12 +33,14 @@ namespace wf
     
     const QString PlayerSettings::getTypeAsString() const
     {
-        return typeEnumToString.at(type);
+        auto iterator = std::ranges::find(all_types, type, &std::pair<PlayerType, QString>::first);
+        return iterator->second;
     }
     
     void PlayerSettings::setTypeWithString(QString a_type)
     {
-        setType(typeStringToEnum.at(a_type));
+        auto iterator = std::ranges::find(all_types, a_type, &std::pair<PlayerType, QString>::second);
+        setType(iterator->first);
         return;
     }
     
@@ -51,5 +53,10 @@ namespace wf
     {
         type = a_type;
         return;
+    }
+    
+    const std::vector<std::pair<PlayerType, QString>>& PlayerSettings::getAllTypes() const
+    {
+        return all_types;
     }
 }

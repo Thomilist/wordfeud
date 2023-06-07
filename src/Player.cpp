@@ -4,11 +4,13 @@ namespace wf
 {
     Player::Player(
         QString a_display_name,
+        PlayerType a_type,
         QColor a_color,
         Settings* a_settings,
         RenderedTile* a_selection)
         : settings(a_settings)
         , display_name(a_display_name)
+        , type(a_type)
         , name_color(a_color)
         , hand(BoardType::Hand, a_settings, a_selection)
     {
@@ -130,7 +132,23 @@ namespace wf
     
     QString Player::getDisplayName() const
     {
-        return display_name;
+        QString full_display_name;
+        
+        switch (type)
+        {
+            case PlayerType::Human:
+            {
+                full_display_name = display_name;
+                break;
+            }
+            case PlayerType::AI:
+            {
+                full_display_name = display_name + " [AI]";
+                break;
+            }
+        }
+
+        return full_display_name;
     }
     
     void Player::setTurn(bool a_has_turn)
@@ -181,5 +199,16 @@ namespace wf
         }
 
         return penalty;
+    }
+    
+    void Player::setType(PlayerType a_type)
+    {
+        type = a_type;
+        return;
+    }
+    
+    PlayerType Player::getType()
+    {
+        return type;
     }
 }

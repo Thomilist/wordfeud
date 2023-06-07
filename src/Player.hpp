@@ -16,6 +16,8 @@
 #include "RenderedTile.hpp"
 #include "Settings.hpp"
 
+#include "PlayerType.hpp"
+
 namespace wf
 {
     class Player : public QObject
@@ -25,6 +27,7 @@ namespace wf
         public:
             Player(
                 QString a_display_name,
+                PlayerType a_type,
                 QColor a_color,
                 Settings* a_settings,
                 RenderedTile* a_selection);
@@ -44,12 +47,15 @@ namespace wf
             void setColor(QColor a_color);
             QColor getColor();
             int getLetterPenaltyPoints();
+            void setType(PlayerType a_type);
+            PlayerType getType();
         
         protected:
             Settings* settings;
 
         private:
             QString display_name;
+            PlayerType type;
             QColor name_color;
             int score = 0;
             QWidget hand_widget;

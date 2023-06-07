@@ -11,6 +11,7 @@ namespace wf
         VirtualBoard* a_board)
         : Player(
             a_display_name,
+            PlayerType::AI,
             a_color,
             a_settings,
             a_selection)

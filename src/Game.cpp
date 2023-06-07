@@ -158,11 +158,12 @@ namespace wf
         return;
     }
     
-    void Game::createPlayer(QString a_display_name, QColor a_color)
+    void Game::createPlayer(QString a_display_name, PlayerType a_type, QColor a_color)
     {
         auto player = new Player
         (
             a_display_name,
+            a_type,
             a_color,
             settings,
             &selection
@@ -175,8 +176,11 @@ namespace wf
     
     void Game::createPlayers()
     {
-        createPlayer(settings->getLeftPlayer()->getName(), QColor{128, 0, 0});
-        createPlayer(settings->getRightPlayer()->getName(), QColor{0, 0, 128});
+        PlayerSettings* left_player = settings->getLeftPlayer();
+        PlayerSettings* right_player = settings->getRightPlayer();
+        
+        createPlayer(left_player->getName(), left_player->getType(), QColor{128, 0, 0});
+        createPlayer(right_player->getName(), right_player->getType(), QColor{0, 0, 128});
         return;
     }
     

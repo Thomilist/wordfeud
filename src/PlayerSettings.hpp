@@ -1,7 +1,8 @@
 #ifndef __PLAYERSETTINGS_H__
 #define __PLAYERSETTINGS_H__
 
-#include <map>
+#include <ranges>
+#include <vector>
 
 #include <QString>
 
@@ -23,21 +24,16 @@ namespace wf
             void setTypeWithString(QString a_type);
             PlayerType getType() const;
             void setType(PlayerType a_type);
+            const std::vector<std::pair<PlayerType, QString>>& getAllTypes() const;
         
         private:
             QString name;
             PlayerType type;
-            
-            const std::map<PlayerType, QString> typeEnumToString =
-            {
-                {PlayerType::Human, "Human"},
-                {PlayerType::AI,    "AI"}
-            };
 
-            const std::map<QString, PlayerType> typeStringToEnum =
+            const std::vector<std::pair<PlayerType, QString>> all_types =
             {
-                {"Human",   PlayerType::Human},
-                {"AI",      PlayerType::AI}
+                {PlayerType::AI, "AI"},
+                {PlayerType::Human, "Human"}
             };
     };
 }

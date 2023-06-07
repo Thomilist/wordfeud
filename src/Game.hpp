@@ -42,6 +42,7 @@
 #include "LanguageName.hpp"
 #include "LetterStatus.hpp"
 #include "ModifierType.hpp"
+#include "PlayerType.hpp"
 #include "PlayType.hpp"
 
 namespace wf
@@ -80,7 +81,7 @@ namespace wf
             [[nodiscard]] Letter* removeLetter(int a_collumn, int a_row);
             void placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite = false);
             void placeModifiers(std::vector<Modifier*> a_modifiers);
-            void createPlayer(QString a_display_name, QColor a_color);
+            void createPlayer(QString a_display_name, PlayerType a_type, QColor a_color);
             void createPlayers();
             void deletePlayers();
             void nextPlayer();

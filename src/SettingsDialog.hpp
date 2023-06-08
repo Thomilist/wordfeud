@@ -39,6 +39,7 @@ namespace wf
 
         public slots:
             void saveSettings();
+            void setNameFieldStates(int a_state);
         
         private:
             void createLanguageDropdown();

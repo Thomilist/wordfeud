@@ -20,6 +20,10 @@ namespace wf
         createRightPlayerSettingsGroup();
         createButtons();
 
+        connect(&left_player_random_name_checkbox, &QCheckBox::stateChanged, this, &SettingsDialog::setNameFieldStates);
+        connect(&right_player_random_name_checkbox, &QCheckBox::stateChanged, this, &SettingsDialog::setNameFieldStates);
+
+        setNameFieldStates(0);
         layout()->setSizeConstraint(QLayout::SetFixedSize);
     }
     
@@ -91,6 +95,8 @@ namespace wf
         left_player_name_edit.setMaxLength(24);
         left_player_name_edit.setFixedWidth(199);
 
+        left_player_random_name_checkbox.setChecked(settings->getLeftPlayer()->usesRandomName());
+
         // Left player type
         left_player_settings_layout.addWidget(&left_player_type_label, 2, 0);
         left_player_settings_layout.addWidget(&left_player_type_dropdown, 2, 1);
@@ -130,6 +136,8 @@ namespace wf
         right_player_name_edit.setText(settings->getRightPlayer()->getName());
         right_player_name_edit.setMaxLength(24);
         right_player_name_edit.setFixedWidth(199);
+
+        right_player_random_name_checkbox.setChecked(settings->getRightPlayer()->usesRandomName());
 
         // Right player type
         right_player_settings_layout.addWidget(&right_player_type_label, 2, 0);
@@ -181,14 +189,24 @@ namespace wf
         settings->setLanguage(language_dropdown.currentText());
         settings->getModifierPattern()->setDistribution(modifier_distribution_dropdown.currentText());
         
+
         PlayerSettings* left_player = settings->getLeftPlayer();
-        PlayerSettings* right_player = settings->getRightPlayer();
-
         left_player->setName(left_player_name_edit.text());
-        right_player->setName(right_player_name_edit.text());
-
         left_player->setTypeWithString(left_player_type_dropdown.currentText());
+        left_player->setRandomNameUse(left_player_random_name_checkbox.checkState());
+
+        PlayerSettings* right_player = settings->getRightPlayer();
+        right_player->setName(right_player_name_edit.text());
         right_player->setTypeWithString(right_player_type_dropdown.currentText());
+        right_player->setRandomNameUse(right_player_random_name_checkbox.checkState());
+
+        return;
+    }
+    
+    void SettingsDialog::setNameFieldStates(int)
+    {
+        left_player_name_edit.setDisabled(left_player_random_name_checkbox.checkState());
+        right_player_name_edit.setDisabled(right_player_random_name_checkbox.checkState());
 
         return;
     }

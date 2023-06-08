@@ -59,4 +59,15 @@ namespace wf
     {
         return all_types;
     }
+    
+    bool PlayerSettings::usesRandomName()
+    {
+        return use_random_name;
+    }
+    
+    void PlayerSettings::setRandomNameUse(bool a_state)
+    {
+        use_random_name = a_state;
+        return;
+    }
 }

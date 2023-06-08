@@ -25,10 +25,13 @@ namespace wf
             PlayerType getType() const;
             void setType(PlayerType a_type);
             const std::vector<std::pair<PlayerType, QString>>& getAllTypes() const;
+            bool usesRandomName();
+            void setRandomNameUse(bool a_state);
         
         private:
             QString name;
             PlayerType type;
+            bool use_random_name;
 
             const std::vector<std::pair<PlayerType, QString>> all_types =
             {

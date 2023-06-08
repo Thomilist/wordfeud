@@ -36,10 +36,12 @@ namespace wf
         // Save left player
         setValue("player_left/name", getLeftPlayer()->getName());
         setValue("player_left/type", getLeftPlayer()->getTypeAsString());
+        setValue("player_left/random_name", getLeftPlayer()->usesRandomName());
 
         // Save right player
         setValue("player_right/name", getRightPlayer()->getName());
         setValue("player_right/type", getRightPlayer()->getTypeAsString());
+        setValue("player_right/random_name", getRightPlayer()->usesRandomName());
 
         return;
     }
@@ -65,14 +67,18 @@ namespace wf
         // Load left player
         QString left_player_name = value("player_left/name", "Player 1").toString();
         QString left_player_type = value("player_left/type", "Human").toString();
+        bool left_player_uses_random_name = value("player_left/random_name", "false").toBool();
         getLeftPlayer()->setName(left_player_name);
         getLeftPlayer()->setTypeWithString(left_player_type);
+        getLeftPlayer()->setRandomNameUse(left_player_uses_random_name);
 
         // Load right player
         QString right_player_name = value("player_right/name", "Player 2").toString();
         QString right_player_type = value("player_right/type", "AI").toString();
+        bool right_player_uses_random_name = value("player_right/random_name", "false").toBool();
         getRightPlayer()->setName(right_player_name);
         getRightPlayer()->setTypeWithString(right_player_type);
+        getRightPlayer()->setRandomNameUse(right_player_uses_random_name);
 
         return;
     }

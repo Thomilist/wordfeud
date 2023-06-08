@@ -75,7 +75,7 @@ namespace wf
         // Load right player
         QString right_player_name = value("player_right/name", "Player 2").toString();
         QString right_player_type = value("player_right/type", "AI").toString();
-        bool right_player_uses_random_name = value("player_right/random_name", "false").toBool();
+        bool right_player_uses_random_name = value("player_right/random_name", "true").toBool();
         getRightPlayer()->setName(right_player_name);
         getRightPlayer()->setTypeWithString(right_player_type);
         getRightPlayer()->setRandomNameUse(right_player_uses_random_name);

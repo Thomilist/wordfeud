@@ -160,14 +160,39 @@ namespace wf
     
     void Game::createPlayer(QString a_display_name, PlayerType a_type, QColor a_color)
     {
-        auto player = new Player
-        (
-            a_display_name,
-            a_type,
-            a_color,
-            settings,
-            &selection
-        );
+        Player* player;
+        
+        switch (a_type)
+        {
+            case PlayerType::AI:
+            {
+                player = new PlayerAI
+                (
+                    a_display_name,
+                    a_color,
+                    settings,
+                    &selection,
+                    &board
+                );
+
+                break;
+            }
+            case PlayerType::Human:
+            {
+                player = new Player
+                (
+                    a_display_name,
+                    a_type,
+                    a_color,
+                    settings,
+                    &selection
+                );
+                
+                break;
+            }
+        }
+        
+        
 
         hands.addWidget(player->getHandCentered());
         all_players.push_back(player);
@@ -203,8 +228,6 @@ namespace wf
         }
 
         all_players[current_player_index]->setTurn(false);
-        setCorrectButtonState();
-        showCorrectButtons();
 
         if (isGameOver())
         {
@@ -239,6 +262,9 @@ namespace wf
 
             hands.setCurrentIndex(current_player_index);
         }
+        
+        setCorrectButtonState();
+        showCorrectButtons();
 
         repaint();
         return;
@@ -518,6 +544,10 @@ namespace wf
         {
             buttons.getConfirmButton()->setDisabled(confirm_button_state);
         }
+
+        bool disable_player_input = all_players[current_player_index]->getType() == PlayerType::AI;
+        hands.setDisabled(disable_player_input);
+        buttons.setDisabled(disable_player_input);
 
         return;
     }

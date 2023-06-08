@@ -92,8 +92,8 @@ namespace wf
         left_player_name_edit.setValidator(&left_player_name_validator);
 
         left_player_name_edit.setText(settings->getLeftPlayer()->getName());
-        left_player_name_edit.setMaxLength(24);
-        left_player_name_edit.setFixedWidth(199);
+        left_player_name_edit.setMaxLength(max_name_length);
+        left_player_name_edit.setFixedWidth(name_edit_width);
 
         left_player_random_name_checkbox.setChecked(settings->getLeftPlayer()->usesRandomName());
 
@@ -134,8 +134,8 @@ namespace wf
         right_player_name_edit.setValidator(&right_player_name_validator);
 
         right_player_name_edit.setText(settings->getRightPlayer()->getName());
-        right_player_name_edit.setMaxLength(24);
-        right_player_name_edit.setFixedWidth(199);
+        right_player_name_edit.setMaxLength(max_name_length);
+        right_player_name_edit.setFixedWidth(name_edit_width);
 
         right_player_random_name_checkbox.setChecked(settings->getRightPlayer()->usesRandomName());
 

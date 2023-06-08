@@ -30,6 +30,7 @@
 #include "Modifier.hpp"
 #include "ModifierPattern.hpp"
 #include "Player.hpp"
+#include "PlayerAI.hpp"
 #include "ProposalInfo.hpp"
 #include "RenderedBoard.hpp"
 #include "RenderedTile.hpp"

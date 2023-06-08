@@ -1,8 +1,6 @@
 #ifndef __PLAYERAI_H__
 #define __PLAYERAI_H__
 
-#include <unordered_set>
-
 #include <QChar>
 #include <QColor>
 #include <QString>
@@ -45,9 +43,6 @@ namespace wf
 
             VirtualBoard board;
             QTimer check_turn_timer;
-            int longest_possible_word;
-            std::unordered_set<QString> word_list;
-            std::unordered_set<QString> reduced_word_list;
     };
 }
 

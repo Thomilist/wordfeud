@@ -160,7 +160,7 @@ namespace wf
     
     void Game::createPlayer(QString a_display_name, PlayerType a_type, QColor a_color)
     {
-        Player* player;
+        Player* player = nullptr;
         
         switch (a_type)
         {
@@ -191,8 +191,6 @@ namespace wf
                 break;
             }
         }
-        
-        
 
         hands.addWidget(player->getHandCentered());
         all_players.push_back(player);

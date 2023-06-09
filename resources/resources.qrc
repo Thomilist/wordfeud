@@ -1,9 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <!--
     <file>words/english.txt</file>
     <file>words/cor1.02.tsv</file>
-    -->
     <file>letters/english.csv</file>
     <file>letters/danish.csv</file>
     <file>fonts/NotoSansMono-Regular.ttf</file>

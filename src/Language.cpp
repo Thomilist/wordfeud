@@ -9,24 +9,24 @@ namespace wf
             case LanguageName::English:
             {
                 language_string = "English";
-                //word_list.reserve(370105);
-                //loadWordListFromFilePlain(":/words/english.txt");
-                word_list =
-                {
-                    #include "../resources/words/English_word_list_export.txt"
-                };
+                word_list.reserve(370105);
+                loadWordListFromFilePlain(":/words/english.txt");
+                //word_list =
+                //{
+                //    #include "../resources/words/English_word_list_export.txt"
+                //};
                 loadLettersFromFile(":/letters/english.csv");
                 break;
             }
             case LanguageName::Danish:
             {
                 language_string = "Danish";
-                //word_list.reserve(530916);
-                //loadWordListFromFileCOR(":/words/cor1.02.tsv");
-                word_list =
-                {
-                    #include "../resources/words/Danish_word_list_export.txt"
-                };
+                word_list.reserve(530916);
+                loadWordListFromFileCOR(":/words/cor1.02.tsv");
+                //word_list =
+                //{
+                //    #include "../resources/words/Danish_word_list_export.txt"
+                //};
                 loadLettersFromFile(":/letters/danish.csv");
                 break;
             }

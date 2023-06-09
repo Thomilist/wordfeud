@@ -35,6 +35,7 @@ namespace wf
             void loadLettersFromFile(QString a_file_path);
             void loadWordListFromFilePlain(QString a_file_path);
             void loadWordListFromFileCOR(QString a_file_path);
+            void exportWordList();
             std::vector<LetterData> letter_list;
             std::unordered_map<QString, QString> letter_transformations;
             std::unordered_set<QString> word_list;

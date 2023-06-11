@@ -30,6 +30,7 @@ SOFTWARE.
 #include <QCoreApplication>
 #include <QFile>
 #include <QMainWindow>
+#include <QObject>
 #include <QTextStream>
 
 #include "src/ForwardDeclarations.hpp"
@@ -50,6 +51,7 @@ int main(int argc, char* argv[])
     application.setStyleSheet(stylesheet_stream.readAll());
 
     wf::Wordfeud wordfeud;
+    QObject::connect(&application, &QApplication::aboutToQuit, &wordfeud, &wf::Wordfeud::closeWindow);
 
     return application.exec();
 }

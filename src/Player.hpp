@@ -42,7 +42,7 @@ namespace wf
             int getScore();
             QString getScoreAsText() const;
             QString getDisplayName() const;
-            virtual void setTurn(bool a_has_turn);
+            void setTurn(bool a_has_turn);
             bool hasTurn();
             void setColor(QColor a_color);
             QColor getColor();

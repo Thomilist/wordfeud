@@ -56,10 +56,18 @@ namespace wf
         showCorrectButtons();
 
         initialiseConnections();
+        player_AI_thread.start();
+
+        if (all_players[current_player_index]->getType() == PlayerType::AI)
+        {
+            emit playAI();
+        }
     }
     
     Game::~Game()
     {
+        player_AI_thread.quit();
+        player_AI_thread.wait();
         deletePlayers();
     }
     
@@ -175,6 +183,8 @@ namespace wf
                     &board
                 );
 
+                player->moveToThread(&player_AI_thread);
+
                 break;
             }
             case PlayerType::Human:
@@ -263,13 +273,20 @@ namespace wf
         
         setCorrectButtonState();
         showCorrectButtons();
-
         repaint();
+
+        if (all_players[current_player_index]->getType() == PlayerType::AI)
+        {
+            emit playAI();
+        }
+
         return;
     }
     
     void Game::reset()
     {
+        terminatePlayerAI();
+        
         state = GameState::Play;
         current_player_index = 0;
         consecutive_passes = 0;
@@ -305,9 +322,31 @@ namespace wf
         buttons.setTileCount(letter_pool.getRemainingCount());
         setCorrectButtonState();
         showCorrectButtons();
-
         repaint();
 
+        player_AI_thread.start();
+        
+        if (all_players[current_player_index]->getType() == PlayerType::AI)
+        {
+            emit playAI();
+        }
+
+        return;
+    }
+    
+    void Game::terminatePlayerAI()
+    {
+        for (auto player : all_players)
+        {
+            if (player->getType() == PlayerType::AI)
+            {
+                PlayerAI* player_ai = dynamic_cast<PlayerAI*>(player);
+                player_ai->cancelTurn();
+            }
+        }
+
+        player_AI_thread.quit();
+        player_AI_thread.wait();
         return;
     }
     
@@ -584,9 +623,9 @@ namespace wf
     
     void Game::initialisePlayerConnections()
     {
-        // Hands
-        for (auto& player : all_players)
+        for (auto player : all_players)
         {
+            // Hands
             for (int collumn = 0; collumn < settings->getHandDimensions().width(); ++collumn)
             {
                 for (int row = 0; row < settings->getHandDimensions().height(); ++row)
@@ -596,6 +635,16 @@ namespace wf
                     connect(tile, &RenderedTile::markForSwap, this, &Game::addToSwapLetters);
                     connect(tile, &RenderedTile::unmarkForSwap, this, &Game::removeFromSwapLetters);
                 }
+            }
+
+            // Player AI threading
+            if (player->getType() == PlayerType::AI)
+            {
+                PlayerAI* player_ai = dynamic_cast<PlayerAI*>(player);
+
+                connect(this, &Game::playAI, player_ai, &PlayerAI::playIfTurn);
+                connect(player_ai, &PlayerAI::playComplete, this, &Game::playButton);
+                connect(player_ai, &PlayerAI::letterPlaced, this, &Game::repaintHandAndBoard);
             }
         }
 
@@ -713,6 +762,13 @@ namespace wf
         return;
     }
     
+    void Game::repaintHandAndBoard()
+    {
+        all_players[current_player_index]->getHand()->repaint();
+        board.repaint();
+        return;
+    }
+    
     int Game::swapLetters()
     {
         std::vector<Letter*> swapped_letters;
@@ -755,7 +811,9 @@ namespace wf
 
         for (auto& player : all_players)
         {
-            if (player->getHand()->getLetterCount() == 0 && board.getProposedLetterCount() == 0)
+            if (    player->getHand()->getLetterCount() == 0 
+                &&  board.getProposedLetterCount() == 0
+                &&  letter_pool.getRemainingCount() == 0)
             {
                 return true;
             }

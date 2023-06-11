@@ -18,6 +18,7 @@
 #include <QSize>
 #include <QStackedWidget>
 #include <QString>
+#include <QThread>
 #include <QWidget>
 
 #include "ForwardDeclarations.hpp"
@@ -59,6 +60,7 @@ namespace wf
             ~Game();
         
             void reset();
+            void terminatePlayerAI();
 
         public slots:
             void playButton();
@@ -75,6 +77,10 @@ namespace wf
             void assignWildcardLetter(RenderedTile* a_tile);
             void addToSwapLetters(RenderedTile* a_tile);
             void removeFromSwapLetters(RenderedTile* a_tile);
+            void repaintHandAndBoard();
+        
+        signals:
+            void playAI();
 
         private:
             void loadLetters();
@@ -115,6 +121,7 @@ namespace wf
             ButtonPanel buttons;
             std::default_random_engine rng;
             int consecutive_passes = 0;
+            QThread player_AI_thread;
     };
 }
 

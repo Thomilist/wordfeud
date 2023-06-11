@@ -28,6 +28,7 @@ namespace wf
             ~Wordfeud();
 
         public slots:
+            void closeWindow();
             void startNewGame();
             void openGitHub();
 

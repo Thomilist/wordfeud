@@ -340,7 +340,10 @@ namespace wf
 
         for (auto tile : proposed_letters)
         {
-            letters.push_back(tile->VirtualTile::removeLetter());
+            if (tile->getLetter() != nullptr)
+            {
+                letters.push_back(tile->VirtualTile::removeLetter());
+            }
         }
 
         proposed_letters.clear();

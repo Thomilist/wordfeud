@@ -22,25 +22,10 @@ namespace wf
         , best_play(
             a_settings,
             a_board)
-    {
-        check_turn_timer.setTimerType(Qt::VeryCoarseTimer);
-        connect(&check_turn_timer, &QTimer::timeout, this, &PlayerAI::playIfTurn);
-    }
+    { }
     
     PlayerAI::~PlayerAI()
     { }
-    
-    void PlayerAI::setTurn(bool a_has_turn)
-    {
-        has_turn = a_has_turn;
-        
-        if (a_has_turn)
-        {
-            check_turn_timer.start(1000);
-        }
-        
-        return;
-    }
     
     void PlayerAI::playIfTurn()
     {
@@ -52,13 +37,35 @@ namespace wf
         return;
     }
     
+    void PlayerAI::cancelTurn()
+    {
+        cancelled = true;
+        return;
+    }
+    
     void PlayerAI::executeTurn()
     {
-        check_turn_timer.stop();
         startOfTurnSetup();
         findBestPlay();
+
+        if (cancelled)
+        {
+            return;
+        }
+
         executeBestPlay();
+        endTurn();
         
+        return;
+    }
+    
+    void PlayerAI::endTurn()
+    {
+        if (best_play.getProposedPlayPoints() > 0)
+        {
+            emit playComplete();
+        }
+
         return;
     }
     
@@ -156,6 +163,11 @@ namespace wf
     // For vertical, fixed index = collumn, variable index = row
     void PlayerAI::findPlayRecursively(int a_collumn, int a_row, Direction a_direction)
     {
+        if (cancelled)
+        {
+            return;
+        }
+        
         if (indexOutOfBounds(a_collumn, a_row))
         {
             return;
@@ -304,8 +316,7 @@ namespace wf
                 }
             }
 
-            getHand()->repaint();
-            live_board->repaint();
+            emit letterPlaced();
             ++index;
         }
     }

@@ -8,7 +8,6 @@
 #include <QPoint>
 #include <QString>
 #include <QThread>
-#include <QTimer>
 
 #include "ForwardDeclarations.hpp"
 
@@ -34,6 +33,8 @@ namespace wf
     
     class PlayerAI : public Player
     {
+        Q_OBJECT
+        
         public:
             PlayerAI(
                 QString a_display_name,
@@ -43,13 +44,19 @@ namespace wf
                 RenderedBoard* a_board);
             ~PlayerAI();
 
-            virtual void setTurn(bool a_has_turn);
-
         public slots:
             void playIfTurn();
+            void cancelTurn();
+        
+        signals:
+            void playComplete();
+            void passTurn();
+            void swapAllTiles();
+            void letterPlaced();
 
         private:
             void executeTurn();
+            void endTurn();
             void startOfTurnSetup();
             void fetchAvailableLetters();
             void findBestPlay();
@@ -64,11 +71,11 @@ namespace wf
             void executeBestPlay();
             void setBestPlayWildcardLetters(std::vector<VirtualTile*> a_tiles);
 
+            bool cancelled = false;
             RenderedBoard* live_board;
             VirtualBoard sandbox_board;
             VirtualBoard best_play;
             std::vector<QChar> best_play_wildcard_letters;
-            QTimer check_turn_timer;
             std::vector<Letter*> available_letters;
             int available_letter_count;
     };

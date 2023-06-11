@@ -27,6 +27,12 @@ namespace wf
     Wordfeud::~Wordfeud()
     { }
     
+    void Wordfeud::closeWindow()
+    {
+        game.terminatePlayerAI();
+        return;
+    }
+    
     void Wordfeud::startNewGame()
     {
         game.reset();

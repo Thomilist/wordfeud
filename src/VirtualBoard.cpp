@@ -21,6 +21,8 @@ namespace wf
     void VirtualBoard::setWithBoard(VirtualBoard* a_board)
     {
         board.clear();
+        clearProposed();
+        proposed_play_evaluated = false;
         std::vector<VirtualTile> tile_collumn;
         
         for (int collumn = 0; collumn < a_board->getGridDimensions().width(); ++collumn)
@@ -28,23 +30,82 @@ namespace wf
             for (int row = 0; row < a_board->getGridDimensions().height(); ++row)
             {
                 tile_collumn.push_back(VirtualTile(a_board->getTileAtPosition(collumn, row)));
+                tile_collumn.back().setGridPosition(collumn, row);
             }
 
             board.push_back(tile_collumn);
             tile_collumn.clear();
         }
 
+        assignNeighbours();
+        grid_dimensions = a_board->getGridDimensions();
+
         return;
+    }
+    
+    void VirtualBoard::importProposedLetters(std::vector<VirtualTile*> a_tiles)
+    {
+        clearProposed();
+
+        QPoint position;
+        Letter* letter;
+        VirtualTile* destination_tile;
+        
+        for (auto origin_tile : a_tiles)
+        {
+            position = origin_tile->getGridPosition();
+            letter = origin_tile->getLetter();
+            destination_tile = getTileAtPosition(position.x(), position.y());
+
+            destination_tile->placeLetter(letter);
+            proposeLetter(destination_tile);
+        }
+
+        return;
+    }
+    
+    std::vector<VirtualTile*> VirtualBoard::getProposedLetters()
+    {
+        return proposed_letters;
     }
     
     VirtualTile* VirtualBoard::getTileAtPosition(int a_collumn, int a_row)
     {
+        if (    a_collumn < 0
+            ||  a_row < 0
+            ||  a_collumn >= grid_dimensions.width()
+            ||  a_row >= grid_dimensions.height())
+        {
+            return nullptr;
+        }
+        
         return &board[a_collumn][a_row];
     }
     
     QSize VirtualBoard::getGridDimensions() const
     {
         return grid_dimensions;
+    }
+    
+    int VirtualBoard::getGridDimensionInDirection(Direction a_direction)
+    {
+        int size = 0;
+        
+        switch (a_direction)
+        {
+            case Direction::Horisontal:
+            {
+                size = getGridDimensions().width();
+                break;
+            }
+            case Direction::Vertical:
+            {
+                size = getGridDimensions().height();
+                break;
+            }
+        }
+
+        return size;
     }
     
     int VirtualBoard::getTileCount() const
@@ -73,16 +134,34 @@ namespace wf
         return count;
     }
     
-    void VirtualBoard::evaluateProposedPlay()
+    void VirtualBoard::evaluateProposedPlay(bool a_force)
     {
+        if (a_force)
+        {
+            proposed_play_evaluated = false;
+        }
+
+        if (proposed_play_evaluated)
+        {
+            return;
+        }
+
         proposed_play_points = 0;
         
-        isPlacementValid();
+        if (!isPlacementValid())
+        {
+            proposed_words_valid = false;
+            proposed_play_evaluated = true;
+            return;
+        }
+
         findProposedWords();
         findInvalidProposedWords();
         calculateProposedPoints();
 
         proposed_play_evaluated = true;
+
+        return;
     }
     
     bool VirtualBoard::isPlacementValid()
@@ -94,20 +173,19 @@ namespace wf
         
         proposed_placement_valid = true;
 
-        if (!isPlacementLinear())
-        {
-            proposed_placement_valid &= false;
-        }
-
         for (const auto letter : proposed_letters)
         {
             checked_tiles.clear();
             
             if (!isPlacementConnectedToStart(letter))
             {
-                proposed_placement_valid &= false;
-                break;
+                return proposed_placement_valid = false;
             }
+        }
+
+        if (!isPlacementLinear())
+        {
+            return proposed_placement_valid = false;
         }
 
         return proposed_placement_valid;
@@ -130,7 +208,7 @@ namespace wf
             evaluateProposedPlay();
         }
 
-        return proposed_placement_valid & proposed_words_valid;
+        return proposed_placement_valid && proposed_words_valid;
     }
     
     int VirtualBoard::getProposedLetterCount()
@@ -237,6 +315,24 @@ namespace wf
         return;
     }
     
+    void VirtualBoard::assignNeighbours()
+    {
+        for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
+        {
+            for (int row = 0; row < grid_dimensions.height(); ++row)
+            {
+                VirtualTile* tile = getTileAtPosition(collumn, row);
+
+                tile->setNeighbour(getTileAtPosition(collumn, row - 1), TileNeighbour::Top);
+                tile->setNeighbour(getTileAtPosition(collumn + 1, row), TileNeighbour::Right);
+                tile->setNeighbour(getTileAtPosition(collumn, row + 1), TileNeighbour::Bottom);
+                tile->setNeighbour(getTileAtPosition(collumn - 1, row), TileNeighbour::Left);
+            }
+        }
+
+        return;
+    }
+    
     [[nodiscard]] std::vector<Letter*> VirtualBoard::clearProposed()
     {
         std::vector<Letter*> letters;
@@ -318,7 +414,7 @@ namespace wf
     {
         proposed_words.clear();
         
-        if (proposed_letters.size() == 0)
+        if (proposed_letters.empty())
         {
             return;
         }

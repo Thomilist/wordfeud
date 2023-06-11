@@ -60,7 +60,7 @@ namespace wf
                 letter->setStatus(LetterStatus::Proposed);
                 emit proposeLetter(this);
 
-                if (letter->getType() == LetterType::Wildcard)
+                if (letter->getType() == LetterType::Wildcard && letter->getWildcardText() == QChar{})
                 {
                     emit wildcardPlacedOnBoard(this);
                 }

@@ -18,7 +18,6 @@
 #include "VirtualBoard.hpp"
 
 #include "BoardType.hpp"
-#include "TileNeighbours.hpp"
 #include "TileInteractMode.hpp"
 
 namespace wf
@@ -42,7 +41,6 @@ namespace wf
         private:
             void createEmptyGrid();
             void updateBoardSize();
-            void assignNeighbours();
 
             Settings* settings;
             QGridLayout grid;

@@ -83,4 +83,14 @@ namespace wf
     {
         return all_distributions;
     }
+    
+    void ModifierPattern::reset()
+    {
+        for (auto& modifier : default_pattern)
+        {
+            modifier.setUsed(false);
+        }
+
+        return;
+    }
 }

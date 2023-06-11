@@ -294,6 +294,7 @@ namespace wf
         loadLetters();
         letter_pool.set(getAllLetters());
 
+        settings->getModifierPattern()->reset();
         placeModifiers(settings->getModifierPattern()->getModifiers());
 
         for (auto& player : all_players)
@@ -546,6 +547,7 @@ namespace wf
         bool disable_player_input = all_players[current_player_index]->getType() == PlayerType::AI;
         hands.setDisabled(disable_player_input);
         buttons.setDisabled(disable_player_input);
+        board.setDisabled(disable_player_input);
 
         return;
     }
@@ -685,6 +687,8 @@ namespace wf
             Letter* letter = a_tile->removeLetter();
             selection.placeLetter(letter);
         }
+
+        displayProposedPlayValue();
 
         return;
     }

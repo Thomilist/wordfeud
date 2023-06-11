@@ -28,6 +28,7 @@ namespace wf
             ModifierDistribution getDistribution() const;
             const QString getDistributionAsText() const;
             const std::vector<std::pair<ModifierDistribution, QString>> getAllDistributions() const;
+            void reset();
 
         private:
             ModifierDistribution current_distribution = ModifierDistribution::Default;

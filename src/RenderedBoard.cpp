@@ -70,24 +70,6 @@ namespace wf
         return;
     }
     
-    void RenderedBoard::assignNeighbours()
-    {
-        for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
-        {
-            for (int row = 0; row < grid_dimensions.height(); ++row)
-            {
-                RenderedTile* tile = getTileAtPosition(collumn, row);
-
-                tile->setNeighbour(getTileAtPosition(collumn, row - 1), TileNeighbour::Top);
-                tile->setNeighbour(getTileAtPosition(collumn + 1, row), TileNeighbour::Right);
-                tile->setNeighbour(getTileAtPosition(collumn, row + 1), TileNeighbour::Bottom);
-                tile->setNeighbour(getTileAtPosition(collumn - 1, row), TileNeighbour::Left);
-            }
-        }
-
-        return;
-    }
-    
     RenderedTile* RenderedBoard::getTileAtPosition(int a_collumn, int a_row)
     {
         if (    a_collumn < 0
@@ -153,6 +135,8 @@ namespace wf
     
     void RenderedBoard::reset()
     {
+        clearProposed();
+        
         for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
         {
             for (int row = 0; row < getGridDimensions().height(); ++row)

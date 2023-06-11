@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include <QPoint>
 #include <QSize>
 
 #include "ForwardDeclarations.hpp"
@@ -15,6 +16,7 @@
 #include "Word.hpp"
 
 #include "Direction.hpp"
+#include "TileNeighbours.hpp"
 
 namespace wf
 {
@@ -29,11 +31,14 @@ namespace wf
             ~VirtualBoard();
 
             void setWithBoard(VirtualBoard* a_board);
+            void importProposedLetters(std::vector<VirtualTile*> a_tiles);
+            std::vector<VirtualTile*> getProposedLetters();
             virtual VirtualTile* getTileAtPosition(int a_collumn, int a_row);
             QSize getGridDimensions() const;
+            int getGridDimensionInDirection(Direction a_direction);
             int getTileCount() const;
             int getLetterCount();
-            void evaluateProposedPlay();
+            void evaluateProposedPlay(bool a_force = false);
             bool isPlacementValid();
             bool areProposedWordsValid();
             bool isProposedPlayValid();
@@ -50,6 +55,8 @@ namespace wf
             std::vector<Letter*> clearProposed();
         
         protected:
+            void assignNeighbours();
+            
             std::vector<std::vector<VirtualTile>> board;
             QSize grid_dimensions;
 

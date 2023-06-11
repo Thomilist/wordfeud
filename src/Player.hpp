@@ -42,7 +42,7 @@ namespace wf
             int getScore();
             QString getScoreAsText() const;
             QString getDisplayName() const;
-            void setTurn(bool a_has_turn);
+            virtual void setTurn(bool a_has_turn);
             bool hasTurn();
             void setColor(QColor a_color);
             QColor getColor();
@@ -52,6 +52,7 @@ namespace wf
         
         protected:
             Settings* settings;
+            bool has_turn = false;
 
         private:
             QString display_name;
@@ -62,7 +63,6 @@ namespace wf
             QGridLayout hand_layout;
             RenderedBoard hand;
             QSize hand_size;
-            bool has_turn = false;
     };
 }
 

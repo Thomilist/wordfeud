@@ -73,7 +73,8 @@ namespace wf
     {
         sandbox_board.setWithBoard(live_board);
         best_play.setWithBoard(live_board);
-        fetchAvailableLetters();        
+        fetchAvailableLetters();
+        updateRelevantLines();
 
         return;
     }
@@ -126,12 +127,20 @@ namespace wf
         {
             case Direction::Horisontal:
             {
-                findPlayInHorisontalLine(a_index);
+                if (relevant_rows.contains(a_index))
+                {
+                    findPlayInHorisontalLine(a_index);
+                }
+
                 break;
             }
             case Direction::Vertical:
             {
-                findPlayInVerticalLine(a_index);
+                if (relevant_collumns.contains(a_index))
+                {
+                    findPlayInVerticalLine(a_index);
+                }
+                
                 break;
             }
         }
@@ -338,6 +347,54 @@ namespace wf
             }
 
             best_play_wildcard_letters.push_back(letter);
+        }
+
+        return;
+    }
+    
+    void PlayerAI::updateRelevantLines()
+    {
+        relevant_collumns.clear();
+        relevant_rows.clear();
+
+        VirtualTile* tile;
+
+        for (int collumn = 0; collumn < live_board->getGridDimensions().width(); ++collumn)
+        {
+            for (int row = 0; row < live_board->getGridDimensions().height(); ++row)
+            {
+                tile = live_board->getTileAtPosition(collumn, row);
+
+                // A collumn or row is relevant if the start tile or a letter is on or adjacent to it
+                if (tile->getLetter() != nullptr || tile->getModifier()->getType() == ModifierType::Start)
+                {
+                    // Add collumn before, at and after
+                    if (collumn - 1 >= 0)
+                    {
+                        relevant_collumns.insert(collumn - 1);
+                    }
+
+                    relevant_collumns.insert(collumn);
+
+                    if (collumn + 1 <= live_board->getGridDimensions().width())
+                    {
+                        relevant_collumns.insert(collumn + 1);
+                    }
+
+                    // Add row before, at and after
+                    if (row - 1 >= 0)
+                    {
+                        relevant_rows.insert(row - 1);
+                    }
+
+                    relevant_rows.insert(row);
+
+                    if (row + 1 <= live_board->getGridDimensions().height())
+                    {
+                        relevant_rows.insert(row + 1);
+                    }
+                }
+            }
         }
 
         return;

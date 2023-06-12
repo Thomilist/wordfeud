@@ -1,6 +1,7 @@
 #ifndef __PLAYERAI_H__
 #define __PLAYERAI_H__
 
+#include <set>
 #include <vector>
 
 #include <QChar>
@@ -70,6 +71,7 @@ namespace wf
             void updateBestPlay();
             void executeBestPlay();
             void setBestPlayWildcardLetters(std::vector<VirtualTile*> a_tiles);
+            void updateRelevantLines();
 
             bool cancelled = false;
             RenderedBoard* live_board;
@@ -78,6 +80,8 @@ namespace wf
             std::vector<QChar> best_play_wildcard_letters;
             std::vector<Letter*> available_letters;
             int available_letter_count;
+            std::set<int> relevant_collumns;
+            std::set<int> relevant_rows;
     };
 }
 

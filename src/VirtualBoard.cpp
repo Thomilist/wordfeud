@@ -269,6 +269,9 @@ namespace wf
 
         lockRecentlyLockedLetters();
         lockProposedLetters();
+        proposed_play_evaluated = false;
+
+        return;
     }
     
     void VirtualBoard::lockProposedLetters()

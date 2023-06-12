@@ -284,15 +284,20 @@ namespace wf
             monospace_font.setBold(false);
             monospace_font.setPointSize(size().height() / 2);
 
-            painter.setPen(QColor{0, 0, 0});
-            painter.setFont(monospace_font);
-            painter.drawText(letter_alignment, Qt::AlignCenter, letter->getText());
-
-            if (letter->getPoints() != 0)
+            // Wildcard letters in hand should always be blank
+            // Without this check, the text would be drawn if the tile is re-rendered while the PlayerAI is cycling through wildcard options
+            if (!(board_type == BoardType::Hand && letter->getType() == LetterType::Wildcard))
             {
-                monospace_font.setPointSize(size().height() / 5);
+                painter.setPen(QColor{0, 0, 0});
                 painter.setFont(monospace_font);
-                painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
+                painter.drawText(letter_alignment, Qt::AlignCenter, letter->getText());
+
+                if (letter->getPoints() != 0)
+                {
+                    monospace_font.setPointSize(size().height() / 5);
+                    painter.setFont(monospace_font);
+                    painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
+                }
             }
 
             // Draw red cross over tiles marked for swapping

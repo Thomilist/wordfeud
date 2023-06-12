@@ -273,6 +273,7 @@ namespace wf
         
         setCorrectButtonState();
         showCorrectButtons();
+        displayProposedPlayValue();
         repaint();
 
         if (all_players[current_player_index]->getType() == PlayerType::AI)
@@ -325,7 +326,7 @@ namespace wf
         repaint();
 
         player_AI_thread.start();
-        
+
         if (all_players[current_player_index]->getType() == PlayerType::AI)
         {
             emit playAI();

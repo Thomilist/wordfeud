@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 
     QCoreApplication::setOrganizationName("Thomilist");
     QCoreApplication::setApplicationName("wordfeud");
-    QCoreApplication::setApplicationVersion("0.1.0");
+    QCoreApplication::setApplicationVersion("0.2.0");
 
     QFile stylesheet{":/dark/stylesheet.qss"};
     stylesheet.open(QFile::ReadOnly | QFile::Text);

@@ -22,7 +22,9 @@ namespace wf
         , best_play(
             a_settings,
             a_board)
-    { }
+    {
+        initialiseBoardEvaluation(live_board);
+    }
     
     PlayerAI::~PlayerAI()
     { }
@@ -225,11 +227,9 @@ namespace wf
         a_letter = nullptr;
         sandbox_board.proposeLetter(a_tile);
         --available_letter_count;
-        ++letters_placed;
+        touch_count += board_evaluation[a_collumn][a_row];
 
-        int minimum_viable_letter_count = board_evaluation[a_collumn][a_row].getMinimumViableLetterCount(a_direction);
-
-        if (minimum_viable_letter_count >= 0 && letters_placed >= minimum_viable_letter_count)
+        if (touch_count > 0)
         {
             updateBestPlay();
         }
@@ -242,7 +242,7 @@ namespace wf
         a_letter = a_tile->removeLetter();
         sandbox_board.unproposeLetter(a_tile);
         ++available_letter_count;
-        --letters_placed;
+        touch_count -= board_evaluation[a_collumn][a_row];
 
         return;
     }
@@ -408,13 +408,10 @@ namespace wf
         return;
     }
     
-    void PlayerAI::evaluateBoard(VirtualBoard* a_board)
+    void PlayerAI::initialiseBoardEvaluation(VirtualBoard* a_board)
     {
-        VirtualTile* tile;
-        TileEvaluation tile_evaluation;
-        board_evaluation.clear();
         board_evaluation.reserve(a_board->getGridDimensions().width());
-        std::vector<TileEvaluation> collumn_evaluation;
+        std::vector<int> collumn_evaluation;
         collumn_evaluation.reserve(a_board->getGridDimensions().height());
 
         for (int collumn = 0; collumn < a_board->getGridDimensions().width(); ++collumn)
@@ -423,14 +420,7 @@ namespace wf
             
             for (int row = 0; row < a_board->getGridDimensions().height(); ++row)
             {
-                tile = a_board->getTileAtPosition(collumn, row);
-
-                for (auto direction : {Direction::Horisontal, Direction::Vertical})
-                {
-                    tile_evaluation.setMinimumViableLetterCount(direction, evaluateTile(tile, direction));
-                }
-
-                collumn_evaluation.push_back(tile_evaluation);
+                collumn_evaluation.push_back(0);
             }
 
             board_evaluation.push_back(collumn_evaluation);
@@ -439,10 +429,34 @@ namespace wf
         return;
     }
     
-    int PlayerAI::evaluateTile(VirtualTile* a_tile, Direction a_direction)
+    void PlayerAI::evaluateBoard(VirtualBoard* a_board)
     {
-        ++evaluation_depth;
-        int result = -1;
+        VirtualTile* tile;
+
+        for (int collumn = 0; collumn < a_board->getGridDimensions().width(); ++collumn)
+        {
+            for (int row = 0; row < a_board->getGridDimensions().height(); ++row)
+            {
+                tile = a_board->getTileAtPosition(collumn, row);
+                board_evaluation[collumn][row] = evaluateTile(tile);
+            }
+        }
+
+        return;
+    }
+    
+    int PlayerAI::evaluateTile(VirtualTile* a_tile)
+    {
+        if (a_tile->getLetter() != nullptr)
+        {
+            return 0;
+        }
+
+        if (a_tile->getModifier()->getType() == ModifierType::Start)
+        {
+            return 1;
+        }
+        
         auto neighbours = a_tile->getNeighbours();
 
         for (auto neighbour : neighbours)
@@ -452,23 +466,12 @@ namespace wf
                 continue;
             }
 
-            if (    neighbour->getLetter() != nullptr
-                ||  a_tile->getModifier()->getType() == ModifierType::Start)
+            if (neighbour->getLetter() != nullptr)
             {
-                result = evaluation_depth;
-                --evaluation_depth;
-                return result;
+                return 1;
             }
         }
-     
-        auto next_neighbour = a_direction == Direction::Horisontal ? neighbours.at(TileNeighbour::Right) : neighbours.at(TileNeighbour::Bottom);
-        
-        if (next_neighbour != nullptr)
-        {
-            result = evaluateTile(next_neighbour, a_direction);
-        }
 
-        --evaluation_depth;
-        return result;
+        return 0;
     }
 }

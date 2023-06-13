@@ -85,7 +85,6 @@ target_link_libraries(
     Player
     RenderedTile
     Settings
-    TileEvaluation
     VirtualBoard
     VirtualTile
 )
@@ -136,11 +135,6 @@ target_link_libraries(
     SettingsDialog
     Qt5::Widgets
     Settings
-)
-
-add_library(TileEvaluation TileEvaluation.cpp)
-target_link_libraries(
-    TileEvaluation
 )
 
 add_library(VirtualBoard VirtualBoard.cpp)

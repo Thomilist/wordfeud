@@ -320,11 +320,13 @@ namespace wf
     
     void VirtualBoard::assignNeighbours()
     {
+        VirtualTile* tile;
+        
         for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
         {
             for (int row = 0; row < grid_dimensions.height(); ++row)
             {
-                VirtualTile* tile = getTileAtPosition(collumn, row);
+                tile = getTileAtPosition(collumn, row);
 
                 tile->setNeighbour(getTileAtPosition(collumn, row - 1), TileNeighbour::Top);
                 tile->setNeighbour(getTileAtPosition(collumn + 1, row), TileNeighbour::Right);

@@ -17,7 +17,6 @@
 #include "Player.hpp"
 #include "RenderedTile.hpp"
 #include "Settings.hpp"
-#include "TileEvaluation.hpp"
 #include "VirtualBoard.hpp"
 #include "VirtualTile.hpp"
 
@@ -75,8 +74,9 @@ namespace wf
             void executeBestPlay();
             void setBestPlayWildcardLetters(std::vector<VirtualTile*> a_tiles);
             void updateRelevantLines();
+            void initialiseBoardEvaluation(VirtualBoard* a_board);
             void evaluateBoard(VirtualBoard* a_board);
-            int evaluateTile(VirtualTile* a_tile, Direction a_direction);
+            int evaluateTile(VirtualTile* a_tile);
 
             bool cancelled = false;
             RenderedBoard* live_board;
@@ -85,11 +85,10 @@ namespace wf
             std::vector<QChar> best_play_wildcard_letters;
             std::vector<Letter*> available_letters;
             int available_letter_count;
-            int letters_placed = 0;
             std::set<int> relevant_collumns;
             std::set<int> relevant_rows;
-            std::vector<std::vector<TileEvaluation>> board_evaluation;
-            int evaluation_depth = 0;
+            std::vector<std::vector<int>> board_evaluation;
+            int touch_count = 0;
     };
 }
 

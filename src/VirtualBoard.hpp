@@ -38,7 +38,7 @@ namespace wf
             int getGridDimensionInDirection(Direction a_direction);
             int getTileCount() const;
             int getLetterCount();
-            void evaluateProposedPlay(bool a_force = false);
+            void evaluateProposedPlay(bool a_force = false, bool a_skip_placement_check=false);
             bool isPlacementValid();
             bool areProposedWordsValid();
             bool isProposedPlayValid();

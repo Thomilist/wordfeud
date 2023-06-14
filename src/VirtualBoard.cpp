@@ -134,11 +134,16 @@ namespace wf
         return count;
     }
     
-    void VirtualBoard::evaluateProposedPlay(bool a_force)
+    void VirtualBoard::evaluateProposedPlay(bool a_force, bool a_skip_placement_check)
     {
         if (a_force)
         {
             proposed_play_evaluated = false;
+        }
+
+        if (a_skip_placement_check)
+        {
+            proposed_placement_valid = true;
         }
 
         if (proposed_play_evaluated)
@@ -147,7 +152,7 @@ namespace wf
         }
 
         proposed_play_points = 0;
-        
+
         if (!isPlacementValid())
         {
             proposed_words_valid = false;

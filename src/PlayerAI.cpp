@@ -273,8 +273,8 @@ namespace wf
     
     void PlayerAI::updateBestPlay()
     {
-        best_play.evaluateProposedPlay();
-        sandbox_board.evaluateProposedPlay();
+        best_play.evaluateProposedPlay(false, true);
+        sandbox_board.evaluateProposedPlay(false, true);
         
         if (!sandbox_board.isProposedPlayValid())
         {

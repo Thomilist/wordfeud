@@ -134,7 +134,7 @@ namespace wf
         return count;
     }
     
-    void VirtualBoard::evaluateProposedPlay(bool a_force, bool a_skip_placement_check)
+    void VirtualBoard::evaluateProposedPlay(bool a_force, bool a_skip_placement_check, bool a_exit_early)
     {
         if (a_force)
         {
@@ -160,9 +160,14 @@ namespace wf
             return;
         }
 
-        findProposedWords();
-        findInvalidProposedWords();
-        calculateProposedPoints();
+        proposed_words_valid = true;
+        findProposedWords(a_exit_early);
+        
+        if (proposed_words_valid)
+        {
+            findInvalidProposedWords();
+            calculateProposedPoints();
+        }
 
         proposed_play_evaluated = true;
 
@@ -423,7 +428,7 @@ namespace wf
         return std::adjacent_find(rows.begin(), rows.end(), std::not_equal_to<>()) == rows.end();
     }
     
-    void VirtualBoard::findProposedWords()
+    void VirtualBoard::findProposedWords(bool a_exit_early)
     {
         proposed_words.clear();
         
@@ -440,9 +445,9 @@ namespace wf
             proposed_words.push_back(word);
             return;
         }
-
-        std::unordered_set<int> collumns;
-        std::unordered_set<int> rows;
+        
+        std::set<int> collumns;
+        std::set<int> rows;
 
         for (const auto tile : proposed_letters)
         {
@@ -452,74 +457,120 @@ namespace wf
             rows.insert(grid_position.y());
         }
 
-        for (const auto collumn : collumns)
-        {
-            findProposedWordInLine(collumn, settings->getBoardDimensions().height(), Direction::Vertical);
-        }
+        // Valid placements are always in a line
+        // Check along the line first, since this always needs to be checked, allowing for a potential early exit
+        // One-letter words don't count unless it's the first word on the board and just one letter is placed,
+        // so checking across first would be a waste of time if the word along the line causes an early exit
+        Direction first_direction = collumns.size() > rows.size() ? Direction::Horisontal : Direction::Vertical;
+        Direction second_direction = first_direction == Direction::Horisontal ? Direction::Vertical : Direction::Horisontal;
 
-        for (const auto row : rows)
+        Word word;
+
+        for (auto direction : {first_direction, second_direction})
         {
-            findProposedWordInLine(row, settings->getBoardDimensions().width(), Direction::Horisontal);
+            for (auto tile : proposed_letters)
+            {
+                word = findWordWithLetter(tile, direction);
+
+                if (a_exit_early)
+                {
+                    if (!settings->getLanguage()->isInWordList(word.getWordAsText().toLower()))
+                    {
+                        proposed_words_valid = false;
+                        return;
+                    }
+                }
+
+                proposed_words.push_back(word);
+
+                if (direction == first_direction)
+                {
+                    break;
+                }
+            }
         }
 
         return;
     }
     
-    void VirtualBoard::findProposedWordInLine(int a_line, int a_max_index, Direction a_direction)
+    Word VirtualBoard::findWordWithLetter(VirtualTile* a_tile, Direction a_direction)
     {
-        Word word;
-            
-        for (int index = 0; index < a_max_index; ++index)
+        QPoint starting_position = a_tile->getGridPosition();
+        std::deque<VirtualTile*> tiles;
+        tiles.push_back(a_tile);
+        int collumn_shift = 0;
+        int row_shift = 0;
+
+        switch (a_direction)
         {
-            VirtualTile* tile = nullptr;
-
-            switch (a_direction)
+            case Direction::Horisontal:
             {
-                case Direction::Horisontal:
-                {
-                    tile = getTileAtPosition(index, a_line);
-                    break;
-                }
-                case Direction::Vertical:
-                {
-                    tile = getTileAtPosition(a_line, index);
-                    break;
-                }
+                collumn_shift = 1;
+                break;
             }
-
-            if (tile->getLetter() == nullptr)
+            case Direction::Vertical:
             {
-                if (word.containsAnyOf(proposed_letters))
-                {
-                    if (word.getLength() > 1)
-                    {
-                        proposed_words.push_back(word);
-                    }
-                    
-                    break;
-                }
-                else
-                {
-                    word.clear();
-                }
-            }
-            else
-            {
-                word.appendLetter(tile);
-
-                if (index == a_max_index - 1)
-                {
-                    if (    word.containsAnyOf(proposed_letters)
-                        &&  word.getLength() > 1)
-                    {
-                        proposed_words.push_back(word);
-                        break;
-                    }
-                }
+                row_shift = 1;
+                break;
             }
         }
 
-        return;
+        VirtualTile* next_tile;
+        int collumn = starting_position.x();
+        int row = starting_position.y();
+
+        // Search left or up
+        while (true)
+        {
+            collumn -= collumn_shift;
+            row -= row_shift;
+            next_tile = getTileAtPosition(collumn, row);
+
+            if (next_tile == nullptr)
+            {
+                break;
+            }
+
+            if (next_tile->getLetter() == nullptr)
+            {
+                break;
+            }
+
+            tiles.push_front(next_tile);
+        }
+
+        collumn = starting_position.x();
+        row = starting_position.y();
+
+        // Search right or down
+        while (true)
+        {
+            collumn += collumn_shift;
+            row += row_shift;
+            next_tile = getTileAtPosition(collumn, row);
+
+            if (next_tile == nullptr)
+            {
+                break;
+            }
+
+            if (next_tile->getLetter() == nullptr)
+            {
+                break;
+            }
+
+            tiles.push_back(next_tile);
+        }
+
+        // Create word
+        Word word;
+
+        for (auto tile : tiles)
+        {
+            word.appendLetter(tile);
+        }
+
+        return word;
     }
     
     void VirtualBoard::findInvalidProposedWords()

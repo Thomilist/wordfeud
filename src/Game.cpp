@@ -236,6 +236,7 @@ namespace wf
         }
 
         all_players[current_player_index]->setTurn(false);
+        displayProposedPlayValue();
 
         if (isGameOver())
         {
@@ -273,7 +274,6 @@ namespace wf
         
         setCorrectButtonState();
         showCorrectButtons();
-        displayProposedPlayValue();
         repaint();
 
         if (all_players[current_player_index]->getType() == PlayerType::AI)

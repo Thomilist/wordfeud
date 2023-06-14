@@ -2,7 +2,8 @@
 #define __VIRTUALBOARD_H__
 
 #include <algorithm>
-#include <unordered_set>
+#include <deque>
+#include <set>
 #include <vector>
 
 #include <QPoint>
@@ -38,7 +39,7 @@ namespace wf
             int getGridDimensionInDirection(Direction a_direction);
             int getTileCount() const;
             int getLetterCount();
-            void evaluateProposedPlay(bool a_force = false, bool a_skip_placement_check=false);
+            void evaluateProposedPlay(bool a_force = false, bool a_skip_placement_check=false, bool a_exit_early = false);
             bool isPlacementValid();
             bool areProposedWordsValid();
             bool isProposedPlayValid();
@@ -65,8 +66,8 @@ namespace wf
             bool isPlacementLinear();
             bool isPlacementInOneCollumn();
             bool isPlacementInOneRow();
-            void findProposedWords();
-            void findProposedWordInLine(int a_line, int a_max_index, Direction a_direction);
+            void findProposedWords(bool a_exit_early);
+            Word findWordWithLetter(VirtualTile* a_tile, Direction a_direction);
             void findInvalidProposedWords();
             void calculateProposedPoints();
 

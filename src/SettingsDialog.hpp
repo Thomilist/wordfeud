@@ -52,7 +52,7 @@ namespace wf
             Settings* settings;
             QGridLayout grid_layout;
             int layout_row = 0;
-            const int max_name_length = 24;
+            const int max_name_length = 26;
             const int name_edit_width = 199;
 
             QLabel language_label{"Dictionary:"};

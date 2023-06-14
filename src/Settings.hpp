@@ -1,15 +1,20 @@
 #ifndef __SETTINGS_H__
 #define __SETTINGS_H__
 
+#include <set>
 #include <utility>
 #include <vector>
 
+#include <QDir>
+#include <QDirIterator>
+#include <QFile>
 #include <QFont>
 #include <QFontDatabase>
 #include <QMainWindow>
 #include <QSettings>
 #include <QSize>
 #include <QString>
+#include <QTextStream>
 
 #include "ForwardDeclarations.hpp"
 
@@ -45,6 +50,7 @@ namespace wf
             ModifierPattern* getModifierPattern();
             PlayerSettings* getLeftPlayer();
             PlayerSettings* getRightPlayer();
+            void loadRandomNames(QString a_directory);
 
         private:
             QMainWindow* main_window;
@@ -59,6 +65,7 @@ namespace wf
             ModifierPattern modifier_pattern;
             PlayerSettings left_player;
             PlayerSettings right_player;
+            std::set<QString> random_names;
     };
 }
 #endif // __SETTINGS_H__

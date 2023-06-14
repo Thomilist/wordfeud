@@ -3,6 +3,7 @@
 
 #include <QFile>
 #include <QHash>
+#include <QIODevice>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>

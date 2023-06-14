@@ -22,7 +22,14 @@ namespace wf
     
     const QString PlayerSettings::getName() const
     {
-        return name;
+        if (usesRandomName())
+        {
+            return getRandomName();
+        }
+        else
+        {
+            return name;
+        }
     }
     
     void PlayerSettings::setName(QString a_name)
@@ -60,7 +67,7 @@ namespace wf
         return all_types;
     }
     
-    bool PlayerSettings::usesRandomName()
+    bool PlayerSettings::usesRandomName() const
     {
         return use_random_name;
     }
@@ -69,5 +76,22 @@ namespace wf
     {
         use_random_name = a_state;
         return;
+    }
+    
+    void PlayerSettings::setRandomNames(std::set<QString> a_names)
+    {
+        random_names.clear();
+        random_names.assign(a_names.begin(), a_names.end());
+        return;
+    }
+    
+    const QString PlayerSettings::getRandomName() const
+    {
+        std::random_device random_seed;
+        std::mt19937 rng(random_seed());
+        std::uniform_int_distribution<> distribution(0, random_names.size() - 1);
+
+        int random_index = distribution(rng);
+        return random_names.at(random_index);
     }
 }

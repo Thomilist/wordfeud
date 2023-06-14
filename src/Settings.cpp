@@ -48,6 +48,9 @@ namespace wf
     
     void Settings::load()
     {
+        // Load random names
+        loadRandomNames("resources/names/");
+        
         // Load main window dimensions and position
         const QByteArray geometry = value("window/geometry", QByteArray()).toByteArray();
         
@@ -71,6 +74,7 @@ namespace wf
         getLeftPlayer()->setName(left_player_name);
         getLeftPlayer()->setTypeWithString(left_player_type);
         getLeftPlayer()->setRandomNameUse(left_player_uses_random_name);
+        getLeftPlayer()->setRandomNames(random_names);
 
         // Load right player
         QString right_player_name = value("player_right/name", "Player 2").toString();
@@ -79,6 +83,7 @@ namespace wf
         getRightPlayer()->setName(right_player_name);
         getRightPlayer()->setTypeWithString(right_player_type);
         getRightPlayer()->setRandomNameUse(right_player_uses_random_name);
+        getRightPlayer()->setRandomNames(random_names);
 
         return;
     }
@@ -180,5 +185,34 @@ namespace wf
     PlayerSettings* Settings::getRightPlayer()
     {
         return &right_player;
+    }
+    
+    void Settings::loadRandomNames(QString a_directory)
+    {
+        QDir directory{a_directory};
+        QDirIterator name_directory{directory};
+        QString file_path;
+        QString name;
+        
+        while (name_directory.hasNext())
+        {
+            file_path = name_directory.next();
+            QFile name_file{file_path};
+
+            if (name_file.open(QIODevice::ReadOnly))
+            {
+                QTextStream names{&name_file};
+
+                while (!names.atEnd())
+                {
+                    name = names.readLine();
+                    random_names.insert(name);
+                }
+
+                name_file.close();
+            }
+        }
+
+        return;
     }
 }

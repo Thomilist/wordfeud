@@ -1,7 +1,9 @@
 #ifndef __PLAYERSETTINGS_H__
 #define __PLAYERSETTINGS_H__
 
+#include <random>
 #include <ranges>
+#include <set>
 #include <vector>
 
 #include <QString>
@@ -25,13 +27,17 @@ namespace wf
             PlayerType getType() const;
             void setType(PlayerType a_type);
             const std::vector<std::pair<PlayerType, QString>>& getAllTypes() const;
-            bool usesRandomName();
+            bool usesRandomName() const;
             void setRandomNameUse(bool a_state);
+            void setRandomNames(std::set<QString> a_names);
         
         private:
+            const QString getRandomName() const;
+            
             QString name;
             PlayerType type;
             bool use_random_name;
+            std::vector<QString> random_names;
 
             const std::vector<std::pair<PlayerType, QString>> all_types =
             {

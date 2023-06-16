@@ -43,7 +43,7 @@ Leonardo DiCaprio
 George Clooney
 Carrie Fisher
 Mark Hamill
-Alec Guiness
+Alec Guinness
 Ewan McGregor
 Peter Cushing
 Hayden Christensen
@@ -63,3 +63,4 @@ Christopher Nolan
 Quentin Tarantino
 George Lucas
 Ridley Scott
+Tom Cruise

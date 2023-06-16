@@ -1,6 +1,8 @@
 Margaret Thatcher
 Winston Churchill
 Adolf Hitler
+Benito Mussolini
+Hideki Tojo
 Joseph Stalin
 Kim Jong Il
 Napoléon Bonaparte
@@ -11,6 +13,7 @@ Plato
 Immanuel Kant
 Friedrich Nietzsche
 Karl Marx
+Friedrich Engels
 John Locke
 Jean-Paul Sartre
 Francis Bacon
@@ -26,3 +29,10 @@ Gandhi
 Adam Smith
 Vladimir Lenin
 Nikola Tesla
+Neil Armstrong
+Buzz Aldrin
+Yury Gagarin
+Salvador Allende
+Fidel Castro
+Nelson Mandela
+Martin Luther King Jr.

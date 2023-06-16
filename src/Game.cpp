@@ -244,6 +244,32 @@ namespace wf
 
             finalisePoints();
             Player* winning_player = getHighestScoringPlayer();
+
+            Score score;
+
+            for (auto player : all_players)
+            {
+                score.name = player->getDisplayName();
+                score.player_type = player->getType();
+                score.points = player->getScore();
+                score.timestamp = QDateTime::currentDateTime().toString();
+
+                if (player == winning_player)
+                {
+                    score.result = "Win";
+                }
+                else if (winning_player == nullptr)
+                {
+                    score.result = "Draw";
+                }
+                else
+                {
+                    score.result = "Loss";
+                }
+
+                record_tracker.insert(score);
+            }
+
             QMessageBox game_over;
 
             if (winning_player != nullptr)
@@ -349,6 +375,11 @@ namespace wf
         player_AI_thread.quit();
         player_AI_thread.wait();
         return;
+    }
+    
+    RecordTracker* Game::getRecords()
+    {
+        return &record_tracker;
     }
     
     void Game::playButton()

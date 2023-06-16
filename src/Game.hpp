@@ -9,6 +9,7 @@
 
 #include <QChar>
 #include <QColor>
+#include <QDateTime>
 #include <QGridLayout>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -33,6 +34,7 @@
 #include "Player.hpp"
 #include "PlayerAI.hpp"
 #include "ProposalInfo.hpp"
+#include "RecordTracker.hpp"
 #include "RenderedBoard.hpp"
 #include "RenderedTile.hpp"
 #include "Settings.hpp"
@@ -61,6 +63,7 @@ namespace wf
         
             void reset();
             void terminatePlayerAI();
+            RecordTracker* getRecords();
 
         public slots:
             void playButton();
@@ -122,6 +125,7 @@ namespace wf
             std::default_random_engine rng;
             int consecutive_passes = 0;
             QThread player_AI_thread;
+            RecordTracker record_tracker;
     };
 }
 

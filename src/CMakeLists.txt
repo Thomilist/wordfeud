@@ -18,6 +18,7 @@ target_link_libraries(
     ModifierPattern
     Player
     ProposalInfo
+    RecordTracker
     RenderedBoard
     RenderedTile
     Settings
@@ -102,6 +103,18 @@ target_link_libraries(
     Settings
 )
 
+add_library(RecordDialog RecordDialog.cpp)
+target_link_libraries(
+    RecordDialog
+    Qt5::Widgets
+)
+
+add_library(RecordTracker RecordTracker.cpp)
+target_link_libraries(
+    RecordTracker
+    Qt5::Widgets
+)
+
 add_library(RenderedTile RenderedTile.cpp)
 target_link_libraries(
     RenderedTile
@@ -168,6 +181,7 @@ target_link_libraries(
     Wordfeud
     Qt5::Widgets
     Game
+    RecordDialog
     Settings
     SettingsDialog
 )

@@ -3,7 +3,6 @@
 
 namespace wf
 {
-    class RenderedBoard;
     class ButtonPanel;
     class Game;
     class Header;
@@ -11,11 +10,17 @@ namespace wf
     class Letter;
     class LetterPool;
     class Modifier;
+    class ModifierPattern;
     class Player;
     class PlayerAI;
+    class PlayerSettings;
+    class ProposalInfo;
+    class RecordDialog;
+    class RecordTracker;
+    class RenderedBoard;
+    class RenderedTile;
     class Settings;
     class SettingsDialog;
-    class RenderedTile;
     class VirtualBoard;
     class VirtualTile;
     class Word;
@@ -23,6 +28,7 @@ namespace wf
 
     struct LetterData;
     struct QCharHash;
+    struct Score;
 
     enum class BoardType;
     enum class Direction;

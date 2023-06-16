@@ -14,6 +14,7 @@
 #include "ForwardDeclarations.hpp"
 
 #include "Game.hpp"
+#include "RecordDialog.hpp"
 #include "Settings.hpp"
 #include "SettingsDialog.hpp"
 
@@ -43,7 +44,9 @@ namespace wf
             QMenu game_menu;
             QAction start_new_game;
             QAction open_settings;
+            QAction show_records;
             SettingsDialog settings_dialog;
+            RecordDialog record_dialog;
 
             QMenu about_menu;
             QAction open_github;

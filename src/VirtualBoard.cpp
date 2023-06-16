@@ -480,8 +480,11 @@ namespace wf
                         return;
                     }
                 }
-
-                proposed_words.push_back(word);
+                
+                if (word.getLength() > 1)
+                {
+                    proposed_words.push_back(word);
+                }
 
                 if (direction == first_direction)
                 {

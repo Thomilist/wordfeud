@@ -9,7 +9,9 @@ namespace wf
     , game_menu("Game", &main_window)
     , start_new_game("New game", &game_menu)
     , open_settings("Settings...", &game_menu)
+    , show_records("Records...", &game_menu)
     , settings_dialog(&settings, this, &main_window)
+    , record_dialog(game.getRecords(), &main_window)
     , about_menu("About", &main_window)
     , open_github("Open on GitHub...", &about_menu)
     {
@@ -44,12 +46,14 @@ namespace wf
         main_window.menuBar()->addMenu(&game_menu);
         game_menu.addAction(&start_new_game);
         game_menu.addAction(&open_settings);
+        game_menu.addAction(&show_records);
 
         start_new_game.setShortcut(QKeySequence{"F2"});
 
         connect(&start_new_game, &QAction::triggered, this, &Wordfeud::startNewGame);
         connect(&open_settings, &QAction::triggered, &settings_dialog, &SettingsDialog::exec);
         connect(settings_dialog.getSaveAndStartNewGameButton(), &QPushButton::clicked, this, &Wordfeud::startNewGame);
+        connect(&show_records, &QAction::triggered, &record_dialog, &RecordDialog::exec);
 
         return;
     }

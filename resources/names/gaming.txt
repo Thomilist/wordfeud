@@ -58,6 +58,8 @@ Lord Jaraxxus
 Flamewreathed Faceless
 Boulderfist Ogre
 Blood Manos
+Pogo Hopper
+Shudderwock
 Hana Song
 Doomfist
 Ramattra
@@ -102,21 +104,8 @@ Slime
 Twilight
 Stich
 Hooreg
-Razor
-Bull
-Ronnie
-JV
-Webster
-Ming
-Kaze
-Jewels
-Earl
-Baron
-Big Lou
-Izzy
-Vic
-Taz
-Sonny
+Clarence Callahan
+Ronald McCrea
 Sergeant Cross
 Handsome Jack
 Mordecai
@@ -167,3 +156,5 @@ Dukino's Mom
 Jimmy Jenkins
 Old Slappy
 Mr. Torgue
+Carl Johnson
+Big Smoke

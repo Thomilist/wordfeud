@@ -56,6 +56,12 @@ namespace wf
         }
 
         executeBestPlay();
+
+        if (cancelled)
+        {
+            return;
+        }
+
         endTurn();
         
         return;
@@ -301,6 +307,11 @@ namespace wf
         for (auto local_tile : best_play.getProposedLetters())
         {
             QThread::msleep(100);
+
+            if (cancelled)
+            {
+                return;
+            }
             
             position = local_tile->getGridPosition();
             letter = local_tile->getLetter();
@@ -336,6 +347,8 @@ namespace wf
             emit letterPlaced();
             ++index;
         }
+
+        return;
     }
     
     void PlayerAI::setBestPlayWildcardLetters(std::vector<VirtualTile*> a_tiles)

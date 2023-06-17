@@ -28,6 +28,7 @@ namespace wf
 
     struct LetterData;
     struct QCharHash;
+    struct Sandbox;
     struct Score;
 
     enum class BoardType;

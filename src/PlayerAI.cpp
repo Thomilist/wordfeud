@@ -16,12 +16,14 @@ namespace wf
             a_settings,
             a_selection)
         , live_board(a_board)
-        , sandbox_board(
-            a_settings,
-            a_board)
-        , best_play(
-            a_settings,
-            a_board)
+        , best_sandbox(
+            Sandbox(
+                VirtualBoard(settings, live_board),
+                VirtualBoard(settings, live_board),
+                std::vector<QChar>(),
+                std::vector<Letter*>(),
+                0,
+                0))
     {
         initialiseBoardEvaluation(live_board);
     }
@@ -69,7 +71,7 @@ namespace wf
     
     void PlayerAI::endTurn()
     {
-        if (best_play.getProposedPlayPoints() > 0)
+        if (best_sandbox.best_play.getProposedPlayPoints() > 0)
         {
             emit playComplete();
         }
@@ -79,19 +81,18 @@ namespace wf
     
     void PlayerAI::startOfTurnSetup()
     {
-        sandbox_board.setWithBoard(live_board);
-        best_play.setWithBoard(live_board);
-        fetchAvailableLetters();
         updateRelevantLines();
         evaluateBoard(live_board);
+        best_sandbox.best_play.clearProposed();
+        best_sandbox.best_play.evaluateProposedPlay();
 
         return;
     }
     
-    void PlayerAI::fetchAvailableLetters()
+    void PlayerAI::fetchAvailableLetters(Sandbox* a_sandbox)
     {
-        available_letters.clear();
-        available_letter_count = 0;
+        a_sandbox->available_letters.clear();
+        a_sandbox->available_letter_count = 0;
         Letter* letter;
 
         for (int row = 0; row < getHand()->getGridDimensions().height(); ++row)
@@ -102,8 +103,8 @@ namespace wf
 
                 if (letter != nullptr)
                 {
-                    available_letters.push_back(letter);
-                    ++available_letter_count;
+                    a_sandbox->available_letters.push_back(letter);
+                    ++a_sandbox->available_letter_count;
                 }
             }
         }
@@ -113,6 +114,9 @@ namespace wf
     
     void PlayerAI::findBestPlay()
     {
+        std::vector<Sandbox> sandboxes;
+        sandboxes.reserve(live_board->getGridDimensions().width() + live_board->getGridDimensions().height());
+        
         for (Direction direction : {Direction::Horisontal, Direction::Vertical})
         {
             for (   int index = 0;
@@ -123,14 +127,33 @@ namespace wf
                     ++index
                 )
             {
-                findPlayInLine(direction, index);
+                sandboxes.push_back
+                (
+                    Sandbox
+                    (
+                        VirtualBoard(settings, live_board),
+                        VirtualBoard(settings, live_board),
+                        std::vector<QChar>(),
+                        std::vector<Letter*>(),
+                        0,
+                        0
+                    )
+                );
+
+                fetchAvailableLetters(&sandboxes.back());
+                findPlayInLine(&sandboxes.back(), direction, index);
             }
+        }
+
+        for (auto& sandbox : sandboxes)
+        {
+            updateBestPlay(&best_sandbox, &best_sandbox.best_play, &sandbox.best_play);
         }
 
         return;
     }
     
-    void PlayerAI::findPlayInLine(Direction a_direction, int a_index)
+    void PlayerAI::findPlayInLine(Sandbox* a_sandbox, Direction a_direction, int a_index)
     {
         switch (a_direction)
         {
@@ -138,7 +161,7 @@ namespace wf
             {
                 if (relevant_rows.contains(a_index))
                 {
-                    findPlayInHorisontalLine(a_index);
+                    findPlayInHorisontalLine(a_sandbox, a_index);
                 }
 
                 break;
@@ -147,7 +170,7 @@ namespace wf
             {
                 if (relevant_collumns.contains(a_index))
                 {
-                    findPlayInVerticalLine(a_index);
+                    findPlayInVerticalLine(a_sandbox, a_index);
                 }
                 
                 break;
@@ -157,21 +180,21 @@ namespace wf
         return;
     }
     
-    void PlayerAI::findPlayInHorisontalLine(int a_row)
+    void PlayerAI::findPlayInHorisontalLine(Sandbox* a_sandbox, int a_row)
     {
         for (int collumn = 0; collumn < live_board->getGridDimensionInDirection(Direction::Horisontal); ++collumn)
         {
-            findPlayRecursively(collumn, a_row, Direction::Horisontal);
+            findPlayRecursively(a_sandbox, collumn, a_row, Direction::Horisontal);
         }
 
         return;
     }
     
-    void PlayerAI::findPlayInVerticalLine(int a_collumn)
+    void PlayerAI::findPlayInVerticalLine(Sandbox* a_sandbox, int a_collumn)
     {
         for (int row = 0; row < live_board->getGridDimensionInDirection(Direction::Vertical); ++row)
         {
-            findPlayRecursively(a_collumn, row, Direction::Vertical);
+            findPlayRecursively(a_sandbox, a_collumn, row, Direction::Vertical);
         }
 
         return;
@@ -179,24 +202,24 @@ namespace wf
     
     // For horisontal, fixed index = row, variable index = collumn
     // For vertical, fixed index = collumn, variable index = row
-    void PlayerAI::findPlayRecursively(int a_collumn, int a_row, Direction a_direction)
+    void PlayerAI::findPlayRecursively(Sandbox* a_sandbox, int a_collumn, int a_row, Direction a_direction)
     {
         if (cancelled)
         {
             return;
         }
         
-        if (indexOutOfBounds(a_collumn, a_row))
+        if (indexOutOfBounds(a_sandbox, a_collumn, a_row))
         {
             return;
         }
 
-        VirtualTile* tile = sandbox_board.getTileAtPosition(a_collumn, a_row);
+        VirtualTile* tile = a_sandbox->board.getTileAtPosition(a_collumn, a_row);
         bool tile_available = tile->getLetter() == nullptr;
 
         if (tile_available)
         {
-            for (auto& letter : available_letters)
+            for (auto& letter : a_sandbox->available_letters)
             {
                 if (letter == nullptr)
                 {
@@ -210,61 +233,61 @@ namespace wf
                     for (auto letter_option : letter_list)
                     {
                         letter->setWildcardText(letter_option.letter);
-                        tryLetterAndRecurse(letter, tile, a_collumn, a_row, a_direction);
+                        tryLetterAndRecurse(a_sandbox, letter, tile, a_collumn, a_row, a_direction);
                     }
                 }
                 else
                 {
-                    tryLetterAndRecurse(letter, tile, a_collumn, a_row, a_direction);
+                    tryLetterAndRecurse(a_sandbox, letter, tile, a_collumn, a_row, a_direction);
                 }
             }
         }
         else
         {
-            recurse(a_collumn, a_row, a_direction);
+            recurse(a_sandbox, a_collumn, a_row, a_direction);
         }
 
         return;
     }
     
-    void PlayerAI::tryLetterAndRecurse(Letter*& a_letter, VirtualTile* a_tile, int a_collumn, int a_row, Direction a_direction)
+    void PlayerAI::tryLetterAndRecurse(Sandbox* a_sandbox, Letter*& a_letter, VirtualTile* a_tile, int a_collumn, int a_row, Direction a_direction)
     {
         a_tile->placeLetter(a_letter);
         a_letter = nullptr;
-        sandbox_board.proposeLetter(a_tile);
-        --available_letter_count;
-        touch_count += board_evaluation[a_collumn][a_row];
+        a_sandbox->board.proposeLetter(a_tile);
+        --a_sandbox->available_letter_count;
+        a_sandbox->touch_count += board_evaluation[a_collumn][a_row];
 
-        if (touch_count > 0)
+        if (a_sandbox->touch_count > 0)
         {
-            updateBestPlay();
+            updateBestPlay(a_sandbox);
         }
 
-        if (available_letter_count > 0)
+        if (a_sandbox->available_letter_count > 0)
         {
-            recurse(a_collumn, a_row, a_direction);
+            recurse(a_sandbox, a_collumn, a_row, a_direction);
         }
         
         a_letter = a_tile->removeLetter();
-        sandbox_board.unproposeLetter(a_tile);
-        ++available_letter_count;
-        touch_count -= board_evaluation[a_collumn][a_row];
+        a_sandbox->board.unproposeLetter(a_tile);
+        ++a_sandbox->available_letter_count;
+        a_sandbox->touch_count -= board_evaluation[a_collumn][a_row];
 
         return;
     }
     
-    void PlayerAI::recurse(int a_collumn, int a_row, Direction a_direction)
+    void PlayerAI::recurse(Sandbox* a_sandbox, int a_collumn, int a_row, Direction a_direction)
     {
         switch (a_direction)
         {
             case Direction::Horisontal:
             {
-                findPlayRecursively(a_collumn + 1, a_row, a_direction);
+                return findPlayRecursively(a_sandbox, a_collumn + 1, a_row, a_direction);
                 break;
             }
             case Direction::Vertical:
             {
-                findPlayRecursively(a_collumn, a_row + 1, a_direction);
+                return findPlayRecursively(a_sandbox, a_collumn, a_row + 1, a_direction);
                 break;
             }
         }
@@ -272,26 +295,32 @@ namespace wf
         return;
     }
     
-    bool PlayerAI::indexOutOfBounds(int a_collumn, int a_row)
+    bool PlayerAI::indexOutOfBounds(Sandbox* a_sandbox, int a_collumn, int a_row)
     {
-        return a_collumn >= sandbox_board.getGridDimensionInDirection(Direction::Horisontal) || a_row >= sandbox_board.getGridDimensionInDirection(Direction::Vertical);
+        return a_collumn >= a_sandbox->board.getGridDimensionInDirection(Direction::Horisontal) || a_row >= a_sandbox->board.getGridDimensionInDirection(Direction::Vertical);
     }
     
-    void PlayerAI::updateBestPlay()
+    void PlayerAI::updateBestPlay(Sandbox* a_sandbox)
     {
-        best_play.evaluateProposedPlay(false, true, true);
-        sandbox_board.evaluateProposedPlay(false, true, true);
+        updateBestPlay(a_sandbox, &a_sandbox->best_play, &a_sandbox->board);
+        return;
+    }
+
+    void PlayerAI::updateBestPlay(Sandbox* a_best_sandbox, VirtualBoard* a_best_play, VirtualBoard* a_new_play)
+    {
+        a_best_play->evaluateProposedPlay(false, true, true);
+        a_new_play->evaluateProposedPlay(false, true, true);
         
-        if (!sandbox_board.isProposedPlayValid())
+        if (!a_new_play->isProposedPlayValid())
         {
             return;
         }
 
-        if (sandbox_board.getProposedPlayPoints() > best_play.getProposedPlayPoints())
+        if (a_new_play->getProposedPlayPoints() > a_best_play->getProposedPlayPoints())
         {
-            best_play.setWithBoard(&sandbox_board);
-            best_play.importProposedLetters(sandbox_board.getProposedLetters());
-            setBestPlayWildcardLetters(best_play.getProposedLetters());
+            a_best_play->setWithBoard(a_new_play);
+            a_best_play->importProposedLetters(a_new_play->getProposedLetters());
+            setBestPlayWildcardLetters(a_best_sandbox);
         }
 
         return;
@@ -304,7 +333,7 @@ namespace wf
         VirtualTile* live_tile;
         int index = 0;
         
-        for (auto local_tile : best_play.getProposedLetters())
+        for (auto local_tile : best_sandbox.best_play.getProposedLetters())
         {
             QThread::msleep(100);
 
@@ -320,7 +349,7 @@ namespace wf
             // Wildcard letters must have their letter contents restored
             if (letter->getType() == LetterType::Wildcard)
             {
-                letter->setWildcardText(best_play_wildcard_letters.at(index));
+                letter->setWildcardText(best_sandbox.best_play_wildcard_letters.at(index));
             }
 
             // The live board holds rendered tiles, which automatically propose a letter when placed
@@ -351,12 +380,13 @@ namespace wf
         return;
     }
     
-    void PlayerAI::setBestPlayWildcardLetters(std::vector<VirtualTile*> a_tiles)
+    void PlayerAI::setBestPlayWildcardLetters(Sandbox* a_best_sandbox)
     {
-        best_play_wildcard_letters.clear();
+        auto proposed_tiles = a_best_sandbox->best_play.getProposedLetters();
+        a_best_sandbox->best_play_wildcard_letters.clear();
         QChar letter;
 
-        for (auto tile : a_tiles)
+        for (auto tile : proposed_tiles)
         {
             if (tile->getLetter()->getType() == LetterType::Wildcard)
             {
@@ -367,7 +397,7 @@ namespace wf
                 letter = QChar{};
             }
 
-            best_play_wildcard_letters.push_back(letter);
+            a_best_sandbox->best_play_wildcard_letters.push_back(letter);
         }
 
         return;
@@ -386,8 +416,13 @@ namespace wf
             {
                 tile = live_board->getTileAtPosition(collumn, row);
 
-                // A collumn or row is relevant if the start tile or a letter is on or adjacent to it
-                if (tile->getLetter() != nullptr || tile->getModifier()->getType() == ModifierType::Start)
+                // A collumn or row is relevant if it is the start tile or a letter is on or adjacent to it
+                if (tile->getModifier()->getType() == ModifierType::Start)
+                {
+                    relevant_collumns.insert(collumn);
+                    relevant_rows.insert(row);
+                }
+                else if (tile->getLetter() != nullptr)
                 {
                     // Add collumn before, at and after
                     if (collumn - 1 >= 0)

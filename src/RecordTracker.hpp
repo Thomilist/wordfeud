@@ -32,6 +32,7 @@ namespace wf
             ~RecordTracker();
 
             static bool sortScoreByPoints(Score a_left, Score a_right);
+            static QString getDateTimeFormat();
 
             void insert(Score a_score);
             void setScores(std::vector<Score> a_leaderboard, PlayerType a_player_type);

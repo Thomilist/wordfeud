@@ -34,7 +34,7 @@ else()
     )
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt5 REQUIRED COMPONENTS Widgets Concurrent)
 add_subdirectory(src)
 target_link_libraries(
     wordfeud PRIVATE

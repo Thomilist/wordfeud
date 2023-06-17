@@ -7,8 +7,10 @@
 
 #include <QChar>
 #include <QColor>
+#include <QFuture>
 #include <QPoint>
 #include <QString>
+#include <QtConcurrent>
 #include <QThread>
 
 #include "ForwardDeclarations.hpp"
@@ -32,6 +34,16 @@ namespace wf
         {
             return qHash(a_char);
         }
+    };
+
+    struct Sandbox
+    {
+        VirtualBoard board;
+        VirtualBoard best_play;
+        std::vector<QChar> best_play_wildcard_letters;
+        std::vector<Letter*> available_letters;
+        int available_letter_count = 0;
+        int touch_count = 0;
     };
     
     class PlayerAI : public Player
@@ -61,18 +73,19 @@ namespace wf
             void executeTurn();
             void endTurn();
             void startOfTurnSetup();
-            void fetchAvailableLetters();
+            void fetchAvailableLetters(Sandbox* a_sandbox);
             void findBestPlay();
-            void findPlayInLine(Direction a_direction, int a_index);
-            void findPlayInHorisontalLine(int a_row);
-            void findPlayInVerticalLine(int a_collumn);
-            void findPlayRecursively(int a_collumn, int a_row, Direction a_direction);
-            void tryLetterAndRecurse(Letter*& a_letter, VirtualTile* a_tile, int a_collumn, int a_row, Direction a_direction);
-            void recurse(int a_collumn, int a_row, Direction a_direction);
-            bool indexOutOfBounds(int a_collumn, int a_row);
-            void updateBestPlay();
+            void findPlayInLine(Sandbox* a_sandbox, Direction a_direction, int a_index);
+            void findPlayInHorisontalLine(Sandbox* a_sandbox, int a_row);
+            void findPlayInVerticalLine(Sandbox* a_sandbox, int a_collumn);
+            void findPlayRecursively(Sandbox* a_sandbox, int a_collumn, int a_row, Direction a_direction);
+            void tryLetterAndRecurse(Sandbox* a_sandbox, Letter*& a_letter, VirtualTile* a_tile, int a_collumn, int a_row, Direction a_direction);
+            void recurse(Sandbox* a_sandbox, int a_collumn, int a_row, Direction a_direction);
+            bool indexOutOfBounds(Sandbox* a_sandbox, int a_collumn, int a_row);
+            void updateBestPlay(Sandbox* a_sandbox);
+            void updateBestPlay(Sandbox* a_best_sandbox, VirtualBoard* a_best_play, VirtualBoard* a_new_play);
             void executeBestPlay();
-            void setBestPlayWildcardLetters(std::vector<VirtualTile*> a_tiles);
+            void setBestPlayWildcardLetters(Sandbox* a_sandbox);
             void updateRelevantLines();
             void initialiseBoardEvaluation(VirtualBoard* a_board);
             void evaluateBoard(VirtualBoard* a_board);
@@ -80,15 +93,10 @@ namespace wf
 
             bool cancelled = false;
             RenderedBoard* live_board;
-            VirtualBoard sandbox_board;
-            VirtualBoard best_play;
-            std::vector<QChar> best_play_wildcard_letters;
-            std::vector<Letter*> available_letters;
-            int available_letter_count;
+            Sandbox best_sandbox;
             std::set<int> relevant_collumns;
             std::set<int> relevant_rows;
             std::vector<std::vector<int>> board_evaluation;
-            int touch_count = 0;
     };
 }
 

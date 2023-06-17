@@ -60,6 +60,9 @@ Boulderfist Ogre
 Blood Manos
 Pogo Hopper
 Shudderwock
+Majordomo Executus
+Ragnaros the Firelord
+Magma Rager
 Hana Song
 Doomfist
 Ramattra
@@ -83,9 +86,7 @@ Angela Ziegler
 Zenyatta
 Jeff Kaplan
 Aaron Keller
-Ninja
 xQc
-Shroud
 Pokimane
 TimTheTatman
 Dream

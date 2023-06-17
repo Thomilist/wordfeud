@@ -37,8 +37,8 @@ namespace wf
             tile_collumn.clear();
         }
 
-        assignNeighbours();
         grid_dimensions = a_board->getGridDimensions();
+        assignNeighbours();
 
         return;
     }
@@ -153,7 +153,7 @@ namespace wf
 
         proposed_play_points = 0;
 
-        if (!isPlacementValid())
+        if (!a_skip_placement_check && !isPlacementValid())
         {
             proposed_words_valid = false;
             proposed_play_evaluated = true;
@@ -236,9 +236,9 @@ namespace wf
         return invalid_words;
     }
     
-    int VirtualBoard::getProposedPlayPoints()
+    int VirtualBoard::getProposedPlayPoints(bool a_skip_validation)
     {
-        if (!proposed_play_evaluated)
+        if (!proposed_play_evaluated && !a_skip_validation)
         {
             evaluateProposedPlay();
         }

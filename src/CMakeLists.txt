@@ -83,6 +83,7 @@ add_library(PlayerAI PlayerAI.cpp)
 target_link_libraries(
     PlayerAI
     Qt5::Widgets
+    Qt5::Concurrent
     Player
     RenderedTile
     Settings

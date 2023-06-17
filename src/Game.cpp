@@ -252,7 +252,7 @@ namespace wf
                 score.name = player->getDisplayName();
                 score.player_type = player->getType();
                 score.points = player->getScore();
-                score.timestamp = QDateTime::currentDateTime().toString();
+                score.timestamp = QDateTime::currentDateTime().toString(RecordTracker::getDateTimeFormat());
 
                 if (player == winning_player)
                 {

@@ -46,7 +46,7 @@ namespace wf
             int getProposedLetterCount();
             std::vector<Word> getProposedWords();
             std::vector<Word*> getInvalidProposedWords();
-            int getProposedPlayPoints();
+            int getProposedPlayPoints(bool a_skip_validation = false);
             Word getMostRelevantWord();
             void lockProposedPlay();
             void lockProposedLetters();

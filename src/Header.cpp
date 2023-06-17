@@ -168,7 +168,16 @@ namespace wf
                     last_play.append(last_play_word);
                     last_play.append(" for ");
                     last_play.append(QString::number(last_play_value));
-                    last_play.append(" points");
+
+                    if (last_play_value == 1)
+                    {
+                        last_play.append(" point");
+                    }
+                    else
+                    {
+                        last_play.append(" points");
+                    }
+
                     break;
                 }
                 case PlayType::Pass:

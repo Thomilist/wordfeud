@@ -21,6 +21,11 @@ namespace wf
         return a_left.points > a_right.points;
     }
     
+    QString RecordTracker::getDateTimeFormat()
+    {
+        return "yyyy-MM-dd hh:mm:ss";
+    }
+    
     void RecordTracker::insert(Score a_score)
     {
         QVector<Score>* leaderboard = nullptr;

@@ -4,6 +4,7 @@ Charles Leclerc
 Fernando Alonso
 Kevin Magnussen
 Nicholas Latifi
+Nikita Mazepin
 Sebastian Vettel
 Nico Rosberg
 Jenson Button
@@ -26,6 +27,10 @@ Sébastien Ogier
 Colin McRae
 Sophia Flörsch
 Jamie Chadwick
+Toto Wolff
+Christian Horner
+Adrian Newey
+Bernie Ecclestone
 Christiano Ronaldo
 Lionel Messi
 Wayne Rooney

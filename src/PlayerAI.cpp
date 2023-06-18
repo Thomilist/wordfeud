@@ -167,9 +167,15 @@ namespace wf
                 )
             {
                 fetchAvailableLetters(&sandboxes[sandbox_index]);
-                findPlayInLine(&sandboxes[sandbox_index], direction, index);
+                //findPlayInLine(&sandboxes[sandbox_index], direction, index);
+                worker_pool.push_back(QtConcurrent::run(this, &PlayerAI::findPlayInLine, &sandboxes[sandbox_index], direction, index));
                 ++sandbox_index;
             }
+        }
+
+        for (auto& worker : worker_pool)
+        {
+            worker.waitForFinished();
         }
 
         for (auto& sandbox : sandboxes)

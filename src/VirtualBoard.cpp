@@ -449,7 +449,7 @@ namespace wf
         std::set<int> collumns;
         std::set<int> rows;
 
-        for (const auto tile : proposed_letters)
+        for (const auto& tile : proposed_letters)
         {
             QPoint grid_position = tile->getGridPosition();
 
@@ -468,7 +468,7 @@ namespace wf
 
         for (auto direction : {first_direction, second_direction})
         {
-            for (auto tile : proposed_letters)
+            for (auto& tile : proposed_letters)
             {
                 word = findWordWithLetter(tile, direction);
 

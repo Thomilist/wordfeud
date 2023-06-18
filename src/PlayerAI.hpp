@@ -23,6 +23,8 @@
 #include "VirtualBoard.hpp"
 #include "VirtualTile.hpp"
 
+#include "Sandbox.hpp"
+
 #include "Direction.hpp"
 #include "LetterType.hpp"
 #include "TileNeighbours.hpp"
@@ -35,16 +37,6 @@ namespace wf
         {
             return qHash(a_char);
         }
-    };
-
-    struct Sandbox
-    {
-        VirtualBoard board;
-        VirtualBoard best_play;
-        std::vector<QChar> best_play_wildcard_letters;
-        std::vector<Letter*> available_letters;
-        int available_letter_count = 0;
-        int touch_count = 0;
     };
     
     class PlayerAI : public Player
@@ -106,6 +98,7 @@ namespace wf
             std::set<int> relevant_rows;
             std::vector<std::vector<int>> board_evaluation;
             LetterPool* letter_pool;
+            std::vector<QFuture<void>> worker_pool;
     };
 }
 

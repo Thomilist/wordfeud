@@ -37,9 +37,9 @@ namespace wf
     {
         for (int row = 0; row < hand_size.height(); ++row)
         {
-            for (int collumn = 0; collumn < hand_size.width(); ++collumn)
+            for (int column = 0; column < hand_size.width(); ++column)
             {
-                RenderedTile* tile = hand.getTileAtPosition(collumn, row);
+                RenderedTile* tile = hand.getTileAtPosition(column, row);
 
                 if (tile == nullptr)
                 {
@@ -69,11 +69,11 @@ namespace wf
     {
         int spaces = 0;
         
-        for (int collumn = 0; collumn < hand_size.width(); ++collumn)
+        for (int column = 0; column < hand_size.width(); ++column)
         {
             for (int row = 0; row < hand_size.height(); ++row)
             {
-                RenderedTile* tile = hand.getTileAtPosition(collumn, row);
+                RenderedTile* tile = hand.getTileAtPosition(column, row);
 
                 if (tile == nullptr)
                 {
@@ -92,11 +92,11 @@ namespace wf
     
     void Player::addLetterToHand(Letter* a_letter)
     {
-        for (int collumn = 0; collumn < hand_size.width(); ++collumn)
+        for (int column = 0; column < hand_size.width(); ++column)
         {
             for (int row = 0; row < hand_size.height(); ++row)
             {
-                RenderedTile* tile = hand.getTileAtPosition(collumn, row);
+                RenderedTile* tile = hand.getTileAtPosition(column, row);
 
                 if (tile == nullptr)
                 {
@@ -185,11 +185,11 @@ namespace wf
         int penalty = 0;
         RenderedTile* tile;
         
-        for (int collumn = 0; collumn < getHand()->getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < getHand()->getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < getHand()->getGridDimensions().height(); ++row)
             {
-                tile = getHand()->getTileAtPosition(collumn, row);
+                tile = getHand()->getTileAtPosition(column, row);
                 
                 if (tile->getLetter() != nullptr)
                 {

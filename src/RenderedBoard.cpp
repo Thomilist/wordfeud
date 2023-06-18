@@ -30,11 +30,11 @@ namespace wf
     {
         for (int row = 0; row < grid_dimensions.height(); ++row)
         {
-            for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
+            for (int column = 0; column < grid_dimensions.width(); ++column)
             {
                 RenderedTile* tile = new RenderedTile(settings, selection, type, this);
-                tile->setGridPosition(collumn, row);
-                grid.addWidget(tile, row, collumn);
+                tile->setGridPosition(column, row);
+                grid.addWidget(tile, row, column);
             }
         }
     }
@@ -70,17 +70,17 @@ namespace wf
         return;
     }
     
-    RenderedTile* RenderedBoard::getTileAtPosition(int a_collumn, int a_row)
+    RenderedTile* RenderedBoard::getTileAtPosition(int a_column, int a_row)
     {
-        if (    a_collumn < 0
+        if (    a_column < 0
             ||  a_row < 0
-            ||  a_collumn >= grid_dimensions.width()
+            ||  a_column >= grid_dimensions.width()
             ||  a_row >= grid_dimensions.height())
         {
             return nullptr;
         }
         
-        QLayoutItem* layout_item = grid.itemAtPosition(a_row, a_collumn);
+        QLayoutItem* layout_item = grid.itemAtPosition(a_row, a_column);
 
         if (layout_item == nullptr)
         {
@@ -108,11 +108,11 @@ namespace wf
         dimmed_and_disabled = a_state;
         setDisabled(dimmed_and_disabled);
 
-        for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < getGridDimensions().height(); ++row)
             {
-                getTileAtPosition(collumn, row)->setDimmed(dimmed_and_disabled);
+                getTileAtPosition(column, row)->setDimmed(dimmed_and_disabled);
             }
         }
 
@@ -122,11 +122,11 @@ namespace wf
     
     void RenderedBoard::setTileInteractMode(TileInteractMode a_mode)
     {
-        for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < getGridDimensions().height(); ++row)
             {
-                getTileAtPosition(collumn, row)->setInteractMode(a_mode);
+                getTileAtPosition(column, row)->setInteractMode(a_mode);
             }
         }
 
@@ -137,11 +137,11 @@ namespace wf
     {
         clearProposed();
         
-        for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < getGridDimensions().height(); ++row)
             {
-                getTileAtPosition(collumn, row)->reset();
+                getTileAtPosition(column, row)->reset();
             }
         }
 

@@ -34,7 +34,7 @@ namespace wf
             void setWithBoard(VirtualBoard* a_board);
             void importProposedLetters(std::vector<VirtualTile*> a_tiles);
             std::vector<VirtualTile*> getProposedLetters();
-            virtual VirtualTile* getTileAtPosition(int a_collumn, int a_row);
+            virtual VirtualTile* getTileAtPosition(int a_column, int a_row);
             QSize getGridDimensions() const;
             int getGridDimensionInDirection(Direction a_direction);
             int getTileCount() const;

@@ -30,10 +30,6 @@ namespace wf
         grid_layout.addWidget(&buttons, row++, 0);
 
         setLayout(&grid_layout);
-
-        int width = std::max(combined_table->width(), std::max(player_table->width(), player_ai_table->width()));
-        setMinimumWidth(width);
-        setMinimumHeight(width);
     }
     
     RecordDialog::~RecordDialog()
@@ -45,7 +41,9 @@ namespace wf
         createRecordTable(player_ai_table, record_tracker->getScores(PlayerType::AI));
         createRecordTable(combined_table, combineRecords());
 
-        
+        int width = std::max(combined_table->width(), std::max(player_table->width(), player_ai_table->width()));
+        setMinimumWidth(width * 1.2);
+        setMinimumHeight(width);
 
         return QDialog::exec();
     }
@@ -53,35 +51,45 @@ namespace wf
     void RecordDialog::createRecordTable(QTableWidget* a_table, std::vector<Score> a_records)
     {
         // Collumns: position, name, timestamp, points, result
-        a_table->setColumnCount(4);
+        a_table->setColumnCount(6);
         a_table->setRowCount(a_records.size());
-        a_table->setHorizontalHeaderLabels({"Name", "Date", "Score", "Result"});
+        a_table->setHorizontalHeaderLabels({"Name", "Date", "Dictionary", "Modifiers", "Score", "Result"});
 
         int row = 0;
-        int collumn = 0;
+        int column = 0;
 
         for (auto record : a_records)
         {
-            collumn = 0;
+            column = 0;
 
-            // Collumn 0: name
+            // Column 0: name
             QTableWidgetItem* name_item = new QTableWidgetItem(record.name);
-            a_table->setItem(row, collumn++, name_item);
+            a_table->setItem(row, column++, name_item);
 
-            // Collumn 1: timestamp
+            // Column 1: timestamp
             QTableWidgetItem* timestamp_item = new QTableWidgetItem(record.timestamp);
             timestamp_item->setTextAlignment(Qt::AlignCenter);
-            a_table->setItem(row, collumn++, timestamp_item);
+            a_table->setItem(row, column++, timestamp_item);
 
-            // Collumn 2: points
+            // Column 2: dictionary
+            QTableWidgetItem* dictionary_item = new QTableWidgetItem(record.dictionary);
+            dictionary_item->setTextAlignment(Qt::AlignCenter);
+            a_table->setItem(row, column++, dictionary_item);
+
+            // Column 3: modifiers
+            QTableWidgetItem* modifier_item = new QTableWidgetItem(record.modifier_pattern);
+            modifier_item->setTextAlignment(Qt::AlignCenter);
+            a_table->setItem(row, column++, modifier_item);
+
+            // Column 4: points
             QTableWidgetItem* points_item = new QTableWidgetItem(QString::number(record.points));
             points_item->setTextAlignment(Qt::AlignCenter);
-            a_table->setItem(row, collumn++, points_item);
+            a_table->setItem(row, column++, points_item);
 
-            // Collumn 3: result
+            // Column 5: result
             QTableWidgetItem* result_item = new QTableWidgetItem(record.result);
             result_item->setTextAlignment(Qt::AlignCenter);
-            a_table->setItem(row, collumn++, result_item);
+            a_table->setItem(row, column++, result_item);
 
             ++row;
         }

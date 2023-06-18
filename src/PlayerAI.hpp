@@ -82,11 +82,11 @@ namespace wf
             void findBestPlay();
             void findPlayInLine(Sandbox* a_sandbox, Direction a_direction, int a_index);
             void findPlayInHorisontalLine(Sandbox* a_sandbox, int a_row);
-            void findPlayInVerticalLine(Sandbox* a_sandbox, int a_collumn);
-            void findPlayRecursively(Sandbox* a_sandbox, int a_collumn, int a_row, Direction a_direction);
-            void tryLetterAndRecurse(Sandbox* a_sandbox, Letter*& a_letter, VirtualTile* a_tile, int a_collumn, int a_row, Direction a_direction);
-            void recurse(Sandbox* a_sandbox, int a_collumn, int a_row, Direction a_direction);
-            bool indexOutOfBounds(Sandbox* a_sandbox, int a_collumn, int a_row);
+            void findPlayInVerticalLine(Sandbox* a_sandbox, int a_column);
+            void findPlayRecursively(Sandbox* a_sandbox, int a_column, int a_row, Direction a_direction);
+            void tryLetterAndRecurse(Sandbox* a_sandbox, Letter*& a_letter, VirtualTile* a_tile, int a_column, int a_row, Direction a_direction);
+            void recurse(Sandbox* a_sandbox, int a_column, int a_row, Direction a_direction);
+            bool indexOutOfBounds(Sandbox* a_sandbox, int a_column, int a_row);
             void updateBestPlay(Sandbox* a_sandbox);
             void updateBestPlay(Sandbox* a_sandbox_with_best, Sandbox* a_sandbox_with_new);
             void executeBestPlay();

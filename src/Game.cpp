@@ -87,9 +87,9 @@ namespace wf
         return;
     }
     
-    void Game::placeLetter(int a_collumn, int a_row, Letter* a_letter)
+    void Game::placeLetter(int a_column, int a_row, Letter* a_letter)
     {
-        RenderedTile* tile = board.getTileAtPosition(a_collumn, a_row);
+        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
 
         if (tile == nullptr)
         {
@@ -101,9 +101,9 @@ namespace wf
         return;
     }
     
-    Letter* Game::removeLetter(int a_collumn, int a_row)
+    Letter* Game::removeLetter(int a_column, int a_row)
     {
-        RenderedTile* tile = board.getTileAtPosition(a_collumn, a_row);
+        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
 
         if (tile == nullptr)
         {
@@ -113,9 +113,9 @@ namespace wf
         return tile->removeLetter();
     }
     
-    void Game::placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite)
+    void Game::placeModifier(int a_column, int a_row, Modifier* a_modifier, bool a_overwrite)
     {
-        RenderedTile* tile = board.getTileAtPosition(a_collumn, a_row);
+        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
 
         if (tile == nullptr)
         {
@@ -146,9 +146,9 @@ namespace wf
 
         for (int row = 0; row < grid_dimensions.height(); ++row)
         {
-            for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
+            for (int column = 0; column < grid_dimensions.width(); ++column)
             {
-                RenderedTile* tile = board.getTileAtPosition(collumn, row);
+                RenderedTile* tile = board.getTileAtPosition(column, row);
 
                 if (tile == nullptr)
                 {
@@ -255,6 +255,8 @@ namespace wf
                 score.player_type = player->getType();
                 score.points = player->getScore();
                 score.timestamp = QDateTime::currentDateTime().toString(RecordTracker::getDateTimeFormat());
+                score.dictionary = settings->getLanguage()->asString();
+                score.modifier_pattern = settings->getModifierPattern()->getDistributionAsText();
 
                 if (player == winning_player)
                 {
@@ -472,9 +474,9 @@ namespace wf
 
         for (int row = 0; row < hand_size.width(); ++row)
         {
-            for (int collumn = 0; collumn < hand_size.height(); ++collumn)
+            for (int column = 0; column < hand_size.height(); ++column)
             {
-                RenderedTile* tile = hand->getTileAtPosition(collumn, row);
+                RenderedTile* tile = hand->getTileAtPosition(column, row);
 
                 if (tile == nullptr || tile->getLetter() == nullptr)
                 {
@@ -601,11 +603,11 @@ namespace wf
 
         bool confirm_button_state = true;
         
-        for (int collumn = 0; collumn < current_hand->getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < current_hand->getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < current_hand->getGridDimensions().height(); ++row)
             {
-                if (current_hand->getTileAtPosition(collumn, row)->getSwapMarking() == true)
+                if (current_hand->getTileAtPosition(column, row)->getSwapMarking() == true)
                 {
                     confirm_button_state = false;
                     goto l_found_swap_marking;
@@ -639,11 +641,11 @@ namespace wf
         connect(&selection, &RenderedTile::letterAddedRemoved, this, &Game::setCorrectButtonState);
 
         // Board
-        for (int collumn = 0; collumn < board.getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < board.getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < board.getGridDimensions().height(); ++row)
             {
-                RenderedTile* tile = board.getTileAtPosition(collumn, row);
+                RenderedTile* tile = board.getTileAtPosition(column, row);
 
                 connect(tile, &RenderedTile::proposeLetter, this, &Game::proposeLetter);
                 connect(tile, &RenderedTile::unproposeLetter, this, &Game::unproposeLetter);
@@ -661,11 +663,11 @@ namespace wf
         for (auto player : all_players)
         {
             // Hands
-            for (int collumn = 0; collumn < settings->getHandDimensions().width(); ++collumn)
+            for (int column = 0; column < settings->getHandDimensions().width(); ++column)
             {
                 for (int row = 0; row < settings->getHandDimensions().height(); ++row)
                 {
-                    RenderedTile* tile = player->getHand()->getTileAtPosition(collumn, row);
+                    RenderedTile* tile = player->getHand()->getTileAtPosition(column, row);
 
                     connect(tile, &RenderedTile::markForSwap, this, &Game::addToSwapLetters);
                     connect(tile, &RenderedTile::unmarkForSwap, this, &Game::removeFromSwapLetters);

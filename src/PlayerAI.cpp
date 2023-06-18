@@ -108,9 +108,9 @@ namespace wf
 
         for (int row = 0; row < getHand()->getGridDimensions().height(); ++row)
         {
-            for (int collumn = 0; collumn < getHand()->getGridDimensions().width(); ++collumn)
+            for (int column = 0; column < getHand()->getGridDimensions().width(); ++column)
             {
-                letter = getHand()->getTileAtPosition(collumn, row)->getLetter();
+                letter = getHand()->getTileAtPosition(column, row)->getLetter();
 
                 if (letter != nullptr)
                 {
@@ -209,39 +209,39 @@ namespace wf
     
     void PlayerAI::findPlayInHorisontalLine(Sandbox* a_sandbox, int a_row)
     {
-        for (int collumn = 0; collumn < live_board->getGridDimensionInDirection(Direction::Horisontal); ++collumn)
+        for (int column = 0; column < live_board->getGridDimensionInDirection(Direction::Horisontal); ++column)
         {
-            findPlayRecursively(a_sandbox, collumn, a_row, Direction::Horisontal);
+            findPlayRecursively(a_sandbox, column, a_row, Direction::Horisontal);
         }
 
         return;
     }
     
-    void PlayerAI::findPlayInVerticalLine(Sandbox* a_sandbox, int a_collumn)
+    void PlayerAI::findPlayInVerticalLine(Sandbox* a_sandbox, int a_column)
     {
         for (int row = 0; row < live_board->getGridDimensionInDirection(Direction::Vertical); ++row)
         {
-            findPlayRecursively(a_sandbox, a_collumn, row, Direction::Vertical);
+            findPlayRecursively(a_sandbox, a_column, row, Direction::Vertical);
         }
 
         return;
     }
     
-    // For horisontal, fixed index = row, variable index = collumn
-    // For vertical, fixed index = collumn, variable index = row
-    void PlayerAI::findPlayRecursively(Sandbox* a_sandbox, int a_collumn, int a_row, Direction a_direction)
+    // For horisontal, fixed index = row, variable index = column
+    // For vertical, fixed index = column, variable index = row
+    void PlayerAI::findPlayRecursively(Sandbox* a_sandbox, int a_column, int a_row, Direction a_direction)
     {
         if (cancelled)
         {
             return;
         }
         
-        if (indexOutOfBounds(a_sandbox, a_collumn, a_row))
+        if (indexOutOfBounds(a_sandbox, a_column, a_row))
         {
             return;
         }
 
-        VirtualTile* tile = a_sandbox->board.getTileAtPosition(a_collumn, a_row);
+        VirtualTile* tile = a_sandbox->board.getTileAtPosition(a_column, a_row);
         bool tile_available = tile->getLetter() == nullptr;
 
         if (tile_available)
@@ -260,30 +260,30 @@ namespace wf
                     for (auto letter_option : letter_list)
                     {
                         letter->setWildcardText(letter_option.letter);
-                        tryLetterAndRecurse(a_sandbox, letter, tile, a_collumn, a_row, a_direction);
+                        tryLetterAndRecurse(a_sandbox, letter, tile, a_column, a_row, a_direction);
                     }
                 }
                 else
                 {
-                    tryLetterAndRecurse(a_sandbox, letter, tile, a_collumn, a_row, a_direction);
+                    tryLetterAndRecurse(a_sandbox, letter, tile, a_column, a_row, a_direction);
                 }
             }
         }
         else
         {
-            recurse(a_sandbox, a_collumn, a_row, a_direction);
+            recurse(a_sandbox, a_column, a_row, a_direction);
         }
 
         return;
     }
     
-    void PlayerAI::tryLetterAndRecurse(Sandbox* a_sandbox, Letter*& a_letter, VirtualTile* a_tile, int a_collumn, int a_row, Direction a_direction)
+    void PlayerAI::tryLetterAndRecurse(Sandbox* a_sandbox, Letter*& a_letter, VirtualTile* a_tile, int a_column, int a_row, Direction a_direction)
     {
         a_tile->placeLetter(a_letter);
         a_letter = nullptr;
         a_sandbox->board.proposeLetter(a_tile);
         --a_sandbox->available_letter_count;
-        a_sandbox->touch_count += board_evaluation[a_collumn][a_row];
+        a_sandbox->touch_count += board_evaluation[a_column][a_row];
 
         if (a_sandbox->touch_count > 0)
         {
@@ -292,29 +292,29 @@ namespace wf
 
         if (a_sandbox->available_letter_count > 0)
         {
-            recurse(a_sandbox, a_collumn, a_row, a_direction);
+            recurse(a_sandbox, a_column, a_row, a_direction);
         }
         
         a_letter = a_tile->removeLetter();
         a_sandbox->board.unproposeLetter(a_tile);
         ++a_sandbox->available_letter_count;
-        a_sandbox->touch_count -= board_evaluation[a_collumn][a_row];
+        a_sandbox->touch_count -= board_evaluation[a_column][a_row];
 
         return;
     }
     
-    void PlayerAI::recurse(Sandbox* a_sandbox, int a_collumn, int a_row, Direction a_direction)
+    void PlayerAI::recurse(Sandbox* a_sandbox, int a_column, int a_row, Direction a_direction)
     {
         switch (a_direction)
         {
             case Direction::Horisontal:
             {
-                return findPlayRecursively(a_sandbox, a_collumn + 1, a_row, a_direction);
+                return findPlayRecursively(a_sandbox, a_column + 1, a_row, a_direction);
                 break;
             }
             case Direction::Vertical:
             {
-                return findPlayRecursively(a_sandbox, a_collumn, a_row + 1, a_direction);
+                return findPlayRecursively(a_sandbox, a_column, a_row + 1, a_direction);
                 break;
             }
         }
@@ -322,9 +322,9 @@ namespace wf
         return;
     }
     
-    bool PlayerAI::indexOutOfBounds(Sandbox* a_sandbox, int a_collumn, int a_row)
+    bool PlayerAI::indexOutOfBounds(Sandbox* a_sandbox, int a_column, int a_row)
     {
-        return a_collumn >= a_sandbox->board.getGridDimensionInDirection(Direction::Horisontal) || a_row >= a_sandbox->board.getGridDimensionInDirection(Direction::Vertical);
+        return a_column >= a_sandbox->board.getGridDimensionInDirection(Direction::Horisontal) || a_row >= a_sandbox->board.getGridDimensionInDirection(Direction::Vertical);
     }
     
     void PlayerAI::updateBestPlay(Sandbox* a_sandbox)
@@ -411,9 +411,9 @@ namespace wf
 
             for (int row = 0; row < getHand()->getGridDimensions().height() && !letter_removed; ++row)
             {
-                for (int collumn = 0; collumn < getHand()->getGridDimensions().width() && !letter_removed; ++collumn)
+                for (int column = 0; column < getHand()->getGridDimensions().width() && !letter_removed; ++column)
                 {
-                    tile = getHand()->getTileAtPosition(collumn, row);
+                    tile = getHand()->getTileAtPosition(column, row);
                     
                     if (tile->getLetter() == letter)
                     {
@@ -473,31 +473,31 @@ namespace wf
 
         VirtualTile* tile;
 
-        for (int collumn = 0; collumn < live_board->getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < live_board->getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < live_board->getGridDimensions().height(); ++row)
             {
-                tile = live_board->getTileAtPosition(collumn, row);
+                tile = live_board->getTileAtPosition(column, row);
 
-                // A collumn or row is relevant if it is the start tile or a letter is on or adjacent to it
+                // A column or row is relevant if it is the start tile or a letter is on or adjacent to it
                 if (tile->getModifier()->getType() == ModifierType::Start)
                 {
-                    relevant_collumns.insert(collumn);
+                    relevant_collumns.insert(column);
                     relevant_rows.insert(row);
                 }
                 else if (tile->getLetter() != nullptr)
                 {
-                    // Add collumn before, at and after
-                    if (collumn - 1 >= 0)
+                    // Add column before, at and after
+                    if (column - 1 >= 0)
                     {
-                        relevant_collumns.insert(collumn - 1);
+                        relevant_collumns.insert(column - 1);
                     }
 
-                    relevant_collumns.insert(collumn);
+                    relevant_collumns.insert(column);
 
-                    if (collumn + 1 <= live_board->getGridDimensions().width())
+                    if (column + 1 <= live_board->getGridDimensions().width())
                     {
-                        relevant_collumns.insert(collumn + 1);
+                        relevant_collumns.insert(column + 1);
                     }
 
                     // Add row before, at and after
@@ -525,7 +525,7 @@ namespace wf
         std::vector<int> collumn_evaluation;
         collumn_evaluation.reserve(a_board->getGridDimensions().height());
 
-        for (int collumn = 0; collumn < a_board->getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < a_board->getGridDimensions().width(); ++column)
         {
             collumn_evaluation.clear();
             
@@ -544,12 +544,12 @@ namespace wf
     {
         VirtualTile* tile;
 
-        for (int collumn = 0; collumn < a_board->getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < a_board->getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < a_board->getGridDimensions().height(); ++row)
             {
-                tile = a_board->getTileAtPosition(collumn, row);
-                board_evaluation[collumn][row] = evaluateTile(tile);
+                tile = a_board->getTileAtPosition(column, row);
+                board_evaluation[column][row] = evaluateTile(tile);
             }
         }
 
@@ -592,9 +592,9 @@ namespace wf
         
         for (int row = 0; row < getHand()->getGridDimensions().height(); ++row)
         {
-            for (int collumn = 0; collumn < getHand()->getGridDimensions().width(); ++collumn)
+            for (int column = 0; column < getHand()->getGridDimensions().width(); ++column)
             {
-                tile = getHand()->getTileAtPosition(collumn, row);
+                tile = getHand()->getTileAtPosition(column, row);
                 tile->setSwapMarking(true);
                 emit tile->markForSwap(tile);
                 emit letterMarkedForSwap();

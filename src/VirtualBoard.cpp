@@ -25,12 +25,12 @@ namespace wf
         proposed_play_evaluated = false;
         std::vector<VirtualTile> tile_collumn;
         
-        for (int collumn = 0; collumn < a_board->getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < a_board->getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < a_board->getGridDimensions().height(); ++row)
             {
-                tile_collumn.push_back(VirtualTile(a_board->getTileAtPosition(collumn, row)));
-                tile_collumn.back().setGridPosition(collumn, row);
+                tile_collumn.push_back(VirtualTile(a_board->getTileAtPosition(column, row)));
+                tile_collumn.back().setGridPosition(column, row);
             }
 
             board.push_back(tile_collumn);
@@ -69,17 +69,17 @@ namespace wf
         return proposed_letters;
     }
     
-    VirtualTile* VirtualBoard::getTileAtPosition(int a_collumn, int a_row)
+    VirtualTile* VirtualBoard::getTileAtPosition(int a_column, int a_row)
     {
-        if (    a_collumn < 0
+        if (    a_column < 0
             ||  a_row < 0
-            ||  a_collumn >= grid_dimensions.width()
+            ||  a_column >= grid_dimensions.width()
             ||  a_row >= grid_dimensions.height())
         {
             return nullptr;
         }
         
-        return &board[a_collumn][a_row];
+        return &board[a_column][a_row];
     }
     
     QSize VirtualBoard::getGridDimensions() const
@@ -118,11 +118,11 @@ namespace wf
         int count = 0;
         Letter* letter;
         
-        for (int collumn = 0; collumn < getGridDimensions().width(); ++collumn)
+        for (int column = 0; column < getGridDimensions().width(); ++column)
         {
             for (int row = 0; row < getGridDimensions().height(); ++row)
             {
-                letter = getTileAtPosition(collumn, row)->getLetter();
+                letter = getTileAtPosition(column, row)->getLetter();
 
                 if (letter != nullptr)
                 {
@@ -332,16 +332,16 @@ namespace wf
     {
         VirtualTile* tile;
         
-        for (int collumn = 0; collumn < grid_dimensions.width(); ++collumn)
+        for (int column = 0; column < grid_dimensions.width(); ++column)
         {
             for (int row = 0; row < grid_dimensions.height(); ++row)
             {
-                tile = getTileAtPosition(collumn, row);
+                tile = getTileAtPosition(column, row);
 
-                tile->setNeighbour(getTileAtPosition(collumn, row - 1), TileNeighbour::Top);
-                tile->setNeighbour(getTileAtPosition(collumn + 1, row), TileNeighbour::Right);
-                tile->setNeighbour(getTileAtPosition(collumn, row + 1), TileNeighbour::Bottom);
-                tile->setNeighbour(getTileAtPosition(collumn - 1, row), TileNeighbour::Left);
+                tile->setNeighbour(getTileAtPosition(column, row - 1), TileNeighbour::Top);
+                tile->setNeighbour(getTileAtPosition(column + 1, row), TileNeighbour::Right);
+                tile->setNeighbour(getTileAtPosition(column, row + 1), TileNeighbour::Bottom);
+                tile->setNeighbour(getTileAtPosition(column - 1, row), TileNeighbour::Left);
             }
         }
 
@@ -519,15 +519,15 @@ namespace wf
         }
 
         VirtualTile* next_tile;
-        int collumn = starting_position.x();
+        int column = starting_position.x();
         int row = starting_position.y();
 
         // Search left or up
         while (true)
         {
-            collumn -= collumn_shift;
+            column -= collumn_shift;
             row -= row_shift;
-            next_tile = getTileAtPosition(collumn, row);
+            next_tile = getTileAtPosition(column, row);
 
             if (next_tile == nullptr)
             {
@@ -542,15 +542,15 @@ namespace wf
             tiles.push_front(next_tile);
         }
 
-        collumn = starting_position.x();
+        column = starting_position.x();
         row = starting_position.y();
 
         // Search right or down
         while (true)
         {
-            collumn += collumn_shift;
+            column += collumn_shift;
             row += row_shift;
-            next_tile = getTileAtPosition(collumn, row);
+            next_tile = getTileAtPosition(column, row);
 
             if (next_tile == nullptr)
             {

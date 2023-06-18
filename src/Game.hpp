@@ -87,9 +87,9 @@ namespace wf
 
         private:
             void loadLetters();
-            void placeLetter(int a_collumn, int a_row, Letter* a_letter);
-            [[nodiscard]] Letter* removeLetter(int a_collumn, int a_row);
-            void placeModifier(int a_collumn, int a_row, Modifier* a_modifier, bool a_overwrite = false);
+            void placeLetter(int a_column, int a_row, Letter* a_letter);
+            [[nodiscard]] Letter* removeLetter(int a_column, int a_row);
+            void placeModifier(int a_column, int a_row, Modifier* a_modifier, bool a_overwrite = false);
             void placeModifiers(std::vector<Modifier*> a_modifiers);
             void createPlayer(QString a_display_name, PlayerType a_type, QColor a_color);
             void createPlayers();

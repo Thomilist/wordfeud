@@ -23,6 +23,8 @@ namespace wf
         PlayerType player_type;
         QString timestamp;
         QString result;
+        QString modifier_pattern;
+        QString dictionary;
     };
     
     class RecordTracker : public QSettings

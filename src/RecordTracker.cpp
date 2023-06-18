@@ -182,7 +182,9 @@ QDataStream& operator<<(QDataStream& a_out, const wf::Score& a_score)
         << a_score.player_type
         << a_score.points
         << a_score.timestamp
-        << a_score.result;
+        << a_score.result
+        << a_score.modifier_pattern
+        << a_score.dictionary;
     return a_out;
 }
 
@@ -193,5 +195,7 @@ QDataStream& operator>>(QDataStream& a_in, wf::Score& a_score)
     a_in >> a_score.points;
     a_in >> a_score.timestamp;
     a_in >> a_score.result;
+    a_in >> a_score.modifier_pattern;
+    a_in >> a_score.dictionary;
     return a_in;
 }

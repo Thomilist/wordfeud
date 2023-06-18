@@ -1,7 +1,6 @@
 #ifndef __LETTERPOOL_H__
 #define __LETTERPOOL_H__
 
-#include <cstdlib>
 #include <random>
 #include <vector>
 

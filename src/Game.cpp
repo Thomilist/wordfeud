@@ -180,7 +180,8 @@ namespace wf
                     a_color,
                     settings,
                     &selection,
-                    &board
+                    &board,
+                    &letter_pool
                 );
 
                 player->moveToThread(&player_AI_thread);
@@ -243,6 +244,7 @@ namespace wf
             hands.setDisabled(true);
 
             finalisePoints();
+            repaint();
             Player* winning_player = getHighestScoringPlayer();
 
             Score score;
@@ -678,6 +680,10 @@ namespace wf
                 connect(this, &Game::playAI, player_ai, &PlayerAI::playIfTurn);
                 connect(player_ai, &PlayerAI::playComplete, this, &Game::playButton);
                 connect(player_ai, &PlayerAI::letterPlaced, this, &Game::repaintHandAndBoard);
+                connect(player_ai, &PlayerAI::startSwap, this, &Game::swapButton);
+                connect(player_ai, &PlayerAI::letterMarkedForSwap, this, &Game::repaintHandAndBoard);
+                connect(player_ai, &PlayerAI::swapComplete, this, &Game::confirmButton);
+                connect(player_ai, &PlayerAI::passTurn, this, &Game::passButton);
             }
         }
 

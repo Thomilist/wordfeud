@@ -16,6 +16,7 @@
 #include "ForwardDeclarations.hpp"
 
 #include "Letter.hpp"
+#include "LetterPool.hpp"
 #include "Player.hpp"
 #include "RenderedTile.hpp"
 #include "Settings.hpp"
@@ -56,7 +57,8 @@ namespace wf
                 QColor a_color,
                 Settings* a_settings,
                 RenderedTile* a_selection,
-                RenderedBoard* a_board);
+                RenderedBoard* a_board,
+                LetterPool* a_letter_pool);
             ~PlayerAI();
 
         public slots:
@@ -65,9 +67,11 @@ namespace wf
         
         signals:
             void playComplete();
-            void passTurn();
-            void swapAllTiles();
             void letterPlaced();
+            void startSwap();
+            void letterMarkedForSwap();
+            void swapComplete();
+            void passTurn();
 
         private:
             void executeTurn();
@@ -92,6 +96,7 @@ namespace wf
             void initialiseBoardEvaluation(VirtualBoard* a_board);
             void evaluateBoard(VirtualBoard* a_board);
             int evaluateTile(VirtualTile* a_tile);
+            void swapAllLetters();
 
             bool cancelled = false;
             RenderedBoard* live_board;
@@ -100,6 +105,7 @@ namespace wf
             std::set<int> relevant_collumns;
             std::set<int> relevant_rows;
             std::vector<std::vector<int>> board_evaluation;
+            LetterPool* letter_pool;
     };
 }
 

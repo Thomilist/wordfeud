@@ -8,7 +8,8 @@ namespace wf
         QColor a_color,
         Settings* a_settings,
         RenderedTile* a_selection,
-        RenderedBoard* a_board)
+        RenderedBoard* a_board,
+        LetterPool* a_letter_pool)
         : Player(
             a_display_name,
             PlayerType::AI,
@@ -24,6 +25,7 @@ namespace wf
                 std::vector<Letter*>(),
                 0,
                 0))
+        , letter_pool(a_letter_pool)
     {
         initialiseBoardEvaluation(live_board);
     }
@@ -74,6 +76,16 @@ namespace wf
         if (best_sandbox.best_play.getProposedPlayPoints() > 0)
         {
             emit playComplete();
+        }
+        else if (letter_pool->getRemainingCount() > 0)
+        {
+            emit startSwap();
+            swapAllLetters();
+            emit swapComplete();
+        }
+        else
+        {
+            emit passTurn();
         }
 
         return;
@@ -572,5 +584,23 @@ namespace wf
         }
 
         return 0;
+    }
+    
+    void PlayerAI::swapAllLetters()
+    {
+        RenderedTile* tile;
+        
+        for (int row = 0; row < getHand()->getGridDimensions().height(); ++row)
+        {
+            for (int collumn = 0; collumn < getHand()->getGridDimensions().width(); ++collumn)
+            {
+                tile = getHand()->getTileAtPosition(collumn, row);
+                tile->setSwapMarking(true);
+                emit tile->markForSwap(tile);
+                emit letterMarkedForSwap();
+            }
+        }
+
+        return;
     }
 }

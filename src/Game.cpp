@@ -325,6 +325,7 @@ namespace wf
 
         header.reset();
         board.reset();
+        selection.reset();
         proposal_info.setProposedPlay(true, 0);
         hands.setDisabled(false);
 

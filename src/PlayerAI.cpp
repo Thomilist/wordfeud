@@ -83,8 +83,7 @@ namespace wf
     {
         updateRelevantLines();
         evaluateBoard(live_board);
-        best_sandbox.best_play.clearProposed();
-        best_sandbox.best_play.evaluateProposedPlay();
+        initialiseSandboxes();
 
         return;
     }
@@ -112,10 +111,38 @@ namespace wf
         return;
     }
     
+    void PlayerAI::initialiseSandboxes()
+    {
+        int line_count = live_board->getGridDimensions().width() + live_board->getGridDimensions().height();
+        
+        sandboxes.clear();
+        sandboxes.reserve(line_count);
+
+        for (int index = 0; index < line_count; ++index)
+        {
+            sandboxes.push_back
+            (
+                Sandbox
+                    (
+                        VirtualBoard(settings, live_board),
+                        VirtualBoard(settings, live_board),
+                        std::vector<QChar>(),
+                        std::vector<Letter*>(),
+                        0,
+                        0
+                    )
+            );
+        }
+
+        best_sandbox.best_play.clearProposed();
+        best_sandbox.best_play.evaluateProposedPlay();
+
+        return;
+    }
+    
     void PlayerAI::findBestPlay()
     {
-        std::vector<Sandbox> sandboxes;
-        sandboxes.reserve(live_board->getGridDimensions().width() + live_board->getGridDimensions().height());
+        int sandbox_index = 0;
         
         for (Direction direction : {Direction::Horisontal, Direction::Vertical})
         {
@@ -127,27 +154,15 @@ namespace wf
                     ++index
                 )
             {
-                sandboxes.push_back
-                (
-                    Sandbox
-                    (
-                        VirtualBoard(settings, live_board),
-                        VirtualBoard(settings, live_board),
-                        std::vector<QChar>(),
-                        std::vector<Letter*>(),
-                        0,
-                        0
-                    )
-                );
-
-                fetchAvailableLetters(&sandboxes.back());
-                findPlayInLine(&sandboxes.back(), direction, index);
+                fetchAvailableLetters(&sandboxes[sandbox_index]);
+                findPlayInLine(&sandboxes[sandbox_index], direction, index);
+                ++sandbox_index;
             }
         }
 
         for (auto& sandbox : sandboxes)
         {
-            updateBestPlay(&best_sandbox, &best_sandbox.best_play, &sandbox.best_play);
+            updateBestPlay(&best_sandbox, &sandbox);
         }
 
         return;
@@ -302,25 +317,46 @@ namespace wf
     
     void PlayerAI::updateBestPlay(Sandbox* a_sandbox)
     {
-        updateBestPlay(a_sandbox, &a_sandbox->best_play, &a_sandbox->board);
+        updateBestPlay(a_sandbox, a_sandbox);
         return;
     }
 
-    void PlayerAI::updateBestPlay(Sandbox* a_best_sandbox, VirtualBoard* a_best_play, VirtualBoard* a_new_play)
+    void PlayerAI::updateBestPlay(Sandbox* a_sandbox_with_best, Sandbox* a_sandbox_with_new)
     {
-        a_best_play->evaluateProposedPlay(false, true, true);
-        a_new_play->evaluateProposedPlay(false, true, true);
+        a_sandbox_with_best->best_play.evaluateProposedPlay(false, true, true);
+        a_sandbox_with_new->board.evaluateProposedPlay(false, true, true);
         
-        if (!a_new_play->isProposedPlayValid())
+        if (!a_sandbox_with_new->board.isProposedPlayValid())
         {
             return;
         }
 
-        if (a_new_play->getProposedPlayPoints() > a_best_play->getProposedPlayPoints())
+        int current_best_points = a_sandbox_with_best->best_play.getProposedPlayPoints();
+        int new_play_points = 0;
+
+        if (a_sandbox_with_best == a_sandbox_with_new)
         {
-            a_best_play->setWithBoard(a_new_play);
-            a_best_play->importProposedLetters(a_new_play->getProposedLetters());
-            setBestPlayWildcardLetters(a_best_sandbox);
+            new_play_points = a_sandbox_with_new->board.getProposedPlayPoints();
+        }
+        else
+        {
+            new_play_points = a_sandbox_with_new->best_play.getProposedPlayPoints();
+        }
+
+        if (new_play_points > current_best_points)
+        {
+            if (a_sandbox_with_best == a_sandbox_with_new)
+            {
+                a_sandbox_with_best->best_play.setWithBoard(&a_sandbox_with_new->board);
+                a_sandbox_with_best->best_play.importProposedLetters(a_sandbox_with_new->board.getProposedLetters());
+                setBestPlayWildcardLetters(a_sandbox_with_best, a_sandbox_with_new->board.getProposedLetters());
+            }
+            else
+            {
+                a_sandbox_with_best->best_play.setWithBoard(&a_sandbox_with_new->best_play);
+                a_sandbox_with_best->best_play.importProposedLetters(a_sandbox_with_new->best_play.getProposedLetters());
+                setBestPlayWildcardLetters(a_sandbox_with_best, a_sandbox_with_new->best_play_wildcard_letters);
+            }
         }
 
         return;
@@ -328,6 +364,8 @@ namespace wf
     
     void PlayerAI::executeBestPlay()
     {
+        best_sandbox.best_play.evaluateProposedPlay(true);
+        
         QPoint position;
         Letter* letter;
         VirtualTile* live_tile;
@@ -380,13 +418,12 @@ namespace wf
         return;
     }
     
-    void PlayerAI::setBestPlayWildcardLetters(Sandbox* a_best_sandbox)
+    void PlayerAI::setBestPlayWildcardLetters(Sandbox* a_best_sandbox, std::vector<VirtualTile*> a_proposed_tiles)
     {
-        auto proposed_tiles = a_best_sandbox->best_play.getProposedLetters();
-        a_best_sandbox->best_play_wildcard_letters.clear();
+        std::vector<QChar> wildcard_letters;
         QChar letter;
 
-        for (auto tile : proposed_tiles)
+        for (auto tile : a_proposed_tiles)
         {
             if (tile->getLetter()->getType() == LetterType::Wildcard)
             {
@@ -397,6 +434,20 @@ namespace wf
                 letter = QChar{};
             }
 
+            wildcard_letters.push_back(letter);
+        }
+
+        setBestPlayWildcardLetters(a_best_sandbox, wildcard_letters);
+
+        return;
+    }
+    
+    void PlayerAI::setBestPlayWildcardLetters(Sandbox* a_best_sandbox, std::vector<QChar> a_proposed_letters)
+    {
+        a_best_sandbox->best_play_wildcard_letters.clear();
+
+        for (auto letter : a_proposed_letters)
+        {
             a_best_sandbox->best_play_wildcard_letters.push_back(letter);
         }
 

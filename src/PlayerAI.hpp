@@ -74,6 +74,7 @@ namespace wf
             void endTurn();
             void startOfTurnSetup();
             void fetchAvailableLetters(Sandbox* a_sandbox);
+            void initialiseSandboxes();
             void findBestPlay();
             void findPlayInLine(Sandbox* a_sandbox, Direction a_direction, int a_index);
             void findPlayInHorisontalLine(Sandbox* a_sandbox, int a_row);
@@ -83,9 +84,10 @@ namespace wf
             void recurse(Sandbox* a_sandbox, int a_collumn, int a_row, Direction a_direction);
             bool indexOutOfBounds(Sandbox* a_sandbox, int a_collumn, int a_row);
             void updateBestPlay(Sandbox* a_sandbox);
-            void updateBestPlay(Sandbox* a_best_sandbox, VirtualBoard* a_best_play, VirtualBoard* a_new_play);
+            void updateBestPlay(Sandbox* a_sandbox_with_best, Sandbox* a_sandbox_with_new);
             void executeBestPlay();
-            void setBestPlayWildcardLetters(Sandbox* a_sandbox);
+            void setBestPlayWildcardLetters(Sandbox* a_best_sandbox, std::vector<VirtualTile*> a_proposed_tiles);
+            void setBestPlayWildcardLetters(Sandbox* a_best_sandbox, std::vector<QChar> a_proposed_letters);
             void updateRelevantLines();
             void initialiseBoardEvaluation(VirtualBoard* a_board);
             void evaluateBoard(VirtualBoard* a_board);
@@ -94,6 +96,7 @@ namespace wf
             bool cancelled = false;
             RenderedBoard* live_board;
             Sandbox best_sandbox;
+            std::vector<Sandbox> sandboxes;
             std::set<int> relevant_collumns;
             std::set<int> relevant_rows;
             std::vector<std::vector<int>> board_evaluation;

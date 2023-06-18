@@ -34,7 +34,9 @@ namespace wf
         std::mt19937 rng(random_seed());
         std::uniform_int_distribution<> distribution(0, getRemainingCount() - 1);
 
-        int random_index = distribution(rng);
+        //int random_index = distribution(rng);
+        std::srand(1337);
+        int random_index = std::rand() % getRemainingCount();
         Letter* random_letter = pool.at(random_index);
         pool.erase(pool.begin() + random_index);
 

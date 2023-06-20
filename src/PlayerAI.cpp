@@ -17,27 +17,23 @@ namespace wf
             a_settings,
             a_selection)
         , live_board(a_board)
-        , best_sandbox(
-            Sandbox(
-                VirtualBoard(settings, live_board),
-                VirtualBoard(settings, live_board),
-                std::vector<QChar>(),
-                std::vector<Letter*>(),
-                0,
-                0))
         , letter_pool(a_letter_pool)
     {
-        initialiseBoardEvaluation(live_board);
+        initialiseTouchEvaluation(live_board);
+        initialiseWorkerThreads();
     }
     
     PlayerAI::~PlayerAI()
-    { }
+    {
+        deleteWorkers();
+        emit cleanup();
+    }
     
     void PlayerAI::playIfTurn()
     {
         if (hasTurn())
         {
-            executeTurn();
+            startTurn();
         }
 
         return;
@@ -46,19 +42,44 @@ namespace wf
     void PlayerAI::cancelTurn()
     {
         cancelled = true;
+        emit cancelWork();
+
+        while (finished_workers < workers.size())
+        {
+            QThread::msleep(10);
+        }
+
+        deleteWorkers();
+        emit cleanup();
+
         return;
     }
     
-    void PlayerAI::executeTurn()
+    void PlayerAI::bestPlayFound()
     {
-        startOfTurnSetup();
-        findBestPlay();
+        ++finished_workers;
 
-        if (cancelled)
+        if (finished_workers < workers.size())
         {
             return;
         }
 
+        int worker_index = 0;
+        int new_score = 0;
+
+        for (auto worker : workers)
+        {
+            new_score = worker->getScore();
+
+            if (new_score > best_play_score)
+            {
+                best_play_score = new_score;
+                best_play_index = worker_index;
+            }
+
+            ++worker_index;
+        }
+        
         executeBestPlay();
 
         if (cancelled)
@@ -67,13 +88,21 @@ namespace wf
         }
 
         endTurn();
-        
+
+        return;
+    }
+    
+    void PlayerAI::startTurn()
+    {
+        startOfTurnSetup();
+        findBestPlay();
+
         return;
     }
     
     void PlayerAI::endTurn()
     {
-        if (best_sandbox.best_play.getProposedPlayPoints() > 0)
+        if (best_play_score > 0)
         {
             emit playComplete();
         }
@@ -95,66 +124,17 @@ namespace wf
     {
         updateRelevantLines();
         evaluateBoard(live_board);
-        initialiseSandboxes();
-
-        return;
-    }
-    
-    void PlayerAI::fetchAvailableLetters(Sandbox* a_sandbox)
-    {
-        a_sandbox->available_letters.clear();
-        a_sandbox->available_letter_count = 0;
-        Letter* letter;
-
-        for (int row = 0; row < getHand()->getGridDimensions().height(); ++row)
-        {
-            for (int column = 0; column < getHand()->getGridDimensions().width(); ++column)
-            {
-                letter = getHand()->getTileAtPosition(column, row)->getLetter();
-
-                if (letter != nullptr)
-                {
-                    a_sandbox->available_letters.push_back(letter);
-                    ++a_sandbox->available_letter_count;
-                }
-            }
-        }
-
-        return;
-    }
-    
-    void PlayerAI::initialiseSandboxes()
-    {
-        int line_count = live_board->getGridDimensions().width() + live_board->getGridDimensions().height();
-        
-        sandboxes.clear();
-        sandboxes.reserve(line_count);
-
-        for (int index = 0; index < line_count; ++index)
-        {
-            sandboxes.push_back
-            (
-                Sandbox
-                    (
-                        VirtualBoard(settings, live_board),
-                        VirtualBoard(settings, live_board),
-                        std::vector<QChar>(),
-                        std::vector<Letter*>(),
-                        0,
-                        0
-                    )
-            );
-        }
-
-        best_sandbox.best_play.clearProposed();
-        best_sandbox.best_play.evaluateProposedPlay();
+        deleteWorkers();
+        worker_threads.clear();
+        best_play_score = 0;
+        finished_workers = 0;
 
         return;
     }
     
     void PlayerAI::findBestPlay()
     {
-        int sandbox_index = 0;
+        PlayerAIWorker* worker;
         
         for (Direction direction : {Direction::Horisontal, Direction::Vertical})
         {
@@ -166,230 +146,52 @@ namespace wf
                     ++index
                 )
             {
-                fetchAvailableLetters(&sandboxes[sandbox_index]);
-                //findPlayInLine(&sandboxes[sandbox_index], direction, index);
-                worker_pool.push_back(QtConcurrent::run(this, &PlayerAI::findPlayInLine, &sandboxes[sandbox_index], direction, index));
-                ++sandbox_index;
-            }
-        }
+                worker = new PlayerAIWorker
+                (
+                    settings,
+                    live_board,
+                    getHand(),
+                    direction,
+                    index,
+                    relevant_rows,
+                    relevant_collumns,
+                    touch_evaluation
+                );
 
-        for (auto& worker : worker_pool)
-        {
-            worker.waitForFinished();
-        }
+                worker->moveToThread(worker_threads[index]);
 
-        for (auto& sandbox : sandboxes)
-        {
-            updateBestPlay(&best_sandbox, &sandbox);
-        }
-
-        return;
-    }
-    
-    void PlayerAI::findPlayInLine(Sandbox* a_sandbox, Direction a_direction, int a_index)
-    {
-        switch (a_direction)
-        {
-            case Direction::Horisontal:
-            {
-                if (relevant_rows.contains(a_index))
-                {
-                    findPlayInHorisontalLine(a_sandbox, a_index);
-                }
-
-                break;
-            }
-            case Direction::Vertical:
-            {
-                if (relevant_collumns.contains(a_index))
-                {
-                    findPlayInVerticalLine(a_sandbox, a_index);
-                }
+                connect(this, &PlayerAI::startWorkers, worker, &PlayerAIWorker::execute);
+                connect(this, &PlayerAI::cancelWork, worker, &PlayerAIWorker::cancel);
+                connect(worker, &PlayerAIWorker::finished, this, &PlayerAI::bestPlayFound);
                 
-                break;
+                workers.push_back(worker);
             }
         }
 
-        return;
-    }
-    
-    void PlayerAI::findPlayInHorisontalLine(Sandbox* a_sandbox, int a_row)
-    {
-        for (int column = 0; column < live_board->getGridDimensionInDirection(Direction::Horisontal); ++column)
-        {
-            findPlayRecursively(a_sandbox, column, a_row, Direction::Horisontal);
-        }
-
-        return;
-    }
-    
-    void PlayerAI::findPlayInVerticalLine(Sandbox* a_sandbox, int a_column)
-    {
-        for (int row = 0; row < live_board->getGridDimensionInDirection(Direction::Vertical); ++row)
-        {
-            findPlayRecursively(a_sandbox, a_column, row, Direction::Vertical);
-        }
-
-        return;
-    }
-    
-    // For horisontal, fixed index = row, variable index = column
-    // For vertical, fixed index = column, variable index = row
-    void PlayerAI::findPlayRecursively(Sandbox* a_sandbox, int a_column, int a_row, Direction a_direction)
-    {
-        if (cancelled)
-        {
-            return;
-        }
-        
-        if (indexOutOfBounds(a_sandbox, a_column, a_row))
-        {
-            return;
-        }
-
-        VirtualTile* tile = a_sandbox->board.getTileAtPosition(a_column, a_row);
-        bool tile_available = tile->getLetter() == nullptr;
-
-        if (tile_available)
-        {
-            for (auto& letter : a_sandbox->available_letters)
-            {
-                if (letter == nullptr)
-                {
-                    continue;
-                }
-
-                if (letter->getType() == LetterType::Wildcard)
-                {
-                    auto letter_list = settings->getLanguage()->getLetterList();
-
-                    for (auto letter_option : letter_list)
-                    {
-                        letter->setWildcardText(letter_option.letter);
-                        tryLetterAndRecurse(a_sandbox, letter, tile, a_column, a_row, a_direction);
-                    }
-                }
-                else
-                {
-                    tryLetterAndRecurse(a_sandbox, letter, tile, a_column, a_row, a_direction);
-                }
-            }
-        }
-        else
-        {
-            recurse(a_sandbox, a_column, a_row, a_direction);
-        }
-
-        return;
-    }
-    
-    void PlayerAI::tryLetterAndRecurse(Sandbox* a_sandbox, Letter*& a_letter, VirtualTile* a_tile, int a_column, int a_row, Direction a_direction)
-    {
-        a_tile->placeLetter(a_letter);
-        a_letter = nullptr;
-        a_sandbox->board.proposeLetter(a_tile);
-        --a_sandbox->available_letter_count;
-        a_sandbox->touch_count += board_evaluation[a_column][a_row];
-
-        if (a_sandbox->touch_count > 0)
-        {
-            updateBestPlay(a_sandbox);
-        }
-
-        if (a_sandbox->available_letter_count > 0)
-        {
-            recurse(a_sandbox, a_column, a_row, a_direction);
-        }
-        
-        a_letter = a_tile->removeLetter();
-        a_sandbox->board.unproposeLetter(a_tile);
-        ++a_sandbox->available_letter_count;
-        a_sandbox->touch_count -= board_evaluation[a_column][a_row];
-
-        return;
-    }
-    
-    void PlayerAI::recurse(Sandbox* a_sandbox, int a_column, int a_row, Direction a_direction)
-    {
-        switch (a_direction)
-        {
-            case Direction::Horisontal:
-            {
-                return findPlayRecursively(a_sandbox, a_column + 1, a_row, a_direction);
-                break;
-            }
-            case Direction::Vertical:
-            {
-                return findPlayRecursively(a_sandbox, a_column, a_row + 1, a_direction);
-                break;
-            }
-        }
-
-        return;
-    }
-    
-    bool PlayerAI::indexOutOfBounds(Sandbox* a_sandbox, int a_column, int a_row)
-    {
-        return a_column >= a_sandbox->board.getGridDimensionInDirection(Direction::Horisontal) || a_row >= a_sandbox->board.getGridDimensionInDirection(Direction::Vertical);
-    }
-    
-    void PlayerAI::updateBestPlay(Sandbox* a_sandbox)
-    {
-        updateBestPlay(a_sandbox, a_sandbox);
-        return;
-    }
-
-    void PlayerAI::updateBestPlay(Sandbox* a_sandbox_with_best, Sandbox* a_sandbox_with_new)
-    {
-        a_sandbox_with_best->best_play.evaluateProposedPlay(false, true, true);
-        a_sandbox_with_new->board.evaluateProposedPlay(false, true, true);
-        
-        if (!a_sandbox_with_new->board.isProposedPlayValid())
-        {
-            return;
-        }
-
-        int current_best_points = a_sandbox_with_best->best_play.getProposedPlayPoints();
-        int new_play_points = 0;
-
-        if (a_sandbox_with_best == a_sandbox_with_new)
-        {
-            new_play_points = a_sandbox_with_new->board.getProposedPlayPoints();
-        }
-        else
-        {
-            new_play_points = a_sandbox_with_new->best_play.getProposedPlayPoints();
-        }
-
-        if (new_play_points > current_best_points)
-        {
-            if (a_sandbox_with_best == a_sandbox_with_new)
-            {
-                a_sandbox_with_best->best_play.setWithBoard(&a_sandbox_with_new->board);
-                a_sandbox_with_best->best_play.importProposedLetters(a_sandbox_with_new->board.getProposedLetters());
-                setBestPlayWildcardLetters(a_sandbox_with_best, a_sandbox_with_new->board.getProposedLetters());
-            }
-            else
-            {
-                a_sandbox_with_best->best_play.setWithBoard(&a_sandbox_with_new->best_play);
-                a_sandbox_with_best->best_play.importProposedLetters(a_sandbox_with_new->best_play.getProposedLetters());
-                setBestPlayWildcardLetters(a_sandbox_with_best, a_sandbox_with_new->best_play_wildcard_letters);
-            }
-        }
+        emit startWorkers();
 
         return;
     }
     
     void PlayerAI::executeBestPlay()
     {
-        best_sandbox.best_play.evaluateProposedPlay(true);
-        
-        QPoint position;
+        std::vector<QPoint> positions_in_hand = workers[best_play_index]->getLetterPositionsInHand();
+        std::vector<QPoint> positions_on_board = workers[best_play_index]->getLetterPositionsOnBoard();
+        std::vector<QChar> wildcard_letters = workers[best_play_index]->getWildcardLetters();
+
+        if (positions_in_hand.size() == 0)
+        {
+            return;
+        }
+
+        QPoint hand_position;
+        QPoint board_position;
+        QChar wildcard_letter;
+
+        VirtualTile* tile;
         Letter* letter;
-        VirtualTile* live_tile;
-        int index = 0;
         
-        for (auto local_tile : best_sandbox.best_play.getProposedLetters())
+        for (size_t index = 0; index < positions_in_hand.size(); ++index)
         {
             QThread::msleep(100);
 
@@ -398,75 +200,22 @@ namespace wf
                 return;
             }
             
-            position = local_tile->getGridPosition();
-            letter = local_tile->getLetter();
-            live_tile = live_board->getTileAtPosition(position.x(), position.y());
+            hand_position = positions_in_hand[index];
+            board_position = positions_on_board[index];
+            wildcard_letter = wildcard_letters[index];
 
-            // Wildcard letters must have their letter contents restored
+            tile = live_board->getTileAtPosition(board_position);
+            letter = getHand()->removeLetter(hand_position);
+
             if (letter->getType() == LetterType::Wildcard)
             {
-                letter->setWildcardText(best_sandbox.best_play_wildcard_letters.at(index));
+                letter->setWildcardText(wildcard_letter);
             }
 
-            // The live board holds rendered tiles, which automatically propose a letter when placed
-            live_tile->placeLetter(letter);
-
-            // Remove letter from hand
-            bool letter_removed = false;
-            VirtualTile* tile;
-
-            for (int row = 0; row < getHand()->getGridDimensions().height() && !letter_removed; ++row)
-            {
-                for (int column = 0; column < getHand()->getGridDimensions().width() && !letter_removed; ++column)
-                {
-                    tile = getHand()->getTileAtPosition(column, row);
-                    
-                    if (tile->getLetter() == letter)
-                    {
-                        tile->removeLetter();
-                        letter_removed = true;
-                    }
-                }
-            }
+            tile->placeLetter(letter);
+            live_board->proposeLetter(tile);
 
             emit letterPlaced();
-            ++index;
-        }
-
-        return;
-    }
-    
-    void PlayerAI::setBestPlayWildcardLetters(Sandbox* a_best_sandbox, std::vector<VirtualTile*> a_proposed_tiles)
-    {
-        std::vector<QChar> wildcard_letters;
-        QChar letter;
-
-        for (auto tile : a_proposed_tiles)
-        {
-            if (tile->getLetter()->getType() == LetterType::Wildcard)
-            {
-                letter = tile->getLetter()->getWildcardText();
-            }
-            else
-            {
-                letter = QChar{};
-            }
-
-            wildcard_letters.push_back(letter);
-        }
-
-        setBestPlayWildcardLetters(a_best_sandbox, wildcard_letters);
-
-        return;
-    }
-    
-    void PlayerAI::setBestPlayWildcardLetters(Sandbox* a_best_sandbox, std::vector<QChar> a_proposed_letters)
-    {
-        a_best_sandbox->best_play_wildcard_letters.clear();
-
-        for (auto letter : a_proposed_letters)
-        {
-            a_best_sandbox->best_play_wildcard_letters.push_back(letter);
         }
 
         return;
@@ -525,9 +274,9 @@ namespace wf
         return;
     }
     
-    void PlayerAI::initialiseBoardEvaluation(VirtualBoard* a_board)
+    void PlayerAI::initialiseTouchEvaluation(VirtualBoard* a_board)
     {
-        board_evaluation.reserve(a_board->getGridDimensions().width());
+        touch_evaluation.reserve(a_board->getGridDimensions().width());
         std::vector<int> collumn_evaluation;
         collumn_evaluation.reserve(a_board->getGridDimensions().height());
 
@@ -540,7 +289,7 @@ namespace wf
                 collumn_evaluation.push_back(0);
             }
 
-            board_evaluation.push_back(collumn_evaluation);
+            touch_evaluation.push_back(collumn_evaluation);
         }
 
         return;
@@ -555,7 +304,7 @@ namespace wf
             for (int row = 0; row < a_board->getGridDimensions().height(); ++row)
             {
                 tile = a_board->getTileAtPosition(column, row);
-                board_evaluation[column][row] = evaluateTile(tile);
+                touch_evaluation[column][row] = evaluateTile(tile);
             }
         }
 
@@ -606,6 +355,46 @@ namespace wf
                 emit letterMarkedForSwap();
             }
         }
+
+        return;
+    }
+    
+    void PlayerAI::initialiseWorkerThreads()
+    {
+        QThread* worker_thread;
+        
+        for (Direction direction : {Direction::Horisontal, Direction::Vertical})
+        {
+            for (   int index = 0;
+                    index < live_board->getGridDimensionInDirection(
+                        // The number of horisontal lines is the grid size in the vertical direction and vice versa
+                        direction == Direction::Horisontal ? Direction::Vertical : Direction::Horisontal
+                    );
+                    ++index
+                )
+            {
+                worker_thread = new QThread;
+                
+                connect(this, &PlayerAI::cleanup, worker_thread, &QThread::quit);
+                connect(worker_thread, &QThread::finished, worker_thread, &QThread::deleteLater);
+
+                worker_thread->start();
+
+                worker_threads.push_back(worker_thread);
+            }
+        }
+
+        return;
+    }
+    
+    void PlayerAI::deleteWorkers()
+    {
+        for (size_t index = 0; index < workers.size(); ++index)
+        {
+            workers[index]->deleteLater();
+        }
+
+        workers.clear();
 
         return;
     }

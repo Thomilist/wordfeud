@@ -35,6 +35,7 @@ namespace wf
             void importProposedLetters(std::vector<VirtualTile*> a_tiles);
             std::vector<VirtualTile*> getProposedLetters();
             virtual VirtualTile* getTileAtPosition(int a_column, int a_row);
+            virtual VirtualTile* getTileAtPosition(QPoint a_position);
             QSize getGridDimensions() const;
             int getGridDimensionInDirection(Direction a_direction);
             int getTileCount() const;
@@ -52,7 +53,11 @@ namespace wf
             void lockProposedLetters();
             void lockRecentlyLockedLetters();
             void proposeLetter(VirtualTile* a_tile);
+            void proposeLetter(QPoint a_position);
             void unproposeLetter(VirtualTile* a_tile);
+            void unproposeLetter(QPoint a_position);
+            void placeLetter(QPoint a_position, Letter* a_letter);
+            [[nodiscard]] Letter* removeLetter(QPoint a_position);
             std::vector<Letter*> clearProposed();
         
         protected:

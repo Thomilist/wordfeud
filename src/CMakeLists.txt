@@ -85,7 +85,18 @@ target_link_libraries(
     Qt5::Widgets
     Qt5::Concurrent
     Player
+    PlayerAIWorker
     RenderedTile
+    Settings
+    VirtualBoard
+    VirtualTile
+)
+
+add_library(PlayerAIWorker PlayerAIWorker.cpp)
+target_link_libraries(
+    PlayerAIWorker
+    Qt5::Widgets
+    Letter
     Settings
     VirtualBoard
     VirtualTile

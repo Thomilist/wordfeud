@@ -1,6 +1,7 @@
 #ifndef __PLAYERAI_H__
 #define __PLAYERAI_H__
 
+#include <algorithm>
 #include <array>
 #include <set>
 #include <vector>
@@ -18,12 +19,11 @@
 #include "Letter.hpp"
 #include "LetterPool.hpp"
 #include "Player.hpp"
+#include "PlayerAIWorker.hpp"
 #include "RenderedTile.hpp"
 #include "Settings.hpp"
 #include "VirtualBoard.hpp"
 #include "VirtualTile.hpp"
-
-#include "Sandbox.hpp"
 
 #include "Direction.hpp"
 #include "LetterType.hpp"
@@ -56,6 +56,7 @@ namespace wf
         public slots:
             void playIfTurn();
             void cancelTurn();
+            void bestPlayFound();
         
         signals:
             void playComplete();
@@ -64,41 +65,35 @@ namespace wf
             void letterMarkedForSwap();
             void swapComplete();
             void passTurn();
+            void startWorkers();
+            void cancelWork();
+            void cleanup();
 
         private:
-            void executeTurn();
+            void startTurn();
             void endTurn();
             void startOfTurnSetup();
-            void fetchAvailableLetters(Sandbox* a_sandbox);
-            void initialiseSandboxes();
             void findBestPlay();
-            void findPlayInLine(Sandbox* a_sandbox, Direction a_direction, int a_index);
-            void findPlayInHorisontalLine(Sandbox* a_sandbox, int a_row);
-            void findPlayInVerticalLine(Sandbox* a_sandbox, int a_column);
-            void findPlayRecursively(Sandbox* a_sandbox, int a_column, int a_row, Direction a_direction);
-            void tryLetterAndRecurse(Sandbox* a_sandbox, Letter*& a_letter, VirtualTile* a_tile, int a_column, int a_row, Direction a_direction);
-            void recurse(Sandbox* a_sandbox, int a_column, int a_row, Direction a_direction);
-            bool indexOutOfBounds(Sandbox* a_sandbox, int a_column, int a_row);
-            void updateBestPlay(Sandbox* a_sandbox);
-            void updateBestPlay(Sandbox* a_sandbox_with_best, Sandbox* a_sandbox_with_new);
             void executeBestPlay();
-            void setBestPlayWildcardLetters(Sandbox* a_best_sandbox, std::vector<VirtualTile*> a_proposed_tiles);
-            void setBestPlayWildcardLetters(Sandbox* a_best_sandbox, std::vector<QChar> a_proposed_letters);
             void updateRelevantLines();
-            void initialiseBoardEvaluation(VirtualBoard* a_board);
+            void initialiseTouchEvaluation(VirtualBoard* a_board);
             void evaluateBoard(VirtualBoard* a_board);
             int evaluateTile(VirtualTile* a_tile);
             void swapAllLetters();
+            void initialiseWorkerThreads();
+            void deleteWorkers();
 
             bool cancelled = false;
             RenderedBoard* live_board;
-            Sandbox best_sandbox;
-            std::vector<Sandbox> sandboxes;
             std::set<int> relevant_collumns;
             std::set<int> relevant_rows;
-            std::vector<std::vector<int>> board_evaluation;
+            std::vector<std::vector<int>> touch_evaluation;
             LetterPool* letter_pool;
-            std::vector<QFuture<void>> worker_pool;
+            std::vector<QThread*> worker_threads;
+            std::vector<PlayerAIWorker*> workers;
+            int best_play_score = 0;
+            int best_play_index = 0;
+            size_t finished_workers = 0;
     };
 }
 

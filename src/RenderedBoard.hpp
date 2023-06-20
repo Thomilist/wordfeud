@@ -33,6 +33,7 @@ namespace wf
             ~RenderedBoard();
 
             RenderedTile* getTileAtPosition(int a_column, int a_row);
+            RenderedTile* getTileAtPosition(QPoint a_position);
             BoardType getType() const;
             void setDimmedAndDisabled(bool a_state);
             void setTileInteractMode(TileInteractMode a_mode);

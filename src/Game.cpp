@@ -368,15 +368,7 @@ namespace wf
     
     void Game::terminatePlayerAI()
     {
-        for (auto player : all_players)
-        {
-            if (player->getType() == PlayerType::AI)
-            {
-                PlayerAI* player_ai = dynamic_cast<PlayerAI*>(player);
-                player_ai->cancelTurn();
-            }
-        }
-
+        emit cancelAI();
         player_AI_thread.quit();
         player_AI_thread.wait();
         return;
@@ -680,6 +672,7 @@ namespace wf
                 PlayerAI* player_ai = dynamic_cast<PlayerAI*>(player);
 
                 connect(this, &Game::playAI, player_ai, &PlayerAI::playIfTurn);
+                connect(this, &Game::cancelAI, player_ai, &PlayerAI::cancelTurn);
                 connect(player_ai, &PlayerAI::playComplete, this, &Game::playButton);
                 connect(player_ai, &PlayerAI::letterPlaced, this, &Game::repaintHandAndBoard);
                 connect(player_ai, &PlayerAI::startSwap, this, &Game::swapButton);

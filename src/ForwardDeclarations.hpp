@@ -13,6 +13,7 @@ namespace wf
     class ModifierPattern;
     class Player;
     class PlayerAI;
+    class PlayerAIWorker;
     class PlayerSettings;
     class ProposalInfo;
     class RecordDialog;
@@ -28,7 +29,6 @@ namespace wf
 
     struct LetterData;
     struct QCharHash;
-    struct Sandbox;
     struct Score;
 
     enum class BoardType;

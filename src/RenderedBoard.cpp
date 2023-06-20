@@ -98,6 +98,11 @@ namespace wf
         return tile;
     }
     
+    RenderedTile* RenderedBoard::getTileAtPosition(QPoint a_position)
+    {
+        return getTileAtPosition(a_position.x(), a_position.y());
+    }
+    
     BoardType RenderedBoard::getType() const
     {
         return type;

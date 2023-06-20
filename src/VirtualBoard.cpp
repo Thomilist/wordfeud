@@ -82,6 +82,11 @@ namespace wf
         return &board[a_column][a_row];
     }
     
+    VirtualTile* VirtualBoard::getTileAtPosition(QPoint a_position)
+    {
+        return getTileAtPosition(a_position.x(), a_position.y());
+    }
+    
     QSize VirtualBoard::getGridDimensions() const
     {
         return grid_dimensions;
@@ -321,11 +326,38 @@ namespace wf
         return;
     }
     
+    void VirtualBoard::proposeLetter(QPoint a_position)
+    {
+        VirtualTile* tile = getTileAtPosition(a_position);
+        proposeLetter(tile);
+        return;
+    }
+    
     void VirtualBoard::unproposeLetter(VirtualTile* a_tile)
     {
         proposed_letters.erase(std::remove(proposed_letters.begin(), proposed_letters.end(), a_tile), proposed_letters.end());
         proposed_play_evaluated = false;
         return;
+    }
+    
+    void VirtualBoard::unproposeLetter(QPoint a_position)
+    {
+        VirtualTile* tile = getTileAtPosition(a_position);
+        unproposeLetter(tile);
+        return;
+    }
+    
+    void VirtualBoard::placeLetter(QPoint a_position, Letter* a_letter)
+    {
+        VirtualTile* tile = getTileAtPosition(a_position);
+        tile->placeLetter(a_letter);
+        return;
+    }
+    
+    Letter* VirtualBoard::removeLetter(QPoint a_position)
+    {
+        VirtualTile* tile = getTileAtPosition(a_position);
+        return tile->removeLetter();
     }
     
     void VirtualBoard::assignNeighbours()

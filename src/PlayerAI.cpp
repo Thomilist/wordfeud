@@ -43,12 +43,6 @@ namespace wf
     {
         cancelled = true;
         emit cancelWork();
-
-        while (finished_workers < workers.size())
-        {
-            QThread::msleep(10);
-        }
-
         deleteWorkers();
         emit cleanup();
 
@@ -58,6 +52,11 @@ namespace wf
     void PlayerAI::bestPlayFound()
     {
         ++finished_workers;
+
+        if (cancelled)
+        {
+            return;
+        }
 
         if (finished_workers < workers.size())
         {

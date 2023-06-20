@@ -15,6 +15,10 @@ namespace wf
     , about_menu("About", &main_window)
     , open_github("Open on GitHub...", &about_menu)
     {
+        close_timer.setSingleShot(true);
+        connect(&game, &Game::finished, &wait_for_close, &QEventLoop::quit);
+        connect(&close_timer, &QTimer::timeout, &wait_for_close, &QEventLoop::quit);
+        
         main_window.setCentralWidget(&game);
         main_window.setMouseTracking(true);
         main_window.menuBar()->setMouseTracking(true);
@@ -32,6 +36,9 @@ namespace wf
     void Wordfeud::closeWindow()
     {
         game.terminatePlayerAI();
+        QThread::msleep(2000);
+        close_timer.start(close_timeout);
+        wait_for_close.exec();
         return;
     }
     

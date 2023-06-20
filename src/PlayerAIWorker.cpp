@@ -197,6 +197,11 @@ namespace wf
 
                     for (auto letter_option : all_letters)
                     {
+                        if (cancelled)
+                        {
+                            return;
+                        }
+                        
                         letter->setWildcardText(letter_option.letter);
                         tryLetterAndRecurse(letter, tile, a_column, a_row);
                     }

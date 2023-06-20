@@ -85,7 +85,6 @@ namespace wf
         signals:
             void playAI();
             void cancelAI();
-            void finished();
 
         private:
             void loadLetters();

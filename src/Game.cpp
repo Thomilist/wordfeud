@@ -370,7 +370,7 @@ namespace wf
     {
         emit cancelAI();
         player_AI_thread.quit();
-        emit finished();
+        player_AI_thread.wait();
         return;
     }
     

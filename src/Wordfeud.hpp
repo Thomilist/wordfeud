@@ -10,7 +10,6 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QObject>
-#include <QThread>
 #include <QUrl>
 
 #include "ForwardDeclarations.hpp"
@@ -38,10 +37,6 @@ namespace wf
         private:
             void initialiseGameMenu();
             void initialiseAboutMenu();
-
-            QEventLoop wait_for_close;
-            QTimer close_timer;
-            int close_timeout = 20000;
 
             QMainWindow main_window;
             Settings settings;

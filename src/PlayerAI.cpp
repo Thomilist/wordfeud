@@ -42,7 +42,12 @@ namespace wf
     void PlayerAI::cancelTurn()
     {
         cancelled = true;
-        emit cancelWork();
+
+        for (auto worker : workers)
+        {
+            worker->cancel();
+        }
+
         deleteWorkers();
         emit cleanup();
 
@@ -160,7 +165,6 @@ namespace wf
                 worker->moveToThread(worker_threads[index]);
 
                 connect(this, &PlayerAI::startWorkers, worker, &PlayerAIWorker::execute);
-                connect(this, &PlayerAI::cancelWork, worker, &PlayerAIWorker::cancel);
                 connect(worker, &PlayerAIWorker::finished, this, &PlayerAI::bestPlayFound);
                 
                 workers.push_back(worker);

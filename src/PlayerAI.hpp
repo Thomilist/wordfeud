@@ -66,7 +66,6 @@ namespace wf
             void swapComplete();
             void passTurn();
             void startWorkers();
-            void cancelWork();
             void cleanup();
 
         private:

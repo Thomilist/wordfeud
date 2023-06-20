@@ -212,8 +212,6 @@ namespace wf
             }
 
             tile->placeLetter(letter);
-            live_board->proposeLetter(tile);
-
             emit letterPlaced();
         }
 
@@ -348,6 +346,13 @@ namespace wf
         {
             for (int column = 0; column < getHand()->getGridDimensions().width(); ++column)
             {
+                QThread::msleep(100);
+
+                if (cancelled)
+                {
+                    return;
+                }
+                
                 tile = getHand()->getTileAtPosition(column, row);
                 tile->setSwapMarking(true);
                 emit tile->markForSwap(tile);

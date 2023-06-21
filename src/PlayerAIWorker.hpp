@@ -1,6 +1,7 @@
 #ifndef __PLAYERAIWORKER_H__
 #define __PLAYERAIWORKER_H__
 
+#include <random>
 #include <set>
 #include <vector>
 
@@ -31,7 +32,8 @@ namespace wf
                 int a_line_index,
                 std::set<int> a_relevant_rows,
                 std::set<int> a_relevant_columns,
-                std::vector<std::vector<int>> a_touch_evaluation);
+                std::vector<std::vector<int>> a_touch_evaluation,
+                int a_difficulty);
             ~PlayerAIWorker();
 
             int getScore();
@@ -57,6 +59,7 @@ namespace wf
             bool indexOutOfBounds(int a_column, int a_row);
             void updateBestPlay();
             void setBestPlayWildcardLetters();
+            int rollDifficultyDice();
 
             Settings* settings;
             VirtualBoard sandbox_board;
@@ -72,6 +75,10 @@ namespace wf
             int touch_count = 0;
             std::vector<QChar> best_play_wildcard_letters;
             bool cancelled = false;
+            std::random_device random_seed;
+            std::mt19937 rng;
+            std::uniform_int_distribution<> random_distribution;
+            int difficulty;
     };
 }
 

@@ -50,7 +50,14 @@ namespace wf
             ModifierPattern* getModifierPattern();
             PlayerSettings* getLeftPlayer();
             PlayerSettings* getRightPlayer();
+            PlayerSettings* getPlayer(int a_index);
             void loadRandomNames(QString a_directory);
+            int getMinimumAITurnTime() const;
+            void setMinimumAITurnTime(int a_time);
+            const QString getLetterColouring() const;
+            void setLetterColouring(QString a_colour);
+            int getMinimumAIDifficulty() const;
+            int getMaximumAIDifficulty() const;
 
         private:
             QMainWindow* main_window;
@@ -66,6 +73,10 @@ namespace wf
             PlayerSettings left_player;
             PlayerSettings right_player;
             std::set<QString> random_names;
+            int minimum_ai_turn_time;
+            QString letter_colouring;
+            const int minimum_ai_difficulty = 1;
+            const int maximum_ai_difficulty = 10;
     };
 }
 #endif // __SETTINGS_H__

@@ -28,20 +28,28 @@ namespace wf
         setValue("window/geometry", main_window->saveGeometry());
 
         // Save dictionary language
-        setValue("settings/dictionary", getLanguage()->asString());
+        setValue("general/dictionary", getLanguage()->asString());
 
         // Save modifier distribution
-        setValue("settings/modifiers", getModifierPattern()->getDistributionAsText());
+        setValue("general/modifiers", getModifierPattern()->getDistributionAsText());
+
+        // Save letter colouring
+        setValue("general/letter_colouring", getLetterColouring());
 
         // Save left player
         setValue("player_left/name", getLeftPlayer()->getName());
         setValue("player_left/type", getLeftPlayer()->getTypeAsString());
         setValue("player_left/random_name", getLeftPlayer()->usesRandomName());
+        setValue("player_left/ai_difficulty", getLeftPlayer()->getAIDifficulty());
 
         // Save right player
         setValue("player_right/name", getRightPlayer()->getName());
         setValue("player_right/type", getRightPlayer()->getTypeAsString());
         setValue("player_right/random_name", getRightPlayer()->usesRandomName());
+        setValue("player_right/ai_difficulty", getRightPlayer()->getAIDifficulty());
+
+        // Save minimum AI turn time
+        setValue("ai/minimum_turn_time", getMinimumAITurnTime());
 
         return;
     }
@@ -60,30 +68,40 @@ namespace wf
         }
 
         // Load dictionary language
-        QString dictionary = value("settings/dictionary", "English").toString();
+        QString dictionary = value("general/dictionary", "English").toString();
         setLanguage(dictionary);
 
         // Load modifier distribution
-        QString modifier_distribution = value("settings/modifiers", "Default").toString();
+        QString modifier_distribution = value("general/modifiers", "Default").toString();
         getModifierPattern()->setDistribution(modifier_distribution);
+
+        // Load letter colouring
+        setLetterColouring(value("general/letter_colouring", "Default").toString());
 
         // Load left player
         QString left_player_name = value("player_left/name", "Player 1").toString();
         QString left_player_type = value("player_left/type", "Human").toString();
         bool left_player_uses_random_name = value("player_left/random_name", "false").toBool();
+        int left_player_ai_difficulty = value("player_left/ai_difficulty", "5").toInt();
         getLeftPlayer()->setName(left_player_name);
         getLeftPlayer()->setTypeWithString(left_player_type);
         getLeftPlayer()->setRandomNameUse(left_player_uses_random_name);
         getLeftPlayer()->setRandomNames(random_names);
+        getLeftPlayer()->setAIDifficulty(left_player_ai_difficulty);
 
         // Load right player
         QString right_player_name = value("player_right/name", "Player 2").toString();
         QString right_player_type = value("player_right/type", "AI").toString();
         bool right_player_uses_random_name = value("player_right/random_name", "true").toBool();
+        int right_player_ai_difficulty = value("player_right/ai_difficulty", "5").toInt();
         getRightPlayer()->setName(right_player_name);
         getRightPlayer()->setTypeWithString(right_player_type);
         getRightPlayer()->setRandomNameUse(right_player_uses_random_name);
         getRightPlayer()->setRandomNames(random_names);
+        getRightPlayer()->setAIDifficulty(right_player_ai_difficulty);
+
+        // Load minimum AI turn time
+        setMinimumAITurnTime(value("ai/minimum_turn_time", "0").toInt());
 
         return;
     }
@@ -187,6 +205,25 @@ namespace wf
         return &right_player;
     }
     
+    PlayerSettings* Settings::getPlayer(int a_index)
+    {
+        switch (a_index)
+        {
+            case 0:
+            {
+                return getLeftPlayer();
+            }
+            case 1:
+            {
+                return getRightPlayer();
+            }
+            default:
+            {
+                return nullptr;
+            }
+        }
+    }
+    
     void Settings::loadRandomNames(QString a_directory)
     {
         QDir directory{a_directory};
@@ -214,5 +251,37 @@ namespace wf
         }
 
         return;
+    }
+    
+    int Settings::getMinimumAITurnTime() const
+    {
+        return minimum_ai_turn_time;
+    }
+    
+    void Settings::setMinimumAITurnTime(int a_time)
+    {
+        minimum_ai_turn_time = a_time;
+        return;
+    }
+    
+    const QString Settings::getLetterColouring() const
+    {
+        return letter_colouring;
+    }
+    
+    void Settings::setLetterColouring(QString a_colour)
+    {
+        letter_colouring = a_colour;
+        return;
+    }
+    
+    int Settings::getMinimumAIDifficulty() const
+    {
+        return minimum_ai_difficulty;
+    }
+    
+    int Settings::getMaximumAIDifficulty() const
+    {
+        return maximum_ai_difficulty;
     }
 }

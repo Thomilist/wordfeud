@@ -8,7 +8,7 @@
 
 #include <QChar>
 #include <QColor>
-#include <QFuture>
+#include <QDateTime>
 #include <QPoint>
 #include <QString>
 #include <QtConcurrent>
@@ -20,6 +20,7 @@
 #include "LetterPool.hpp"
 #include "Player.hpp"
 #include "PlayerAIWorker.hpp"
+#include "PlayerSettings.hpp"
 #include "RenderedTile.hpp"
 #include "Settings.hpp"
 #include "VirtualBoard.hpp"
@@ -50,8 +51,11 @@ namespace wf
                 Settings* a_settings,
                 RenderedTile* a_selection,
                 RenderedBoard* a_board,
-                LetterPool* a_letter_pool);
+                LetterPool* a_letter_pool,
+                int a_index);
             ~PlayerAI();
+
+            int getDifficulty() const;
 
         public slots:
             void playIfTurn();
@@ -93,6 +97,9 @@ namespace wf
             int best_play_score = 0;
             int best_play_index = 0;
             size_t finished_workers = 0;
+            qint64 turn_start_time;
+            qint64 turn_end_time;
+            int difficulty;
     };
 }
 

@@ -166,7 +166,7 @@ namespace wf
         return;
     }
     
-    void Game::createPlayer(QString a_display_name, PlayerType a_type, QColor a_color)
+    void Game::createPlayer(QString a_display_name, PlayerType a_type, QColor a_color, int a_index)
     {
         Player* player = nullptr;
         
@@ -181,7 +181,8 @@ namespace wf
                     settings,
                     &selection,
                     &board,
-                    &letter_pool
+                    &letter_pool,
+                    a_index
                 );
 
                 player->moveToThread(&player_AI_thread);
@@ -196,7 +197,8 @@ namespace wf
                     a_type,
                     a_color,
                     settings,
-                    &selection
+                    &selection,
+                    a_index
                 );
                 
                 break;
@@ -213,8 +215,8 @@ namespace wf
         PlayerSettings* left_player = settings->getLeftPlayer();
         PlayerSettings* right_player = settings->getRightPlayer();
         
-        createPlayer(left_player->getName(), left_player->getType(), QColor{128, 0, 0});
-        createPlayer(right_player->getName(), right_player->getType(), QColor{0, 0, 128});
+        createPlayer(left_player->getName(), left_player->getType(), QColor{128, 0, 0}, 0);
+        createPlayer(right_player->getName(), right_player->getType(), QColor{0, 0, 128}, 1);
         return;
     }
     
@@ -242,37 +244,10 @@ namespace wf
         if (isGameOver())
         {
             hands.setDisabled(true);
-
             finalisePoints();
             repaint();
+            saveScores();
             Player* winning_player = getHighestScoringPlayer();
-
-            Score score;
-
-            for (auto player : all_players)
-            {
-                score.name = player->getDisplayName();
-                score.player_type = player->getType();
-                score.points = player->getScore();
-                score.timestamp = QDateTime::currentDateTime().toString(RecordTracker::getDateTimeFormat());
-                score.dictionary = settings->getLanguage()->asString();
-                score.modifier_pattern = settings->getModifierPattern()->getDistributionAsText();
-
-                if (player == winning_player)
-                {
-                    score.result = "Win";
-                }
-                else if (winning_player == nullptr)
-                {
-                    score.result = "Draw";
-                }
-                else
-                {
-                    score.result = "Loss";
-                }
-
-                record_tracker.insert(score);
-            }
 
             QMessageBox game_over;
 
@@ -808,6 +783,7 @@ namespace wf
     {
         all_players[current_player_index]->getHand()->repaint();
         board.repaint();
+        selection.repaint();
         return;
     }
     
@@ -906,6 +882,47 @@ namespace wf
         }
 
         return;
+    }
+    
+    void Game::saveScores()
+    {
+        Player* winning_player = getHighestScoringPlayer();
+        Score score;
+
+        for (auto player : all_players)
+        {
+            score.name = player->getDisplayName();
+            score.player_type = player->getType();
+            score.points = player->getScore();
+            score.timestamp = QDateTime::currentDateTime().toString(RecordTracker::getDateTimeFormat());
+            score.dictionary = settings->getLanguage()->asString();
+            score.modifier_pattern = settings->getModifierPattern()->getDistributionAsText();
+
+            if (player == winning_player)
+            {
+                score.result = "Win";
+            }
+            else if (winning_player == nullptr)
+            {
+                score.result = "Draw";
+            }
+            else
+            {
+                score.result = "Loss";
+            }
+
+            if (player->getType() == PlayerType::AI)
+            {
+                PlayerAI* player_ai = dynamic_cast<PlayerAI*>(player);
+                score.difficulty = player_ai->getDifficulty();
+            }
+            else
+            {
+                score.difficulty = 0;
+            }
+
+            record_tracker.insert(score);
+        }
     }
 
     std::vector<Letter*> Game::getAllLetters()

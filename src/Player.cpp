@@ -7,12 +7,14 @@ namespace wf
         PlayerType a_type,
         QColor a_color,
         Settings* a_settings,
-        RenderedTile* a_selection)
+        RenderedTile* a_selection,
+        int a_index)
         : settings(a_settings)
         , display_name(a_display_name)
         , type(a_type)
         , name_color(a_color)
         , hand(BoardType::Hand, a_settings, a_selection)
+        , player_index(a_index)
     {
         hand_size = settings->getHandDimensions();
         hand_layout.addWidget(&hand, 0, 0, Qt::AlignCenter);
@@ -58,6 +60,7 @@ namespace wf
                     return;
                 }
 
+                new_letter->setOwner(this);
                 tile->placeLetter(new_letter);
             }
         }

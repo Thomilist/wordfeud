@@ -30,7 +30,8 @@ namespace wf
                 PlayerType a_type,
                 QColor a_color,
                 Settings* a_settings,
-                RenderedTile* a_selection);
+                RenderedTile* a_selection,
+                int a_index);
             ~Player();
 
             RenderedBoard* getHand();
@@ -63,6 +64,7 @@ namespace wf
             QGridLayout hand_layout;
             RenderedBoard hand;
             QSize hand_size;
+            int player_index;
     };
 }
 

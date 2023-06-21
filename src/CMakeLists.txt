@@ -86,6 +86,7 @@ target_link_libraries(
     Qt5::Concurrent
     Player
     PlayerAIWorker
+    PlayerSettings
     RenderedTile
     Settings
     VirtualBoard

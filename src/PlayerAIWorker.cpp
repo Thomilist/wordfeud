@@ -11,7 +11,8 @@ namespace wf
         int a_line_index,
         std::set<int> a_relevant_rows,
         std::set<int> a_relevant_columns,
-        std::vector<std::vector<int>> a_touch_evaluation)
+        std::vector<std::vector<int>> a_touch_evaluation,
+        int a_difficulty)
         : settings(a_settings)
         , sandbox_board(a_settings, a_live_board)
         , best_play_board(a_settings, a_live_board)
@@ -21,6 +22,11 @@ namespace wf
         , relevant_rows(a_relevant_rows)
         , relevant_columns(a_relevant_columns)
         , touch_evaluation(a_touch_evaluation)
+        , rng(random_seed())
+        , random_distribution(
+            a_settings->getMinimumAIDifficulty(),
+            a_settings->getMaximumAIDifficulty())
+        , difficulty(a_difficulty)
     {
         initialise();
     }
@@ -281,10 +287,16 @@ namespace wf
 
         if (sandbox_board.getProposedPlayPoints() > best_play_board.getProposedPlayPoints())
         {
-            best_play_board.setWithBoard(&sandbox_board);
-            best_play_board.importProposedLetters(sandbox_board.getProposedLetters());
-            setBestPlayWildcardLetters();
+            if (    difficulty == settings->getMaximumAIDifficulty()
+                ||  rollDifficultyDice() <= difficulty)
+            {
+                best_play_board.setWithBoard(&sandbox_board);
+                best_play_board.importProposedLetters(sandbox_board.getProposedLetters());
+                setBestPlayWildcardLetters();
+            }
         }
+
+        return;
     }
     
     void PlayerAIWorker::setBestPlayWildcardLetters()
@@ -311,6 +323,11 @@ namespace wf
         }
 
         return;
+    }
+    
+    int PlayerAIWorker::rollDifficultyDice()
+    {
+        return random_distribution(rng);
     }
 
 

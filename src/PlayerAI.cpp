@@ -9,15 +9,18 @@ namespace wf
         Settings* a_settings,
         RenderedTile* a_selection,
         RenderedBoard* a_board,
-        LetterPool* a_letter_pool)
+        LetterPool* a_letter_pool,
+        int a_index)
         : Player(
             a_display_name,
             PlayerType::AI,
             a_color,
             a_settings,
-            a_selection)
+            a_selection,
+            a_index)
         , live_board(a_board)
         , letter_pool(a_letter_pool)
+        , difficulty(a_settings->getPlayer(a_index)->getAIDifficulty())
     {
         initialiseTouchEvaluation(live_board);
         initialiseWorkerThreads();
@@ -27,6 +30,11 @@ namespace wf
     {
         deleteWorkers();
         emit cleanup();
+    }
+    
+    int PlayerAI::getDifficulty() const
+    {
+        return difficulty;
     }
     
     void PlayerAI::playIfTurn()
@@ -83,6 +91,15 @@ namespace wf
 
             ++worker_index;
         }
+
+        turn_end_time = QDateTime::currentMSecsSinceEpoch();
+        qint64 delta_time = turn_end_time - turn_start_time;
+        qint64 minimum_time = settings->getMinimumAITurnTime() * 1000;
+
+        if (minimum_time > delta_time)
+        {
+            QThread::msleep(minimum_time - delta_time);
+        }
         
         executeBestPlay();
 
@@ -98,6 +115,8 @@ namespace wf
     
     void PlayerAI::startTurn()
     {
+        turn_start_time = QDateTime::currentMSecsSinceEpoch();
+        
         startOfTurnSetup();
         findBestPlay();
 
@@ -159,7 +178,8 @@ namespace wf
                     index,
                     relevant_rows,
                     relevant_collumns,
-                    touch_evaluation
+                    touch_evaluation,
+                    difficulty
                 );
 
                 worker->moveToThread(worker_threads[index]);

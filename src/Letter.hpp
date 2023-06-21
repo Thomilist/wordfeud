@@ -37,6 +37,8 @@ namespace wf
             LetterStatus getStatus() const;
             void setWildcardText(QChar a_text);
             QChar getWildcardText() const;
+            void setOwner(Player* a_player);
+            Player* getOwner();
 
         private:
             QChar text;
@@ -44,6 +46,7 @@ namespace wf
             int points;
             LetterType type;
             LetterStatus status = LetterStatus::Free;
+            Player* owner;
     };
 }
 #endif // __LETTER_H__

@@ -85,6 +85,17 @@ namespace wf
         return;
     }
     
+    int PlayerSettings::getAIDifficulty() const
+    {
+        return difficulty;
+    }
+    
+    void PlayerSettings::setAIDifficulty(int a_difficulty)
+    {
+        difficulty = a_difficulty;
+        return;
+    }
+    
     const QString PlayerSettings::getRandomName() const
     {
         std::random_device random_seed;

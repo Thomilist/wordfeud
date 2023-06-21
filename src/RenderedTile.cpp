@@ -1,5 +1,8 @@
 #include "RenderedTile.hpp"
 
+// Include here to avoid circular dependency issues
+#include "Player.hpp"
+
 namespace wf
 {
     RenderedTile::RenderedTile(
@@ -288,7 +291,15 @@ namespace wf
             // Without this check, the text would be drawn if the tile is re-rendered while the PlayerAI is cycling through wildcard options
             if (!(board_type == BoardType::Hand && letter->getType() == LetterType::Wildcard))
             {
-                painter.setPen(QColor{0, 0, 0});
+                if (settings->getLetterColouring() == QString("Player colour"))
+                {
+                    painter.setPen(letter->getOwner()->getColor());
+                }
+                else
+                {
+                    painter.setPen(QColor{0, 0, 0});
+                }
+                
                 painter.setFont(monospace_font);
                 painter.drawText(letter_alignment, Qt::AlignCenter, letter->getText());
 

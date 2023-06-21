@@ -92,7 +92,7 @@ namespace wf
             [[nodiscard]] Letter* removeLetter(int a_column, int a_row);
             void placeModifier(int a_column, int a_row, Modifier* a_modifier, bool a_overwrite = false);
             void placeModifiers(std::vector<Modifier*> a_modifiers);
-            void createPlayer(QString a_display_name, PlayerType a_type, QColor a_color);
+            void createPlayer(QString a_display_name, PlayerType a_type, QColor a_color, int a_index);
             void createPlayers();
             void deletePlayers();
             void nextPlayer();
@@ -108,6 +108,7 @@ namespace wf
             bool isGameOver();
             Player* getHighestScoringPlayer();
             void finalisePoints();
+            void saveScores();
 
             GameState state = GameState::Play;
             LetterPool letter_pool;

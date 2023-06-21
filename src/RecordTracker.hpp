@@ -25,6 +25,7 @@ namespace wf
         QString result;
         QString modifier_pattern;
         QString dictionary;
+        int difficulty;
     };
     
     class RecordTracker : public QSettings

@@ -73,4 +73,15 @@ namespace wf
     {
         return wildcard_text;
     }
+    
+    void Letter::setOwner(Player* a_player)
+    {
+        owner = a_player;
+        return;
+    }
+    
+    Player* Letter::getOwner()
+    {
+        return owner;
+    }
 }

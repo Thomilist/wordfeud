@@ -30,6 +30,8 @@ namespace wf
             bool usesRandomName() const;
             void setRandomNameUse(bool a_state);
             void setRandomNames(std::set<QString> a_names);
+            int getAIDifficulty() const;
+            void setAIDifficulty(int a_difficulty);
         
         private:
             const QString getRandomName() const;
@@ -38,6 +40,7 @@ namespace wf
             PlayerType type;
             bool use_random_name;
             std::vector<QString> random_names;
+            int difficulty;
 
             const std::vector<std::pair<PlayerType, QString>> all_types =
             {

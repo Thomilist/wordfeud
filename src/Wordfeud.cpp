@@ -15,6 +15,8 @@ namespace wf
     , about_menu("About", &main_window)
     , open_github("Open on GitHub...", &about_menu)
     {
+        connect(&settings_dialog, &SettingsDialog::settingsSaved, &game, &Game::repaintHandAndBoard);
+        
         main_window.setCentralWidget(&game);
         main_window.setMouseTracking(true);
         main_window.menuBar()->setMouseTracking(true);

@@ -51,9 +51,9 @@ namespace wf
     void RecordDialog::createRecordTable(QTableWidget* a_table, std::vector<Score> a_records)
     {
         // Collumns: position, name, timestamp, points, result
-        a_table->setColumnCount(6);
+        a_table->setColumnCount(7);
         a_table->setRowCount(a_records.size());
-        a_table->setHorizontalHeaderLabels({"Name", "Date", "Dictionary", "Modifiers", "Score", "Result"});
+        a_table->setHorizontalHeaderLabels({"Name", "Date", "Dictionary", "Modifiers", "Difficulty", "Score", "Result"});
 
         int row = 0;
         int column = 0;
@@ -81,12 +81,24 @@ namespace wf
             modifier_item->setTextAlignment(Qt::AlignCenter);
             a_table->setItem(row, column++, modifier_item);
 
-            // Column 4: points
+            // Column 4: difficulty
+            QString difficulty = "-";
+
+            if (record.difficulty > 0)
+            {
+                difficulty = QString::number(record.difficulty * 10) + "%";
+            }
+            
+            QTableWidgetItem* difficulty_item = new QTableWidgetItem(difficulty);
+            difficulty_item->setTextAlignment(Qt::AlignCenter);
+            a_table->setItem(row, column++, difficulty_item);
+
+            // Column 5: points
             QTableWidgetItem* points_item = new QTableWidgetItem(QString::number(record.points));
             points_item->setTextAlignment(Qt::AlignCenter);
             a_table->setItem(row, column++, points_item);
 
-            // Column 5: result
+            // Column 6: result
             QTableWidgetItem* result_item = new QTableWidgetItem(record.result);
             result_item->setTextAlignment(Qt::AlignCenter);
             a_table->setItem(row, column++, result_item);

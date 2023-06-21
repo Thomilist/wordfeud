@@ -59,6 +59,7 @@ namespace wf
             void placeLetter(QPoint a_position, Letter* a_letter);
             [[nodiscard]] Letter* removeLetter(QPoint a_position);
             std::vector<Letter*> clearProposed();
+            void discardProposed();
         
         protected:
             void assignNeighbours();

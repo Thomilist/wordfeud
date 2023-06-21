@@ -21,7 +21,7 @@ namespace wf
     void VirtualBoard::setWithBoard(VirtualBoard* a_board)
     {
         board.clear();
-        clearProposed();
+        discardProposed();
         proposed_play_evaluated = false;
         std::vector<VirtualTile> tile_collumn;
         
@@ -45,7 +45,7 @@ namespace wf
     
     void VirtualBoard::importProposedLetters(std::vector<VirtualTile*> a_tiles)
     {
-        clearProposed();
+        discardProposed();
 
         QPoint position;
         Letter* letter;
@@ -396,6 +396,13 @@ namespace wf
         proposed_letters.clear();
         proposed_play_evaluated = false;
         return letters;
+    }
+    
+    void VirtualBoard::discardProposed()
+    {
+        proposed_letters.clear();
+        proposed_play_evaluated = false;
+        return;
     }
     
     bool VirtualBoard::isPlacementConnectedToStart(VirtualTile* a_tile)

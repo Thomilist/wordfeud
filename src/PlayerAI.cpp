@@ -37,6 +37,42 @@ namespace wf
         return difficulty;
     }
     
+    void PlayerAI::fillHand(LetterPool* a_letter_pool)
+    {
+        Player::fillHand(a_letter_pool);
+
+        // If possible, PlayerAI should have no more than one wildcard letter in hand,
+        // since these add a lot of computation time to the turn
+        RenderedTile* tile;
+        Letter* letter;
+        bool wildcard_swapped;
+
+        while (countWildcardsInHand() > 1
+            && a_letter_pool->getRemainingWildcardCount() < a_letter_pool->getRemainingCount())
+        {
+            wildcard_swapped = false;
+            
+            for (int row = 0; row < getHand()->getGridDimensions().height() && !wildcard_swapped; ++row)
+            {
+                for (int column = 0; column < getHand()->getGridDimensions().width() && !wildcard_swapped; ++column)
+                {
+                    tile = getHand()->getTileAtPosition(column, row);
+                    letter = tile->getLetter();
+
+                    if (letter != nullptr && letter->getType() == LetterType::Wildcard)
+                    {
+                        letter = tile->removeLetter();
+                        Player::fillHand(a_letter_pool);
+                        a_letter_pool->insertLetter(letter);
+                        wildcard_swapped = true;
+                    }
+                }
+            }
+        }
+
+        return;
+    }
+    
     void PlayerAI::playIfTurn()
     {
         if (hasTurn())
@@ -425,5 +461,28 @@ namespace wf
         workers.clear();
 
         return;
+    }
+    
+    int PlayerAI::countWildcardsInHand()
+    {
+        RenderedTile* tile;
+        Letter* letter;
+        int count = 0;
+
+        for (int row = 0; row < getHand()->getGridDimensions().height(); ++row)
+        {
+            for (int column = 0; column < getHand()->getGridDimensions().width(); ++column)
+            {
+                tile = getHand()->getTileAtPosition(column, row);
+                letter = tile->getLetter();
+
+                if (letter != nullptr && letter->getType() == LetterType::Wildcard)
+                {
+                    ++count;
+                }
+            }
+        }
+
+        return count;
     }
 }

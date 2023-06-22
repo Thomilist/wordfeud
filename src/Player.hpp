@@ -36,7 +36,7 @@ namespace wf
 
             RenderedBoard* getHand();
             QWidget* getHandCentered();
-            void fillHand(LetterPool* a_letter_pool);
+            virtual void fillHand(LetterPool* a_letter_pool);
             int availableSpacesInHand();
             void addLetterToHand(Letter* a_letter);
             void addPoints(int a_points);

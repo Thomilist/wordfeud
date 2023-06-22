@@ -25,6 +25,7 @@ namespace wf
             void set(std::vector<Letter*> a_letters);
             [[nodiscard]] Letter* getRandomLetter();
             int getRemainingCount() const;
+            int getRemainingWildcardCount() const;
             QStringList getNonWildcardLetters() const;
             void insertLetter(Letter* a_letter);
         

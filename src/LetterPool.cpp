@@ -48,6 +48,21 @@ namespace wf
         return pool.size();
     }
     
+    int LetterPool::getRemainingWildcardCount() const
+    {
+        int count = 0;
+        
+        for (auto letter : pool)
+        {
+            if (letter != nullptr && letter->getType() == LetterType::Wildcard)
+            {
+                ++count;
+            }
+        }
+
+        return count;
+    }
+    
     QStringList LetterPool::getNonWildcardLetters() const
     {
         return non_wildcard_letters;

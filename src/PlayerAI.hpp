@@ -56,6 +56,7 @@ namespace wf
             ~PlayerAI();
 
             int getDifficulty() const;
+            void fillHand(LetterPool* a_letter_pool);
 
         public slots:
             void playIfTurn();
@@ -85,6 +86,7 @@ namespace wf
             void swapAllLetters();
             void initialiseWorkerThreads();
             void deleteWorkers();
+            int countWildcardsInHand();
 
             bool cancelled = false;
             RenderedBoard* live_board;

@@ -47,15 +47,17 @@ namespace wf
     {
         main_window.menuBar()->addMenu(&game_menu);
         game_menu.addAction(&start_new_game);
-        game_menu.addAction(&open_settings);
         game_menu.addAction(&show_records);
+        game_menu.addAction(&open_settings);
 
         start_new_game.setShortcut(QKeySequence{"F2"});
+        show_records.setShortcut(QKeySequence{"F3"});
+        open_settings.setShortcut(QKeySequence{"Escape"});
 
         connect(&start_new_game, &QAction::triggered, this, &Wordfeud::startNewGame);
+        connect(&show_records, &QAction::triggered, &record_dialog, &RecordDialog::exec);
         connect(&open_settings, &QAction::triggered, &settings_dialog, &SettingsDialog::exec);
         connect(settings_dialog.getSaveAndStartNewGameButton(), &QPushButton::clicked, this, &Wordfeud::startNewGame);
-        connect(&show_records, &QAction::triggered, &record_dialog, &RecordDialog::exec);
 
         return;
     }

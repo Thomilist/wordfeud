@@ -59,7 +59,7 @@ namespace wf
             bool indexOutOfBounds(int a_column, int a_row);
             void updateBestPlay();
             void setBestPlayWildcardLetters();
-            int rollDifficultyDice();
+            bool rollDifficultyDice();
 
             Settings* settings;
             VirtualBoard sandbox_board;

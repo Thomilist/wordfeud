@@ -23,9 +23,7 @@ namespace wf
         , relevant_columns(a_relevant_columns)
         , touch_evaluation(a_touch_evaluation)
         , rng(random_seed())
-        , random_distribution(
-            a_settings->getMinimumAIDifficulty(),
-            a_settings->getMaximumAIDifficulty())
+        , random_distribution(0, 50000)
         , difficulty(a_difficulty)
     {
         initialise();
@@ -288,7 +286,7 @@ namespace wf
         if (sandbox_board.getProposedPlayPoints() > best_play_board.getProposedPlayPoints())
         {
             if (    difficulty == settings->getMaximumAIDifficulty()
-                ||  rollDifficultyDice() <= difficulty)
+                ||  rollDifficultyDice())
             {
                 best_play_board.setWithBoard(&sandbox_board);
                 best_play_board.importProposedLetters(sandbox_board.getProposedLetters());
@@ -325,10 +323,8 @@ namespace wf
         return;
     }
     
-    int PlayerAIWorker::rollDifficultyDice()
+    bool PlayerAIWorker::rollDifficultyDice()
     {
-        return random_distribution(rng);
+        return random_distribution(rng) < (difficulty * difficulty * 1000) / (sandbox_board.getProposedPlayPoints() + 1);
     }
-
-
 }

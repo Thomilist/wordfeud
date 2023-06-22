@@ -12,3 +12,6 @@ releases/*
 
 # Sourcetrail project files
 *.srctrl*
+
+# Mathcad documents
+*.mcdx

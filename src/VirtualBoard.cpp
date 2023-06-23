@@ -186,6 +186,7 @@ namespace wf
             return proposed_placement_valid;
         }
         
+        updateProposedLines();
         proposed_placement_valid = true;
 
         for (const auto letter : proposed_letters)
@@ -199,6 +200,11 @@ namespace wf
         }
 
         if (!isPlacementLinear())
+        {
+            return proposed_placement_valid = false;
+        }
+
+        if (!isPlacementContiguous())
         {
             return proposed_placement_valid = false;
         }
@@ -445,26 +451,60 @@ namespace wf
     
     bool VirtualBoard::isPlacementInOneCollumn()
     {
-        std::vector<int> collumns;
-        
-        for (const auto tile : proposed_letters)
-        {
-            collumns.push_back(tile->getGridPosition().x());
-        }
-
-        return std::adjacent_find(collumns.begin(), collumns.end(), std::not_equal_to<>()) == collumns.end();
+        return std::adjacent_find(proposed_columns.begin(), proposed_columns.end(), std::not_equal_to<>()) == proposed_columns.end();
     }
     
     bool VirtualBoard::isPlacementInOneRow()
     {
-        std::vector<int> rows;
+        return std::adjacent_find(proposed_rows.begin(), proposed_rows.end(), std::not_equal_to<>()) == proposed_rows.end();
+    }
+    
+    bool VirtualBoard::isPlacementContiguous()
+    {
+        if (proposed_columns.size() == 0 || proposed_rows.size() == 0)
+        {
+            return true;
+        }
+        
+        int minimum_column = *proposed_columns.begin();
+        int maximum_column = *proposed_columns.rbegin();
+        int minimum_row = *proposed_rows.begin();
+        int maximum_row = *proposed_rows.rbegin();
+
+        VirtualTile* tile;
+
+        for (int column = minimum_column; column <= maximum_column; ++column)
+        {
+            for (int row = minimum_row; row <= maximum_row; ++row)
+            {
+                tile = getTileAtPosition(column, row);
+
+                if (tile->getLetter() == nullptr)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+    
+    void VirtualBoard::updateProposedLines()
+    {
+        proposed_columns.clear();
+        proposed_rows.clear();
         
         for (const auto tile : proposed_letters)
         {
-            rows.push_back(tile->getGridPosition().y());
+            proposed_columns.insert(tile->getGridPosition().x());
+        }
+        
+        for (const auto tile : proposed_letters)
+        {
+            proposed_rows.insert(tile->getGridPosition().y());
         }
 
-        return std::adjacent_find(rows.begin(), rows.end(), std::not_equal_to<>()) == rows.end();
+        return;
     }
     
     void VirtualBoard::findProposedWords(bool a_exit_early)

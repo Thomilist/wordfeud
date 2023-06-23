@@ -72,6 +72,8 @@ namespace wf
             bool isPlacementLinear();
             bool isPlacementInOneCollumn();
             bool isPlacementInOneRow();
+            bool isPlacementContiguous();
+            void updateProposedLines();
             void findProposedWords(bool a_exit_early);
             Word findWordWithLetter(VirtualTile* a_tile, Direction a_direction);
             void findInvalidProposedWords();
@@ -87,6 +89,8 @@ namespace wf
             bool proposed_placement_valid = false;
             bool proposed_words_valid = false;
             int proposed_play_points = 0;
+            std::set<int> proposed_columns;
+            std::set<int> proposed_rows;
     };
 }
 

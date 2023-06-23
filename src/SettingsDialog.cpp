@@ -53,6 +53,7 @@ namespace wf
         right_player->setAIDifficulty(right_player_ai_difficulty_slider.value());
 
         settings->setMinimumAITurnTime(minimum_ai_turn_time_slider.value());
+        settings->setAILetterPlacingDelay(ai_letter_placing_delay_slider.value() * ai_letter_placing_delay_step);
 
         emit settingsSaved();
         return;
@@ -92,6 +93,10 @@ namespace wf
         // Minimum AI turn time
         value = minimum_ai_turn_time_slider.value();
         minimum_ai_turn_time_display_label.setText(QString::number(value) + " seconds");
+
+        // AI letter placing delay
+        value = ai_letter_placing_delay_slider.value();
+        ai_letter_placing_delay_display_label.setText(QString::number(value * ai_letter_placing_delay_step) + " ms");
 
         return;
     }
@@ -217,6 +222,7 @@ namespace wf
         // Left player AI difficulty
         left_player_ai_difficulty_slider.setMinimum(minimum_shown_ai_difficulty);
         left_player_ai_difficulty_slider.setMaximum(settings->getMaximumAIDifficulty());
+        left_player_ai_difficulty_slider.setPageStep(1);
         left_player_ai_difficulty_slider.setOrientation(Qt::Orientation::Horizontal);
         left_player_ai_difficulty_slider.setValue(settings->getLeftPlayer()->getAIDifficulty());
         left_player_settings_layout.addWidget(&left_player_ai_difficulty_label, 3, 0);
@@ -271,6 +277,7 @@ namespace wf
         // Right player AI difficulty
         right_player_ai_difficulty_slider.setMinimum(minimum_shown_ai_difficulty);
         right_player_ai_difficulty_slider.setMaximum(settings->getMaximumAIDifficulty());
+        right_player_ai_difficulty_slider.setPageStep(1);
         right_player_ai_difficulty_slider.setOrientation(Qt::Orientation::Horizontal);
         right_player_ai_difficulty_slider.setValue(settings->getRightPlayer()->getAIDifficulty());
         right_player_settings_layout.addWidget(&right_player_ai_difficulty_label, 3, 0);
@@ -289,18 +296,33 @@ namespace wf
     void SettingsDialog::createAISettingsGroup()
     {
         connect(&minimum_ai_turn_time_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
+        connect(&ai_letter_placing_delay_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
 
         minimum_ai_turn_time_slider.setMinimum(minimum_ai_turn_time);
         minimum_ai_turn_time_slider.setMaximum(maximum_ai_turn_time);
         minimum_ai_turn_time_slider.setTickPosition(QSlider::TicksBothSides);
         minimum_ai_turn_time_slider.setTickInterval(1);
+        minimum_ai_turn_time_slider.setPageStep(1);
         minimum_ai_turn_time_slider.setOrientation(Qt::Orientation::Horizontal);
         minimum_ai_turn_time_slider.setValue(settings->getMinimumAITurnTime());
         minimum_ai_turn_time_display_label.setAlignment(Qt::AlignCenter);
+
+        ai_letter_placing_delay_slider.setMinimum(minimum_ai_letter_placing_delay / ai_letter_placing_delay_step);
+        ai_letter_placing_delay_slider.setMaximum(maximum_ai_letter_placing_delay / ai_letter_placing_delay_step);
+        ai_letter_placing_delay_slider.setTickPosition(QSlider::TicksBothSides);
+        ai_letter_placing_delay_slider.setTickInterval(1);
+        ai_letter_placing_delay_slider.setPageStep(2);
+        ai_letter_placing_delay_slider.setOrientation(Qt::Orientation::Horizontal);
+        ai_letter_placing_delay_slider.setValue(settings->getAILetterPlacingDelay() / ai_letter_placing_delay_step);
+        ai_letter_placing_delay_display_label.setAlignment(Qt::AlignCenter);
         
         ai_settings_layout.addWidget(&minimum_ai_turn_time_label, 0, 0);
         ai_settings_layout.addWidget(&minimum_ai_turn_time_display_label, 0, 1);
         ai_settings_layout.addWidget(&minimum_ai_turn_time_slider, 1, 1);
+
+        ai_settings_layout.addWidget(&ai_letter_placing_delay_label, 2, 0);
+        ai_settings_layout.addWidget(&ai_letter_placing_delay_display_label, 2, 1);
+        ai_settings_layout.addWidget(&ai_letter_placing_delay_slider, 3, 1);
         
         ai_settings.setLayout(&ai_settings_layout);
         grid_layout.addWidget(&ai_settings, layout_row, 0);

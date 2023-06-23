@@ -54,6 +54,8 @@ namespace wf
             void loadRandomNames(QString a_directory);
             int getMinimumAITurnTime() const;
             void setMinimumAITurnTime(int a_time);
+            int getAILetterPlacingDelay() const;
+            void setAILetterPlacingDelay(int a_time);
             const QString getLetterColouring() const;
             void setLetterColouring(QString a_colour);
             int getMinimumAIDifficulty() const;
@@ -74,6 +76,7 @@ namespace wf
             PlayerSettings right_player;
             std::set<QString> random_names;
             int minimum_ai_turn_time;
+            int ai_letter_placing_delay;
             QString letter_colouring;
             const int minimum_ai_difficulty = 1;
             const int maximum_ai_difficulty = 10;

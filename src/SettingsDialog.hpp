@@ -65,6 +65,9 @@ namespace wf
             const int minimum_shown_ai_difficulty = 0;
             const int minimum_ai_turn_time = 0;
             const int maximum_ai_turn_time = 10;
+            const int minimum_ai_letter_placing_delay = 0;
+            const int maximum_ai_letter_placing_delay = 1000;
+            const int ai_letter_placing_delay_step = 50;
 
             // General settings
             QGroupBox general_settings{"General"};
@@ -108,6 +111,9 @@ namespace wf
             QLabel minimum_ai_turn_time_label{"Minimum turn time:"};
             QLabel minimum_ai_turn_time_display_label;
             QSlider minimum_ai_turn_time_slider;
+            QLabel ai_letter_placing_delay_label{"Letter placing delay:"};
+            QLabel ai_letter_placing_delay_display_label;
+            QSlider ai_letter_placing_delay_slider;
 
             // Custom buttons
             QDialogButtonBox buttons;

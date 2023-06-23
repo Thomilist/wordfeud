@@ -28,13 +28,13 @@ namespace wf
         setValue("window/geometry", main_window->saveGeometry());
 
         // Save dictionary language
-        setValue("general/dictionary", getLanguage()->asString());
+        setValue("common/dictionary", getLanguage()->asString());
 
         // Save modifier distribution
-        setValue("general/modifiers", getModifierPattern()->getDistributionAsText());
+        setValue("common/modifiers", getModifierPattern()->getDistributionAsText());
 
         // Save letter colouring
-        setValue("general/letter_colouring", getLetterColouring());
+        setValue("common/letter_colouring", getLetterColouring());
 
         // Save left player
         setValue("player_left/name", getLeftPlayer()->getName());
@@ -50,6 +50,7 @@ namespace wf
 
         // Save minimum AI turn time
         setValue("ai/minimum_turn_time", getMinimumAITurnTime());
+        setValue("ai/letter_placing_delay", getAILetterPlacingDelay());
 
         return;
     }
@@ -68,21 +69,21 @@ namespace wf
         }
 
         // Load dictionary language
-        QString dictionary = value("general/dictionary", "English").toString();
+        QString dictionary = value("common/dictionary", "English").toString();
         setLanguage(dictionary);
 
         // Load modifier distribution
-        QString modifier_distribution = value("general/modifiers", "Default").toString();
+        QString modifier_distribution = value("common/modifiers", "Default").toString();
         getModifierPattern()->setDistribution(modifier_distribution);
 
         // Load letter colouring
-        setLetterColouring(value("general/letter_colouring", "Default").toString());
+        setLetterColouring(value("common/letter_colouring", "Default").toString());
 
         // Load left player
         QString left_player_name = value("player_left/name", "Player 1").toString();
         QString left_player_type = value("player_left/type", "Human").toString();
         bool left_player_uses_random_name = value("player_left/random_name", "false").toBool();
-        int left_player_ai_difficulty = value("player_left/ai_difficulty", "5").toInt();
+        int left_player_ai_difficulty = value("player_left/ai_difficulty", "3").toInt();
         getLeftPlayer()->setName(left_player_name);
         getLeftPlayer()->setTypeWithString(left_player_type);
         getLeftPlayer()->setRandomNameUse(left_player_uses_random_name);
@@ -93,7 +94,7 @@ namespace wf
         QString right_player_name = value("player_right/name", "Player 2").toString();
         QString right_player_type = value("player_right/type", "AI").toString();
         bool right_player_uses_random_name = value("player_right/random_name", "true").toBool();
-        int right_player_ai_difficulty = value("player_right/ai_difficulty", "5").toInt();
+        int right_player_ai_difficulty = value("player_right/ai_difficulty", "3").toInt();
         getRightPlayer()->setName(right_player_name);
         getRightPlayer()->setTypeWithString(right_player_type);
         getRightPlayer()->setRandomNameUse(right_player_uses_random_name);
@@ -101,7 +102,8 @@ namespace wf
         getRightPlayer()->setAIDifficulty(right_player_ai_difficulty);
 
         // Load minimum AI turn time
-        setMinimumAITurnTime(value("ai/minimum_turn_time", "0").toInt());
+        setMinimumAITurnTime(value("ai/minimum_turn_time", "1").toInt());
+        setAILetterPlacingDelay(value("ai/letter_placing_delay", "100").toInt());
 
         return;
     }
@@ -261,6 +263,17 @@ namespace wf
     void Settings::setMinimumAITurnTime(int a_time)
     {
         minimum_ai_turn_time = a_time;
+        return;
+    }
+    
+    int Settings::getAILetterPlacingDelay() const
+    {
+        return ai_letter_placing_delay;
+    }
+    
+    void Settings::setAILetterPlacingDelay(int a_time)
+    {
+        ai_letter_placing_delay = a_time;
         return;
     }
     

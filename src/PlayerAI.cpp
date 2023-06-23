@@ -243,6 +243,12 @@ namespace wf
             return;
         }
 
+        if (    positions_in_hand.size() != positions_on_board.size()
+            ||  positions_in_hand.size() != wildcard_letters.size())
+        {
+            return;
+        }
+
         QPoint hand_position;
         QPoint board_position;
         QChar wildcard_letter;
@@ -252,7 +258,10 @@ namespace wf
         
         for (size_t index = 0; index < positions_in_hand.size(); ++index)
         {
-            QThread::msleep(100);
+            if (index > 0)
+            {
+                QThread::msleep(settings->getAILetterPlacingDelay());
+            }
 
             if (cancelled)
             {

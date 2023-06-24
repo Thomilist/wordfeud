@@ -11,12 +11,23 @@ namespace wf
     {
         pool = a_letters;
         non_wildcard_letters.clear();
+        wildcard_substitutes.clear();
 
         for (const auto letter : pool)
         {
             if (letter->getText().isLetter() && !non_wildcard_letters.contains(letter->getText()))
             {
                 non_wildcard_letters.append(letter->getText());
+            }
+        }
+
+        // Second loop needed because substitutes are based on
+        // the complete set of non-wildcard letters found in the first loop.
+        for (auto letter : pool)
+        {
+            if (letter->getType() == LetterType::Wildcard)
+            {
+                wildcard_substitutes[letter] = createWildcardSubstitutes();
             }
         }
 
@@ -73,5 +84,29 @@ namespace wf
         pool.push_back(a_letter);
         emit remainingCountChanged(getRemainingCount());
         return;
+    }
+    
+    std::vector<Letter> LetterPool::createWildcardSubstitutes()
+    {
+        std::vector<Letter> substitutes;
+
+        for (auto character : non_wildcard_letters)
+        {
+            substitutes.push_back(Letter(character.at(0), 0));
+        }
+
+        return substitutes;
+    }
+
+    std::vector<Letter*> LetterPool::getWildcardSubstitutes(Letter* a_letter)
+    {
+        std::vector<Letter*> substitutes;
+        
+        for (auto& letter : wildcard_substitutes.at(a_letter))
+        {
+            substitutes.push_back(&letter);
+        }
+
+        return substitutes;
     }
 }

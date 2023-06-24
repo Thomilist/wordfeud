@@ -1,6 +1,8 @@
 #ifndef __PLAYERAIWORKER_H__
 #define __PLAYERAIWORKER_H__
 
+#include <algorithm>
+#include <map>
 #include <random>
 #include <set>
 #include <vector>
@@ -10,6 +12,7 @@
 #include <QPoint>
 
 #include "Letter.hpp"
+#include "LetterPool.hpp"
 #include "Settings.hpp"
 #include "VirtualBoard.hpp"
 #include "VirtualTile.hpp"
@@ -28,6 +31,7 @@ namespace wf
                 Settings* a_settings,
                 VirtualBoard* a_live_board,
                 VirtualBoard* a_hand,
+                LetterPool* a_letter_pool,
                 Direction a_direction,
                 int a_line_index,
                 std::set<int> a_relevant_rows,
@@ -39,7 +43,7 @@ namespace wf
             int getScore();
             std::vector<QPoint> getLetterPositionsInHand();
             std::vector<QPoint> getLetterPositionsOnBoard();
-            std::vector<QChar> getWildcardLetters();
+            std::vector<Letter*> getProposedLetters();
 
         public slots:
             void execute();
@@ -58,13 +62,14 @@ namespace wf
             void recurse(int a_column, int a_row);
             bool indexOutOfBounds(int a_column, int a_row);
             void updateBestPlay();
-            void setBestPlayWildcardLetters();
             bool rollDifficultyDice();
+            void initialiseWildcardSubstitutes();
 
             Settings* settings;
             VirtualBoard sandbox_board;
             VirtualBoard best_play_board;
             VirtualBoard hand;
+            LetterPool* letter_pool;
             Direction direction;
             int line_index;
             std::set<int> relevant_rows;
@@ -73,12 +78,12 @@ namespace wf
             std::vector<Letter*> available_letters;
             int available_letter_count = 0;
             int touch_count = 0;
-            std::vector<QChar> best_play_wildcard_letters;
             bool cancelled = false;
             std::random_device random_seed;
             std::mt19937 rng;
             std::uniform_int_distribution<> random_distribution;
             int difficulty;
+            std::map<Letter*, std::vector<Letter*>> wildcard_substitutes;
     };
 }
 

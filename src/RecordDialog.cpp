@@ -41,9 +41,8 @@ namespace wf
         createRecordTable(player_ai_table, record_tracker->getScores(PlayerType::AI));
         createRecordTable(combined_table, combineRecords());
 
-        int width = std::max(combined_table->width(), std::max(player_table->width(), player_ai_table->width()));
-        setMinimumWidth(width * 1.2);
-        setMinimumHeight(width);
+        setMinimumWidth(805);
+        setMinimumHeight(500);
 
         return QDialog::exec();
     }

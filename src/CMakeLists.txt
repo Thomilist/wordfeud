@@ -98,6 +98,7 @@ target_link_libraries(
     PlayerAIWorker
     Qt5::Widgets
     Letter
+    LetterPool
     Settings
     VirtualBoard
     VirtualTile

@@ -384,10 +384,10 @@ namespace wf
             
             QString invalid_words_message{"Word(s) not found in dictionary:"};
 
-            for (const auto word : invalid_words)
+            for (const auto& word : invalid_words)
             {
                 invalid_words_message.append("\n");
-                invalid_words_message.append(word->getWordAsText());
+                invalid_words_message.append(word.getWordAsText());
             }
             
             QMessageBox invalid_words_warning;

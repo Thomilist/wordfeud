@@ -7,6 +7,7 @@ namespace wf
         Settings* a_settings,
         VirtualBoard* a_live_board,
         VirtualBoard* a_hand,
+        LetterPool* a_letter_pool,
         Direction a_direction,
         int a_line_index,
         std::set<int> a_relevant_rows,
@@ -17,6 +18,7 @@ namespace wf
         , sandbox_board(a_settings, a_live_board)
         , best_play_board(a_settings, a_live_board)
         , hand(a_settings, a_hand)
+        , letter_pool(a_letter_pool)
         , direction(a_direction)
         , line_index(a_line_index)
         , relevant_rows(a_relevant_rows)
@@ -40,7 +42,8 @@ namespace wf
     std::vector<QPoint> PlayerAIWorker::getLetterPositionsInHand()
     {
         VirtualTile* tile;
-        Letter* letter;
+        Letter* letter_in_hand;
+        Letter* proposed_letter;
 
         auto proposed_tiles = best_play_board.getProposedLetters();
         std::vector<QPoint> positions;
@@ -52,13 +55,30 @@ namespace wf
             for (int column = 0; column < hand.getGridDimensions().width(); ++column)
             {
                 tile = hand.getTileAtPosition(column, row);
-                letter = tile->getLetter();
+                letter_in_hand = tile->getLetter();
+
+                if (letter_in_hand == nullptr)
+                {
+                    continue;
+                }
 
                 for (size_t index = 0; index < proposed_tiles.size(); ++index)
                 {
-                    if (proposed_tiles[index]->getLetter() == letter)
+                    proposed_letter = proposed_tiles[index]->getLetter();
+                    
+                    if (proposed_letter == letter_in_hand)
                     {
                         positions[index] = QPoint{column, row};
+                    }
+                    else if (   letter_in_hand->getType() == LetterType::Wildcard
+                            &&  wildcard_substitutes.contains(letter_in_hand))
+                    {
+                        std::vector<Letter*> substitutes = wildcard_substitutes[letter_in_hand];
+                        
+                        if (std::find(substitutes.begin(), substitutes.end(), proposed_letter) != substitutes.end())
+                        {
+                            positions[index] = QPoint{column, row};
+                        }
                     }
                 }
             }
@@ -78,10 +98,17 @@ namespace wf
 
         return positions;
     }
-    
-    std::vector<QChar> PlayerAIWorker::getWildcardLetters()
+
+    std::vector<Letter*> PlayerAIWorker::getProposedLetters()
     {
-        return best_play_wildcard_letters;
+        std::vector<Letter*> letters;
+
+        for (auto tile : best_play_board.getProposedLetters())
+        {
+            letters.push_back(tile->getLetter());
+        }
+
+        return letters;
     }
     
     void PlayerAIWorker::execute()
@@ -118,6 +145,8 @@ namespace wf
                 }
             }
         }
+
+        initialiseWildcardSubstitutes();
 
         return;
     }
@@ -169,8 +198,8 @@ namespace wf
         return;
     }
     
-    // For horisontal, fixed index = row, variable index = column
-    // For vertical, fixed index = column, variable index = row
+    // For horisontal, fixed index = row, variable index = column.
+    // For vertical, fixed index = column, variable index = row.
     void PlayerAIWorker::findPlayRecursively(int a_column, int a_row)
     {
         if (cancelled)
@@ -197,18 +226,21 @@ namespace wf
 
                 if (letter->getType() == LetterType::Wildcard)
                 {
-                    auto all_letters = settings->getLanguage()->getLetterList();
+                    // Set letter to nullptr to mark it unavailable
+                    Letter* letter_holder = letter;
+                    letter = nullptr;
 
-                    for (auto letter_option : all_letters)
+                    for (auto& letter_option : wildcard_substitutes[letter_holder])
                     {
                         if (cancelled)
                         {
-                            return;
+                            break;
                         }
                         
-                        letter->setWildcardText(letter_option.letter);
-                        tryLetterAndRecurse(letter, tile, a_column, a_row);
+                        tryLetterAndRecurse(letter_option, tile, a_column, a_row);
                     }
+
+                    letter = letter_holder;
                 }
                 else
                 {
@@ -290,34 +322,7 @@ namespace wf
             {
                 best_play_board.setWithBoard(&sandbox_board);
                 best_play_board.importProposedLetters(sandbox_board.getProposedLetters());
-                setBestPlayWildcardLetters();
             }
-        }
-
-        return;
-    }
-    
-    void PlayerAIWorker::setBestPlayWildcardLetters()
-    {
-        Letter* letter;
-        QChar letter_text;
-        
-        best_play_wildcard_letters.clear();
-
-        for (auto tile : sandbox_board.getProposedLetters())
-        {
-            letter = tile->getLetter();
-            
-            if (letter->getType() == LetterType::Wildcard)
-            {
-                letter_text = letter->getWildcardText();
-            }
-            else
-            {
-                letter_text = QChar{};
-            }
-
-            best_play_wildcard_letters.push_back(letter_text);
         }
 
         return;
@@ -326,5 +331,27 @@ namespace wf
     bool PlayerAIWorker::rollDifficultyDice()
     {
         return random_distribution(rng) < (difficulty * difficulty * 1000) / (sandbox_board.getProposedPlayPoints() + 1);
+    }
+    
+    void PlayerAIWorker::initialiseWildcardSubstitutes()
+    {
+        VirtualTile* tile;
+        Letter* letter;
+        
+        for (int row = 0; row < hand.getGridDimensions().height(); ++row)
+        {
+            for (int column = 0; column < hand.getGridDimensions().width(); ++column)
+            {
+                tile = hand.getTileAtPosition(column, row);
+                letter = tile->getLetter();
+
+                if (letter != nullptr && letter->getType() == LetterType::Wildcard)
+                {
+                    wildcard_substitutes[letter] = letter_pool->getWildcardSubstitutes(letter);
+                }
+            }
+        }
+
+        return;
     }
 }

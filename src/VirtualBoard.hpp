@@ -46,7 +46,7 @@ namespace wf
             bool isProposedPlayValid();
             int getProposedLetterCount();
             std::vector<Word> getProposedWords();
-            std::vector<Word*> getInvalidProposedWords();
+            std::vector<Word> getInvalidProposedWords();
             int getProposedPlayPoints(bool a_skip_validation = false);
             Word getMostRelevantWord();
             void lockProposedPlay();
@@ -60,6 +60,7 @@ namespace wf
             [[nodiscard]] Letter* removeLetter(QPoint a_position);
             std::vector<Letter*> clearProposed();
             void discardProposed();
+            void invalidateEvaluation();
         
         protected:
             void assignNeighbours();
@@ -84,7 +85,7 @@ namespace wf
             std::vector<Letter*> locked_letters;
             std::vector<VirtualTile*> checked_tiles;
             std::vector<Word> proposed_words;
-            std::vector<Word*> invalid_words;
+            std::vector<Word> invalid_words;
             bool proposed_play_evaluated = false;
             bool proposed_placement_valid = false;
             bool proposed_words_valid = false;

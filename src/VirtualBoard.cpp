@@ -242,7 +242,7 @@ namespace wf
         return proposed_words;
     }
     
-    std::vector<Word*> VirtualBoard::getInvalidProposedWords()
+    std::vector<Word> VirtualBoard::getInvalidProposedWords()
     {
         return invalid_words;
     }
@@ -411,6 +411,12 @@ namespace wf
         return;
     }
     
+    void VirtualBoard::invalidateEvaluation()
+    {
+        proposed_play_evaluated = false;
+        return;
+    }
+    
     bool VirtualBoard::isPlacementConnectedToStart(VirtualTile* a_tile)
     {
         checked_tiles.push_back(a_tile);
@@ -466,6 +472,7 @@ namespace wf
             return true;
         }
         
+        // The contiguity check assumes the proposed letters are in a single line
         int minimum_column = *proposed_columns.begin();
         int maximum_column = *proposed_columns.rbegin();
         int minimum_row = *proposed_rows.begin();
@@ -660,11 +667,11 @@ namespace wf
         invalid_words.clear();
         proposed_words_valid = true;
 
-        for (auto& word : proposed_words)
+        for (auto word : proposed_words)
         {
             if (!settings->getLanguage()->isInWordList(word.getWordAsText().toLower()))
             {
-                invalid_words.push_back(&word);
+                invalid_words.push_back(word);
                 proposed_words_valid = false;
             }
         }

@@ -1,6 +1,7 @@
 #ifndef __LETTERPOOL_H__
 #define __LETTERPOOL_H__
 
+#include <map>
 #include <random>
 #include <vector>
 
@@ -28,13 +29,17 @@ namespace wf
             int getRemainingWildcardCount() const;
             QStringList getNonWildcardLetters() const;
             void insertLetter(Letter* a_letter);
+            std::vector<Letter*> getWildcardSubstitutes(Letter* a_letter);
         
         signals:
             void remainingCountChanged(int a_count);
 
         private:
+            std::vector<Letter> createWildcardSubstitutes();
+
             std::vector<Letter*> pool;
             QStringList non_wildcard_letters;
+            std::map<Letter*, std::vector<Letter>> wildcard_substitutes;
     };
 }
 #endif // __LETTERPOOL_H__

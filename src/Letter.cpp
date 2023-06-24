@@ -27,7 +27,7 @@ namespace wf
     
     QChar Letter::getText() const
     {
-        if (getType() == LetterType::Wildcard && wildcard_text.isLetter())
+        if (getType() == LetterType::Wildcard)
         {
             return wildcard_text;
         }

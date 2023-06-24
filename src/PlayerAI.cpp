@@ -176,6 +176,8 @@ namespace wf
             emit passTurn();
         }
 
+        deleteWorkers();
+
         return;
     }
     
@@ -183,7 +185,6 @@ namespace wf
     {
         updateRelevantLines();
         evaluateBoard(live_board);
-        deleteWorkers();
         worker_threads.clear();
         best_play_score = 0;
         finished_workers = 0;
@@ -210,6 +211,7 @@ namespace wf
                     settings,
                     live_board,
                     getHand(),
+                    letter_pool,
                     direction,
                     index,
                     relevant_rows,
@@ -236,22 +238,20 @@ namespace wf
     {
         std::vector<QPoint> positions_in_hand = workers[best_play_index]->getLetterPositionsInHand();
         std::vector<QPoint> positions_on_board = workers[best_play_index]->getLetterPositionsOnBoard();
-        std::vector<QChar> wildcard_letters = workers[best_play_index]->getWildcardLetters();
+        std::vector<Letter*> proposed_letters = workers[best_play_index]->getProposedLetters();
 
         if (positions_in_hand.size() == 0)
         {
             return;
         }
 
-        if (    positions_in_hand.size() != positions_on_board.size()
-            ||  positions_in_hand.size() != wildcard_letters.size())
+        if (positions_in_hand.size() != positions_on_board.size())
         {
             return;
         }
 
         QPoint hand_position;
         QPoint board_position;
-        QChar wildcard_letter;
 
         VirtualTile* tile;
         Letter* letter;
@@ -270,14 +270,14 @@ namespace wf
             
             hand_position = positions_in_hand[index];
             board_position = positions_on_board[index];
-            wildcard_letter = wildcard_letters[index];
 
             tile = live_board->getTileAtPosition(board_position);
             letter = getHand()->removeLetter(hand_position);
 
             if (letter->getType() == LetterType::Wildcard)
             {
-                letter->setWildcardText(wildcard_letter);
+                letter = proposed_letters[index];
+                letter->setOwner(this);
             }
 
             tile->placeLetter(letter);
@@ -447,12 +447,9 @@ namespace wf
                 )
             {
                 worker_thread = new QThread;
-                
                 connect(this, &PlayerAI::cleanup, worker_thread, &QThread::quit);
                 connect(worker_thread, &QThread::finished, worker_thread, &QThread::deleteLater);
-
                 worker_thread->start();
-
                 worker_threads.push_back(worker_thread);
             }
         }

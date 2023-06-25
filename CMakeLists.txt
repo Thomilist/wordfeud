@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25.1)
-project(wordfeud VERSION 1.0.0)
+project(wordfeud VERSION 0.4.0)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -35,9 +35,13 @@ else()
 endif()
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets Concurrent)
+find_package(CURL REQUIRED)
+find_package(nlohmann_json REQUIRED)
+
 add_subdirectory(src)
 target_link_libraries(
     wordfeud PRIVATE
     Qt5::Widgets
+    Version
     Wordfeud
 )

@@ -20,6 +20,16 @@ namespace wf
     PlayerSettings::~PlayerSettings()
     { }
     
+    void PlayerSettings::apply()
+    {
+        name = name_temp;
+        type = type_temp;
+        use_random_name = use_random_name_temp;
+        difficulty = difficulty_temp;
+
+        return;
+    }
+    
     const QString PlayerSettings::getName() const
     {
         if (usesRandomName())
@@ -32,9 +42,14 @@ namespace wf
         }
     }
     
+    const QString PlayerSettings::getTempName() const
+    {
+        return name_temp;
+    }
+    
     void PlayerSettings::setName(QString a_name)
     {
-        name = a_name;
+        name_temp = a_name;
         return;
     }
     
@@ -56,9 +71,14 @@ namespace wf
         return type;
     }
     
+    PlayerType PlayerSettings::getTempType() const
+    {
+        return type_temp;
+    }
+    
     void PlayerSettings::setType(PlayerType a_type)
     {
-        type = a_type;
+        type_temp = a_type;
         return;
     }
     
@@ -72,9 +92,14 @@ namespace wf
         return use_random_name;
     }
     
+    bool PlayerSettings::usesRandomNameTemp() const
+    {
+        return use_random_name_temp;
+    }
+    
     void PlayerSettings::setRandomNameUse(bool a_state)
     {
-        use_random_name = a_state;
+        use_random_name_temp = a_state;
         return;
     }
     
@@ -90,9 +115,14 @@ namespace wf
         return difficulty;
     }
     
+    int PlayerSettings::getTempAIDifficulty() const
+    {
+        return difficulty_temp;
+    }
+    
     void PlayerSettings::setAIDifficulty(int a_difficulty)
     {
-        difficulty = a_difficulty;
+        difficulty_temp = a_difficulty;
         return;
     }
     

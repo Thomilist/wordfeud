@@ -29,7 +29,8 @@ namespace wf
             RecordDialog(RecordTracker* a_record_tracker, QWidget* a_parent);
             ~RecordDialog();
 
-            int exec();
+        public slots:
+            void open();
         
         private:
             void createRecordTable(QTableWidget* a_table, std::vector<Score> a_records);

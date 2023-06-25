@@ -277,6 +277,7 @@ namespace wf
             hands.setCurrentIndex(current_player_index);
         }
         
+        settings->midGameApply();
         setCorrectButtonState();
         showCorrectButtons();
         repaint();
@@ -291,6 +292,7 @@ namespace wf
     
     void Game::reset()
     {
+        // Cleanup last game
         terminatePlayerAI();
         
         state = GameState::Play;
@@ -308,6 +310,8 @@ namespace wf
         proposal_info.setProposedPlay(true, 0);
         hands.setDisabled(false);
 
+        // Initialise new game
+        settings->newGameApply();
         createPlayers();
         initialisePlayerConnections();
 

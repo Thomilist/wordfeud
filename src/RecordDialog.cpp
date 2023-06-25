@@ -27,7 +27,7 @@ namespace wf
         int row = 0;
 
         grid_layout.addWidget(&tab_widget, row++, 0);
-        grid_layout.addWidget(&buttons, row++, 0);
+        grid_layout.addWidget(&buttons, row++, 0, Qt::AlignCenter);
 
         setLayout(&grid_layout);
     }
@@ -35,7 +35,7 @@ namespace wf
     RecordDialog::~RecordDialog()
     { }
     
-    int RecordDialog::exec()
+    void RecordDialog::open()
     {
         createRecordTable(player_table, record_tracker->getScores(PlayerType::Human));
         createRecordTable(player_ai_table, record_tracker->getScores(PlayerType::AI));
@@ -44,7 +44,8 @@ namespace wf
         setMinimumWidth(805);
         setMinimumHeight(500);
 
-        return QDialog::exec();
+        QDialog::open();
+        return;
     }
     
     void RecordDialog::createRecordTable(QTableWidget* a_table, std::vector<Score> a_records)

@@ -37,7 +37,7 @@ namespace wf
     void SettingsDialog::saveSettings()
     {
         settings->setLanguage(language_dropdown.currentText());
-        settings->getModifierPattern()->setDistribution(modifier_distribution_dropdown.currentText());
+        settings->setModifierPattern(modifier_distribution_dropdown.currentText());
         settings->setLetterColouring(letter_colouring_dropdown.currentText());
 
         PlayerSettings* left_player = settings->getLeftPlayer();
@@ -128,7 +128,7 @@ namespace wf
         {
             language_dropdown.addItem(language.asString());
 
-            if (language.asEnum() == settings->getLanguage()->asEnum())
+            if (language.asEnum() == settings->getTempLanguage()->asEnum())
             {
                 language_dropdown.setCurrentIndex(index);
             }
@@ -150,7 +150,7 @@ namespace wf
         {
             modifier_distribution_dropdown.addItem(modifier_distribution.second);
 
-            if (modifier_distribution.first == settings->getModifierPattern()->getDistribution())
+            if (modifier_distribution.second == settings->getTempModifierPattern())
             {
                 modifier_distribution_dropdown.setCurrentIndex(index);
             }
@@ -172,7 +172,7 @@ namespace wf
         {
             letter_colouring_dropdown.addItem(letter_colouring);
 
-            if (letter_colouring == settings->getLetterColouring())
+            if (letter_colouring == settings->getTempLetterColouring())
             {
                 letter_colouring_dropdown.setCurrentIndex(index);
             }
@@ -196,10 +196,10 @@ namespace wf
         left_player_name_validator.setRegExp(player_name_regex);
         left_player_name_edit.setValidator(&left_player_name_validator);
 
-        left_player_name_edit.setText(settings->getLeftPlayer()->getName());
+        left_player_name_edit.setText(settings->getLeftPlayer()->getTempName());
         left_player_name_edit.setMaxLength(maximum_name_length);
 
-        left_player_random_name_checkbox.setChecked(settings->getLeftPlayer()->usesRandomName());
+        left_player_random_name_checkbox.setChecked(settings->getLeftPlayer()->usesRandomNameTemp());
 
         // Left player type
         left_player_settings_layout.addWidget(&left_player_type_label, 2, 0);
@@ -211,7 +211,7 @@ namespace wf
         {
             left_player_type_dropdown.addItem(type.second);
 
-            if (type.first == settings->getLeftPlayer()->getType())
+            if (type.first == settings->getLeftPlayer()->getTempType())
             {
                 left_player_type_dropdown.setCurrentIndex(index);
             }
@@ -224,7 +224,7 @@ namespace wf
         left_player_ai_difficulty_slider.setMaximum(settings->getMaximumAIDifficulty());
         left_player_ai_difficulty_slider.setPageStep(1);
         left_player_ai_difficulty_slider.setOrientation(Qt::Orientation::Horizontal);
-        left_player_ai_difficulty_slider.setValue(settings->getLeftPlayer()->getAIDifficulty());
+        left_player_ai_difficulty_slider.setValue(settings->getLeftPlayer()->getTempAIDifficulty());
         left_player_settings_layout.addWidget(&left_player_ai_difficulty_label, 3, 0);
         left_player_settings_layout.addWidget(&left_player_ai_difficulty_display_label, 3, 1);
         left_player_settings_layout.addWidget(&left_player_ai_difficulty_slider, 4, 1);
@@ -251,10 +251,10 @@ namespace wf
         right_player_name_validator.setRegExp(player_name_regex);
         right_player_name_edit.setValidator(&right_player_name_validator);
 
-        right_player_name_edit.setText(settings->getRightPlayer()->getName());
+        right_player_name_edit.setText(settings->getRightPlayer()->getTempName());
         right_player_name_edit.setMaxLength(maximum_name_length);
 
-        right_player_random_name_checkbox.setChecked(settings->getRightPlayer()->usesRandomName());
+        right_player_random_name_checkbox.setChecked(settings->getRightPlayer()->usesRandomNameTemp());
 
         // Right player type
         right_player_settings_layout.addWidget(&right_player_type_label, 2, 0);
@@ -266,7 +266,7 @@ namespace wf
         {
             right_player_type_dropdown.addItem(type.second);
 
-            if (type.first == settings->getRightPlayer()->getType())
+            if (type.first == settings->getRightPlayer()->getTempType())
             {
                 right_player_type_dropdown.setCurrentIndex(index);
             }
@@ -279,7 +279,7 @@ namespace wf
         right_player_ai_difficulty_slider.setMaximum(settings->getMaximumAIDifficulty());
         right_player_ai_difficulty_slider.setPageStep(1);
         right_player_ai_difficulty_slider.setOrientation(Qt::Orientation::Horizontal);
-        right_player_ai_difficulty_slider.setValue(settings->getRightPlayer()->getAIDifficulty());
+        right_player_ai_difficulty_slider.setValue(settings->getRightPlayer()->getTempAIDifficulty());
         right_player_settings_layout.addWidget(&right_player_ai_difficulty_label, 3, 0);
         right_player_settings_layout.addWidget(&right_player_ai_difficulty_display_label, 3, 1);
         right_player_settings_layout.addWidget(&right_player_ai_difficulty_slider, 4, 1);
@@ -304,7 +304,7 @@ namespace wf
         minimum_ai_turn_time_slider.setTickInterval(1);
         minimum_ai_turn_time_slider.setPageStep(1);
         minimum_ai_turn_time_slider.setOrientation(Qt::Orientation::Horizontal);
-        minimum_ai_turn_time_slider.setValue(settings->getMinimumAITurnTime());
+        minimum_ai_turn_time_slider.setValue(settings->getTempMinimumAITurnTime());
         minimum_ai_turn_time_display_label.setAlignment(Qt::AlignCenter);
 
         ai_letter_placing_delay_slider.setMinimum(minimum_ai_letter_placing_delay / ai_letter_placing_delay_step);
@@ -313,7 +313,7 @@ namespace wf
         ai_letter_placing_delay_slider.setTickInterval(1);
         ai_letter_placing_delay_slider.setPageStep(2);
         ai_letter_placing_delay_slider.setOrientation(Qt::Orientation::Horizontal);
-        ai_letter_placing_delay_slider.setValue(settings->getAILetterPlacingDelay() / ai_letter_placing_delay_step);
+        ai_letter_placing_delay_slider.setValue(settings->getTempAILetterPlacingDelay() / ai_letter_placing_delay_step);
         ai_letter_placing_delay_display_label.setAlignment(Qt::AlignCenter);
         
         ai_settings_layout.addWidget(&minimum_ai_turn_time_label, 0, 0);

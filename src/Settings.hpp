@@ -35,11 +35,14 @@ namespace wf
 
             void save();
             void load();
+            void newGameApply();
+            void midGameApply();
             void setGridDimensions(int a_rows, int a_collumns);
             void setTileSize(int a_size);
             void setLanguage(LanguageName a_language);
             void setLanguage(QString a_language);
             Language* getLanguage();
+            Language* getTempLanguage();
             std::vector<Language>& getAvailableLanguages();
             const QSize& getBoardDimensions() const;
             const QSize& getBoardTileSize() const;
@@ -48,15 +51,20 @@ namespace wf
             const QSize& getSelectionTileSize() const;
             QFont getMonospaceFont() const;
             ModifierPattern* getModifierPattern();
+            const QString getTempModifierPattern() const;
+            void setModifierPattern(QString a_pattern);
             PlayerSettings* getLeftPlayer();
             PlayerSettings* getRightPlayer();
             PlayerSettings* getPlayer(int a_index);
             void loadRandomNames(QString a_directory);
             int getMinimumAITurnTime() const;
+            int getTempMinimumAITurnTime() const;
             void setMinimumAITurnTime(int a_time);
             int getAILetterPlacingDelay() const;
+            int getTempAILetterPlacingDelay() const;
             void setAILetterPlacingDelay(int a_time);
             const QString getLetterColouring() const;
+            const QString getTempLetterColouring() const;
             void setLetterColouring(QString a_colour);
             int getMinimumAIDifficulty() const;
             int getMaximumAIDifficulty() const;
@@ -64,22 +72,32 @@ namespace wf
         private:
             QMainWindow* main_window;
             std::vector<Language> languages;
-            Language* current_language;
             QSize board_dimensions{15,15};
             QSize board_tile_size{42,42};
             QSize hand_dimensions{7,1};
             QSize hand_tile_size{90,90};
             QSize selection_tile_size{64,64};
             QFont monospace_font;
-            ModifierPattern modifier_pattern;
-            PlayerSettings left_player;
-            PlayerSettings right_player;
             std::set<QString> random_names;
+            const int minimum_ai_difficulty = 1;
+            const int maximum_ai_difficulty = 10;
+
+            // User-facing settings
+            Language* current_language;
+            ModifierPattern modifier_pattern;
             int minimum_ai_turn_time;
             int ai_letter_placing_delay;
             QString letter_colouring;
-            const int minimum_ai_difficulty = 1;
-            const int maximum_ai_difficulty = 10;
+
+            PlayerSettings left_player;
+            PlayerSettings right_player;
+
+            // Temporary user-facing settings
+            Language* current_language_temp;
+            QString modifier_pattern_temp;
+            int minimum_ai_turn_time_temp;
+            int ai_letter_placing_delay_temp;
+            QString letter_colouring_temp;
     };
 }
 #endif // __SETTINGS_H__

@@ -415,8 +415,6 @@ namespace wf
         {
             for (int column = 0; column < getHand()->getGridDimensions().width(); ++column)
             {
-                QThread::msleep(100);
-
                 if (cancelled)
                 {
                     return;
@@ -426,6 +424,8 @@ namespace wf
                 tile->setSwapMarking(true);
                 emit tile->markForSwap(tile);
                 emit letterMarkedForSwap();
+
+                QThread::msleep(settings->getAILetterPlacingDelay());
             }
         }
 

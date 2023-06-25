@@ -15,6 +15,7 @@ namespace wf
         monospace_font.setStyleHint(QFont::TypeWriter);
 
         load();
+        newGameApply();
     }
     
     Settings::~Settings()
@@ -74,7 +75,7 @@ namespace wf
 
         // Load modifier distribution
         QString modifier_distribution = value("common/modifiers", "Default").toString();
-        getModifierPattern()->setDistribution(modifier_distribution);
+        setModifierPattern(modifier_distribution);
 
         // Load letter colouring
         setLetterColouring(value("common/letter_colouring", "Default").toString());
@@ -102,9 +103,31 @@ namespace wf
         getRightPlayer()->setAIDifficulty(right_player_ai_difficulty);
 
         // Load minimum AI turn time
-        setMinimumAITurnTime(value("ai/minimum_turn_time", "1").toInt());
+        setMinimumAITurnTime(value("ai/minimum_turn_time", "2").toInt());
         setAILetterPlacingDelay(value("ai/letter_placing_delay", "100").toInt());
 
+        return;
+    }
+    
+    void Settings::newGameApply()
+    {
+        getModifierPattern()->setDistribution(modifier_pattern_temp);
+        current_language = current_language_temp;
+
+        getLeftPlayer()->apply();
+        getRightPlayer()->apply();
+
+        midGameApply();
+
+        return;
+    }
+    
+    void Settings::midGameApply()
+    {
+        minimum_ai_turn_time = minimum_ai_turn_time_temp;
+        ai_letter_placing_delay = ai_letter_placing_delay_temp;
+        letter_colouring = letter_colouring_temp;
+        
         return;
     }
     
@@ -130,7 +153,7 @@ namespace wf
         {
             if (language.asEnum() == a_language)
             {
-                current_language = &language;
+                current_language_temp = &language;
                 return;
             }
         }
@@ -144,7 +167,7 @@ namespace wf
         {
             if (language.asString() == a_language)
             {
-                current_language = &language;
+                current_language_temp = &language;
                 return;
             }
         }
@@ -155,6 +178,11 @@ namespace wf
     Language* Settings::getLanguage()
     {
         return current_language;
+    }
+    
+    Language* Settings::getTempLanguage()
+    {
+        return current_language_temp;
     }
     
     std::vector<Language>& Settings::getAvailableLanguages()
@@ -195,6 +223,17 @@ namespace wf
     ModifierPattern* Settings::getModifierPattern()
     {
         return &modifier_pattern;
+    }
+    
+    const QString Settings::getTempModifierPattern() const
+    {
+        return modifier_pattern_temp;
+    }
+    
+    void Settings::setModifierPattern(QString a_pattern)
+    {
+        modifier_pattern_temp = a_pattern;
+        return;
     }
     
     PlayerSettings* Settings::getLeftPlayer()
@@ -260,9 +299,14 @@ namespace wf
         return minimum_ai_turn_time;
     }
     
+    int Settings::getTempMinimumAITurnTime() const
+    {
+        return minimum_ai_turn_time_temp;
+    }
+    
     void Settings::setMinimumAITurnTime(int a_time)
     {
-        minimum_ai_turn_time = a_time;
+        minimum_ai_turn_time_temp = a_time;
         return;
     }
     
@@ -271,9 +315,14 @@ namespace wf
         return ai_letter_placing_delay;
     }
     
+    int Settings::getTempAILetterPlacingDelay() const
+    {
+        return ai_letter_placing_delay_temp;
+    }
+    
     void Settings::setAILetterPlacingDelay(int a_time)
     {
-        ai_letter_placing_delay = a_time;
+        ai_letter_placing_delay_temp = a_time;
         return;
     }
     
@@ -282,9 +331,14 @@ namespace wf
         return letter_colouring;
     }
     
+    const QString Settings::getTempLetterColouring() const
+    {
+        return letter_colouring_temp;
+    }
+    
     void Settings::setLetterColouring(QString a_colour)
     {
-        letter_colouring = a_colour;
+        letter_colouring_temp = a_colour;
         return;
     }
     

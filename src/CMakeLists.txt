@@ -164,6 +164,21 @@ target_link_libraries(
     Settings
 )
 
+add_library(UpdateDialog UpdateDialog.cpp)
+target_link_libraries(
+    UpdateDialog
+    Qt5::Widgets
+    Version
+)
+
+add_library(Version Version.cpp)
+target_link_libraries(
+    Version
+    Qt5::Widgets
+    CURL::libcurl
+    nlohmann_json::nlohmann_json
+)
+
 add_library(VirtualBoard VirtualBoard.cpp)
 target_link_libraries(
     VirtualBoard
@@ -198,4 +213,5 @@ target_link_libraries(
     RecordDialog
     Settings
     SettingsDialog
+    UpdateDialog
 )

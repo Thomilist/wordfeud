@@ -18,6 +18,8 @@
 #include "RecordDialog.hpp"
 #include "Settings.hpp"
 #include "SettingsDialog.hpp"
+#include "UpdateDialog.hpp"
+#include "Version.hpp"
 
 namespace wf
 {
@@ -26,7 +28,7 @@ namespace wf
         Q_OBJECT
         
         public:
-            Wordfeud();
+            Wordfeud(Version* a_version);
             ~Wordfeud();
 
         public slots:
@@ -37,19 +39,23 @@ namespace wf
         private:
             void initialiseGameMenu();
             void initialiseAboutMenu();
+            void automaticUpdateCheck();
 
             QMainWindow main_window;
             Settings settings;
             Game game;
+            Version* version;
 
             QMenu game_menu;
             QAction start_new_game;
             QAction open_settings;
-            QAction show_records;
             SettingsDialog settings_dialog;
+            QAction show_records;
             RecordDialog record_dialog;
 
             QMenu about_menu;
+            QAction check_for_updates;
+            UpdateDialog update_dialog;
             QAction open_github;
     };
 }

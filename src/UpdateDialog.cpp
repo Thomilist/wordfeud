@@ -4,7 +4,7 @@
 namespace wf
 {
     UpdateDialog::UpdateDialog(Version* a_version, QWidget* a_parent)
-        : QDialog(a_parent)
+        : QDialog(a_parent, QDialog().windowFlags() & ~Qt::WindowContextHelpButtonHint)
         , version(a_version)
         , buttons(QDialogButtonBox::Ok)
     {

@@ -4,7 +4,7 @@
 namespace wf
 {
     RecordDialog::RecordDialog(RecordTracker* a_record_tracker, QWidget* a_parent)
-        : QDialog(a_parent)
+        : QDialog(a_parent, QDialog().windowFlags() & ~Qt::WindowContextHelpButtonHint)
         , record_tracker(a_record_tracker)
         , buttons(QDialogButtonBox::Ok)
     {

@@ -6,7 +6,7 @@ namespace wf
         Settings* a_settings,
         Wordfeud* a_wordfeud,
         QWidget* a_parent)
-        : QDialog(a_parent)
+        : QDialog(a_parent, QDialog().windowFlags() & ~Qt::WindowContextHelpButtonHint)
         , wordfeud(a_wordfeud)
         , settings(a_settings)
     {

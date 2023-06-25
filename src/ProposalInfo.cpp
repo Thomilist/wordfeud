@@ -62,6 +62,13 @@ namespace wf
     
     QString ProposalInfo::getPointsAsText()
     {
-        return QString::number(points) + " points";
+        if (points == 1)
+        {
+            return QString::number(points) + " point";
+        }
+        else
+        {
+            return QString::number(points) + " points";
+        }
     }
 }

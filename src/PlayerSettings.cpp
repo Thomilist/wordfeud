@@ -59,6 +59,12 @@ namespace wf
         return iterator->second;
     }
     
+    const QString PlayerSettings::getTempTypeAsString() const
+    {
+        auto iterator = std::ranges::find(all_types, type_temp, &std::pair<PlayerType, QString>::first);
+        return iterator->second;
+    }
+    
     void PlayerSettings::setTypeWithString(QString a_type)
     {
         auto iterator = std::ranges::find(all_types, a_type, &std::pair<PlayerType, QString>::second);

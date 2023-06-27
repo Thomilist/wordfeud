@@ -25,6 +25,7 @@ namespace wf
             const QString getTempName() const;
             void setName(QString a_name);
             const QString getTypeAsString() const;
+            const QString getTempTypeAsString() const;
             void setTypeWithString(QString a_type);
             PlayerType getType() const;
             PlayerType getTempType() const;

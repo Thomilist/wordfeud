@@ -39,6 +39,7 @@ namespace wf
             QPushButton* getSaveAndStartNewGameButton();
 
         public slots:
+            void open();
             void saveSettings();
             void setNameFieldStates(int a_state);
             void updateSliders();
@@ -55,6 +56,7 @@ namespace wf
             void createRightPlayerSettingsGroup();
             void createAISettingsGroup();
             void createButtons();
+            void loadCurrentSettings();
 
             Wordfeud* wordfeud;
             Settings* settings;

@@ -13,15 +13,12 @@ namespace wf
         setModal(true);
         setLayout(&grid_layout);
         setWindowTitle("Settings");
-        
+
         createGeneralSettingsGroup();
         createLeftPlayerSettingsGroup();
         createRightPlayerSettingsGroup();
         createAISettingsGroup();
         createButtons();
-
-        setNameFieldStates(0);
-        updateSliders();
 
         layout()->setSizeConstraint(QLayout::SetFixedSize);
     }
@@ -32,6 +29,16 @@ namespace wf
     QPushButton* SettingsDialog::getSaveAndStartNewGameButton()
     {
         return &save_and_start_new_game_button;
+    }
+    
+    void SettingsDialog::open()
+    {
+        loadCurrentSettings();
+        setNameFieldStates(0);
+        updateSliders();
+
+        QDialog::open();
+        return;
     }
     
     void SettingsDialog::saveSettings()
@@ -346,6 +353,73 @@ namespace wf
         connect(&buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
         connect(&buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
         connect(&buttons, &QDialogButtonBox::accepted, this, &SettingsDialog::saveSettings);
+
+        return;
+    }
+    
+    void SettingsDialog::loadCurrentSettings()
+    {
+        // General
+        for (int index = 0; index < language_dropdown.count(); ++index)
+        {
+            if (language_dropdown.itemText(index) == settings->getTempLanguage()->asString())
+            {
+                language_dropdown.setCurrentIndex(index);
+                break;
+            }
+        }
+
+        for (int index = 0; index < modifier_distribution_dropdown.count(); ++index)
+        {
+            if (modifier_distribution_dropdown.itemText(index) == settings->getTempModifierPattern())
+            {
+                modifier_distribution_dropdown.setCurrentIndex(index);
+                break;
+            }
+        }
+
+        for (int index = 0; index < letter_colouring_dropdown.count(); ++index)
+        {
+            if (letter_colouring_dropdown.itemText(index) == settings->getTempLetterColouring())
+            {
+                letter_colouring_dropdown.setCurrentIndex(index);
+                break;
+            }
+        }
+
+        // Player 1
+        left_player_name_edit.setText(settings->getLeftPlayer()->getTempName());
+        left_player_random_name_checkbox.setChecked(settings->getLeftPlayer()->usesRandomNameTemp());
+
+        for (int index = 0; index < left_player_type_dropdown.count(); ++index)
+        {
+            if (left_player_type_dropdown.itemText(index) == settings->getLeftPlayer()->getTempTypeAsString())
+            {
+                left_player_type_dropdown.setCurrentIndex(index);
+                break;
+            }
+        }
+        
+        left_player_ai_difficulty_slider.setValue(settings->getLeftPlayer()->getTempAIDifficulty());
+
+        // Player 2
+        right_player_name_edit.setText(settings->getRightPlayer()->getTempName());
+        right_player_random_name_checkbox.setChecked(settings->getRightPlayer()->usesRandomNameTemp());
+
+        for (int index = 0; index < right_player_type_dropdown.count(); ++index)
+        {
+            if (right_player_type_dropdown.itemText(index) == settings->getRightPlayer()->getTempTypeAsString())
+            {
+                right_player_type_dropdown.setCurrentIndex(index);
+                break;
+            }
+        }
+        
+        right_player_ai_difficulty_slider.setValue(settings->getRightPlayer()->getTempAIDifficulty());
+
+        // AI
+        minimum_ai_turn_time_slider.setValue(settings->getTempMinimumAITurnTime());
+        ai_letter_placing_delay_slider.setValue(settings->getTempAILetterPlacingDelay() / ai_letter_placing_delay_step);
 
         return;
     }

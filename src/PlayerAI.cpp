@@ -185,7 +185,6 @@ namespace wf
     {
         updateRelevantLines();
         evaluateBoard(live_board);
-        worker_threads.clear();
         best_play_score = 0;
         finished_workers = 0;
 

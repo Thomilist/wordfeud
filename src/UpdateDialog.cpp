@@ -31,19 +31,34 @@ namespace wf
         return;
     }
     
-    void UpdateDialog::open(bool a_update_available, bool a_quiet)
+    void UpdateDialog::open(UpdateStatus a_update_status, bool a_quiet)
     {
-        if (a_update_available)
+        switch (a_update_status)
         {
-            createNewVersionAvailable();
-        }
-        else if (a_quiet)
-        {
-            return;
-        }
-        else
-        {
-            createYouHaveLatestVersion();
+            case UpdateStatus::NewerAvailable:
+            {
+                createNewVersionAvailable();
+                break;
+            }
+            case UpdateStatus::UpToDate:
+            {
+                if (!a_quiet)
+                {
+                    createYouHaveLatestVersion();
+                }
+
+                break;
+            }
+            case UpdateStatus::Inaccessible:
+            {
+                createInaccessible();
+                break;
+            }
+            case UpdateStatus::Unknown:
+            {
+                createUnknown();
+                break;
+            }
         }
 
         QDialog::open();
@@ -73,6 +88,28 @@ namespace wf
             + version->getUpstreamVersion()
             + " is available for download "
             + "<a href=\"https://github.com/Thomilist/wordfeud/releases/latest/\">here</a>."
+        );
+
+        return;
+    }
+    
+    void UpdateDialog::createInaccessible()
+    {
+        update_text.setText(
+            QString()
+            + "Unable to check for updates.<br>"
+            + "Please try again later."
+        );
+
+        return;
+    }
+    
+    void UpdateDialog::createUnknown()
+    {
+        update_text.setText(
+            QString()
+            + "This message should never be shown."
+            + "Congratulations?"
         );
 
         return;

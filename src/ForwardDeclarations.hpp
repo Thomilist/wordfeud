@@ -42,6 +42,7 @@ namespace wf
     enum class PlayerType;
     enum class PlayType;
     enum class TileInteractMode;
+    enum class UpdateStatus;
 
     enum TileNeighbour : unsigned int;
 }

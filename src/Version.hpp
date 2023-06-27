@@ -12,6 +12,8 @@
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
 
+#include "UpdateStatus.hpp"
+
 namespace wf
 {
     class Version : public QSettings
@@ -23,7 +25,7 @@ namespace wf
             QString getCurrentVersion();
             void setCurrentVersion(QString a_version);
             bool checkedRecently();
-            bool isUpdateAvailable();
+            UpdateStatus isUpdateAvailable();
             QString getUpstreamVersion();
         
         private:

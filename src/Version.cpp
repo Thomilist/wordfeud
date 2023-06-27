@@ -36,12 +36,27 @@ namespace wf
         return checked_recently;
     }
     
-    bool Version::isUpdateAvailable()
+    UpdateStatus Version::isUpdateAvailable()
     {
-        std::string all_releases_json = fetchJSONFromGithub();
-        std::string latest_release_tag = readVersionFromJSON(all_releases_json);
-        upstream_version = QString::fromStdString(latest_release_tag);
-        return isNewerThanCurrent(latest_release_tag);
+        try
+        {
+            std::string all_releases_json = fetchJSONFromGithub();
+            std::string latest_release_tag = readVersionFromJSON(all_releases_json);
+            upstream_version = QString::fromStdString(latest_release_tag);
+
+            if (isNewerThanCurrent(latest_release_tag))
+            {
+                return UpdateStatus::NewerAvailable;
+            }
+            else
+            {
+                return UpdateStatus::UpToDate;
+            }
+        }
+        catch(const std::exception& e)
+        {
+            return UpdateStatus::Inaccessible;
+        }
     }
     
     QString Version::getUpstreamVersion()

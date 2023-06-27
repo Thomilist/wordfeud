@@ -11,6 +11,8 @@
 
 #include "Version.hpp"
 
+#include "UpdateStatus.hpp"
+
 namespace wf
 {
     class UpdateDialog : public QDialog
@@ -19,7 +21,7 @@ namespace wf
             UpdateDialog(Version* a_version, QWidget* a_parent);
             ~UpdateDialog();
 
-            void open(bool a_update_available, bool a_quiet);
+            void open(UpdateStatus a_update_status, bool a_quiet);
         
         public slots:
             void manualUpdateCheck();
@@ -27,6 +29,8 @@ namespace wf
         private:
             void createYouHaveLatestVersion();
             void createNewVersionAvailable();
+            void createInaccessible();
+            void createUnknown();
 
             Version* version;
             QDialogButtonBox buttons;

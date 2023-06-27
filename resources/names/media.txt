@@ -108,3 +108,44 @@ Sandy Cheeks
 Gary the Snail
 Patchy the Pirate
 The Flying Dutchman
+Admiral Ackbar
+Padmé Amidala
+Wedge Antilles
+Jar Jar Binks
+Lando Calrissian
+Chewbacca
+Commander Cody
+Poe Dameron
+Count Dooku
+Galen Erso
+Jyn Erso
+Boba Fett
+Jango Fett
+FN-2187
+Kit Fisto
+General Grievous
+General Hux
+Jabba the Hutt
+Obi-Wan Kenobi
+Darth Maul
+Sheev Palpatine
+Darth Sidious
+The Senate
+Captain Phasma
+Unkar Plutt
+Qi'ra
+Captain Rex
+Rey Skywalker
+Anakin Skywalker
+Luke Skywalker
+Darth Vader
+Kylo Ren
+Han Solo
+Grand Moff Tarkin
+Yoda
+Mace Windu
+C-3PO
+R2-D2
+BB-8
+K-2SO
+Droideka

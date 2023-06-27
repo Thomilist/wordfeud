@@ -9,14 +9,15 @@ namespace wf
     , version(a_version)
     , game_menu("Game", &main_window)
     , start_new_game("New game", &game_menu)
-    , open_settings("Settings...", &game_menu)
+    , open_settings("Settings", &game_menu)
     , settings_dialog(&settings, this, &main_window)
-    , show_records("Records...", &game_menu)
+    , show_records("Records", &game_menu)
     , record_dialog(game.getRecords(), &main_window)
-    , about_menu("About", &main_window)
-    , check_for_updates("Check for updates...", &about_menu)
+    , help_menu("Help", &main_window)
+    , view_help("View help", &help_menu)
+    , check_for_updates("Check for updates", &help_menu)
     , update_dialog(version, &main_window)
-    , open_github("Open on GitHub...", &about_menu)
+    , open_github("Open on GitHub", &help_menu)
     {
         connect(&settings_dialog, &SettingsDialog::settingsSaved, &game, &Game::repaintHandAndBoard);
         
@@ -26,7 +27,7 @@ namespace wf
         main_window.setWindowIcon(QIcon{":/icon/icon.ico"});
 
         initialiseGameMenu();
-        initialiseAboutMenu();
+        initialiseHelpMenu();
 
         main_window.show();
         automaticUpdateCheck();
@@ -44,6 +45,12 @@ namespace wf
     void Wordfeud::startNewGame()
     {
         game.reset();
+        return;
+    }
+    
+    void Wordfeud::viewHelp()
+    {
+        QDesktopServices::openUrl(QUrl{"https://github.com/Thomilist/wordfeud/wiki/How-to-play/", QUrl::TolerantMode});
         return;
     }
     
@@ -66,12 +73,16 @@ namespace wf
         return;
     }
     
-    void Wordfeud::initialiseAboutMenu()
+    void Wordfeud::initialiseHelpMenu()
     {
-        main_window.menuBar()->addMenu(&about_menu);
-        about_menu.addAction(&check_for_updates);
-        about_menu.addAction(&open_github);
+        main_window.menuBar()->addMenu(&help_menu);
+        help_menu.addAction(&view_help);
+        help_menu.addAction(&check_for_updates);
+        help_menu.addAction(&open_github);
 
+        view_help.setShortcut(QKeySequence{"F1"});
+
+        connect(&view_help, &QAction::triggered, this, &Wordfeud::viewHelp);
         connect(&check_for_updates, &QAction::triggered, &update_dialog, &UpdateDialog::manualUpdateCheck);
         connect(&open_github, &QAction::triggered, this, &Wordfeud::openGitHub);
 

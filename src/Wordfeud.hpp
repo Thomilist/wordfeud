@@ -34,11 +34,12 @@ namespace wf
         public slots:
             void closeWindow();
             void startNewGame();
+            void viewHelp();
             void openGitHub();
 
         private:
             void initialiseGameMenu();
-            void initialiseAboutMenu();
+            void initialiseHelpMenu();
             void automaticUpdateCheck();
 
             QMainWindow main_window;
@@ -53,7 +54,8 @@ namespace wf
             QAction show_records;
             RecordDialog record_dialog;
 
-            QMenu about_menu;
+            QMenu help_menu;
+            QAction view_help;
             QAction check_for_updates;
             UpdateDialog update_dialog;
             QAction open_github;

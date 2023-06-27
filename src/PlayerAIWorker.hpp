@@ -5,6 +5,7 @@
 #include <map>
 #include <random>
 #include <set>
+#include <unordered_set>
 #include <vector>
 
 #include <QChar>
@@ -57,6 +58,7 @@ namespace wf
             void findPlayInLine();
             void findPlayInHorisontalLine();
             void findPlayInVerticalLine();
+            void startSearchOnTile(int a_column, int a_row);
             void findPlayRecursively(int a_column, int a_row);
             void tryLetterAndRecurse(Letter*& a_letter, VirtualTile* a_tile, int a_column, int a_row);
             void recurse(int a_column, int a_row);
@@ -64,6 +66,7 @@ namespace wf
             void updateBestPlay();
             bool rollDifficultyDice();
             void initialiseWildcardSubstitutes();
+            bool isCombinationTriedAlready();
 
             Settings* settings;
             VirtualBoard sandbox_board;
@@ -84,6 +87,8 @@ namespace wf
             std::uniform_int_distribution<> random_distribution;
             int difficulty;
             std::map<Letter*, std::vector<Letter*>> wildcard_substitutes;
+            std::unordered_set<QString> tried_combinations;
+            QString current_combination;
     };
 }
 

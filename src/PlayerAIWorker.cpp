@@ -182,7 +182,7 @@ namespace wf
     {
         for (int column = 0; column < sandbox_board.getGridDimensionInDirection(Direction::Horisontal); ++column)
         {
-            findPlayRecursively(column, line_index);
+            startSearchOnTile(column, line_index);
         }
 
         return;
@@ -192,9 +192,18 @@ namespace wf
     {
         for (int row = 0; row < sandbox_board.getGridDimensionInDirection(Direction::Vertical); ++row)
         {
-            findPlayRecursively(line_index, row);
+            startSearchOnTile(line_index, row);
         }
 
+        return;
+    }
+    
+    void PlayerAIWorker::startSearchOnTile(int a_column, int a_row)
+    {
+        current_combination.clear();
+        tried_combinations.clear();
+        tried_combinations.reserve(200000);
+        findPlayRecursively(a_column, a_row);
         return;
     }
     
@@ -258,18 +267,21 @@ namespace wf
     
     void PlayerAIWorker::tryLetterAndRecurse(Letter*& a_letter, VirtualTile* a_tile, int a_column, int a_row)
     {
+        current_combination.push_back(a_letter->getText());
         a_tile->placeLetter(a_letter);
         a_letter = nullptr;
         sandbox_board.proposeLetter(a_tile);
         --available_letter_count;
         touch_count += touch_evaluation[a_column][a_row];
 
-        if (touch_count > 0)
+        bool tried_already = isCombinationTriedAlready();
+
+        if (touch_count > 0 && !tried_already)
         {
             updateBestPlay();
         }
 
-        if (available_letter_count > 0)
+        if (available_letter_count > 0 && !tried_already)
         {
             recurse(a_column, a_row);
         }
@@ -278,6 +290,7 @@ namespace wf
         ++available_letter_count;
         sandbox_board.unproposeLetter(a_tile);
         a_letter = a_tile->removeLetter();
+        current_combination.chop(1);
 
         return;
     }
@@ -353,5 +366,17 @@ namespace wf
         }
 
         return;
+    }
+    
+    bool PlayerAIWorker::isCombinationTriedAlready()
+    {
+        bool tried_already = tried_combinations.contains(current_combination);
+
+        if (!tried_already)
+        {
+            tried_combinations.insert(current_combination);
+        }
+
+        return tried_already;
     }
 }

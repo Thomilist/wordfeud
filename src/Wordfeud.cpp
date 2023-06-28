@@ -21,6 +21,7 @@ namespace wf
     {
         connect(&settings_dialog, &SettingsDialog::settingsSaved, &game, &Game::repaintHandAndBoard);
         connect(&game, &Game::autoRestart, this, &Wordfeud::startNewGame);
+        connect(&settings_dialog, &SettingsDialog::settingsSaved, &game, &Game::applySettingsWhileGameOver);
         
         main_window.setCentralWidget(&game);
         main_window.setMouseTracking(true);

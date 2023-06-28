@@ -257,6 +257,7 @@ namespace wf
             
             if (isAIMirror() && settings->isAutoRestartEnabled())
             {
+                settings->midGameApply();
                 scheduleAutoRestart();
             }
             else
@@ -821,9 +822,19 @@ namespace wf
     
     void Game::triggerAutoRestart()
     {
-        if (getState() == GameState::Finished)
+        if (getState() == GameState::Finished && settings->isAutoRestartEnabled())
         {
             emit autoRestart();
+        }
+
+        return;
+    }
+    
+    void Game::applySettingsWhileGameOver()
+    {
+        if (getState() == GameState::Finished)
+        {
+            settings->midGameApply();
         }
 
         return;

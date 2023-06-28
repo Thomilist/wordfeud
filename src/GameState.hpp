@@ -6,7 +6,8 @@ namespace wf
     enum class GameState
     {
         Play,
-        Swap
+        Swap,
+        Finished
     };
 }
 

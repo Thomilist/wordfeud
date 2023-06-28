@@ -76,6 +76,12 @@ namespace wf
         return;
     }
     
+    void Header::updateGameState(GameState a_state)
+    {
+        game_state = a_state;
+        return;
+    }
+    
     void Header::reset()
     {
         left_player = nullptr;
@@ -121,6 +127,11 @@ namespace wf
             {
                 left_player_your_turn.setText(" ");
             }
+
+            if (left_player->hasWon())
+            {
+                left_player_your_turn.setText("Winner");
+            }
         }
 
         if (right_player != nullptr)
@@ -147,6 +158,11 @@ namespace wf
             else
             {
                 right_player_your_turn.setText(" ");
+            }
+
+            if (right_player->hasWon())
+            {
+                right_player_your_turn.setText("Winner");
             }
         }
 
@@ -193,6 +209,26 @@ namespace wf
                     last_play.append(QString::number(last_play_value));
                     last_play.append(" tiles");
                     break;
+                }
+            }
+
+            if (game_state == GameState::Finished)
+            {
+                if (left_player->hasWon() || right_player->hasWon())
+                {
+                    for (auto player : {left_player, right_player})
+                    {
+                        if (player->hasWon())
+                        {
+                            last_play.append(" - ");
+                            last_play.append(player->getDisplayName());
+                            last_play.append(" wins");
+                        }
+                    }
+                }
+                else
+                {
+                    last_play.append(" - draw");
                 }
             }
 

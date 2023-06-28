@@ -243,26 +243,41 @@ namespace wf
 
         if (isGameOver())
         {
+            setState(GameState::Finished);
             hands.setDisabled(true);
             finalisePoints();
             repaint();
             saveScores();
             Player* winning_player = getHighestScoringPlayer();
 
-            QMessageBox game_over;
-
             if (winning_player != nullptr)
             {
-                game_over.setText(winning_player->getDisplayName() + " wins!");
+                winning_player->declareWinner();
+            }
+            
+            if (isAIMirror() && settings->isAutoRestartEnabled())
+            {
+                scheduleAutoRestart();
             }
             else
             {
-                game_over.setText("Draw.");
+                QMessageBox game_over;
+
+                if (winning_player != nullptr)
+                {
+                    game_over.setText(winning_player->getDisplayName() + " wins!");
+                }
+                else
+                {
+                    game_over.setText("Draw.");
+                }
+                
+                game_over.setIcon(QMessageBox::Icon::Information);
+                game_over.setWindowTitle(" ");
+                game_over.open();
             }
-            
-            game_over.setIcon(QMessageBox::Icon::Information);
-            game_over.setWindowTitle(" ");
-            game_over.exec();
+
+            return;
         }
         else
         {
@@ -295,7 +310,7 @@ namespace wf
         // Cleanup last game
         terminatePlayerAI();
         
-        state = GameState::Play;
+        setState(GameState::Play);
         current_player_index = 0;
         consecutive_passes = 0;
 
@@ -364,6 +379,11 @@ namespace wf
     RecordTracker* Game::getRecords()
     {
         return &record_tracker;
+    }
+    
+    GameState Game::getState() const
+    {
+        return state;
     }
     
     void Game::playButton()
@@ -483,7 +503,7 @@ namespace wf
     
     void Game::swapButton()
     {
-        setGameState(GameState::Swap);
+        setState(GameState::Swap);
         showCorrectButtons();
         return;
     }
@@ -492,7 +512,7 @@ namespace wf
     {
         int swap_count = swapLetters();
         clearSwapList();
-        setGameState(GameState::Play);
+        setState(GameState::Play);
         showCorrectButtons();
 
         // Next turn
@@ -510,7 +530,7 @@ namespace wf
     void Game::cancelButton()
     {
         clearSwapList();
-        setGameState(GameState::Play);
+        setState(GameState::Play);
         showCorrectButtons();
         return;
     }
@@ -684,11 +704,11 @@ namespace wf
         {
             buttons.showPlayClearSwapButtons();
         }
-        else if (state == GameState::Play)
+        else if (getState() == GameState::Play)
         {
             buttons.showPassShuffleSwapButtons();
         }
-        else if (state == GameState::Swap)
+        else if (getState() == GameState::Swap)
         {
             buttons.showConfirmCancelButtons();
         }
@@ -703,7 +723,7 @@ namespace wf
         return;
     }
     
-    void Game::setGameState(GameState a_state)
+    void Game::setState(GameState a_state)
     {
         state = a_state;
 
@@ -721,7 +741,15 @@ namespace wf
                 all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Swap);
                 break;
             }
+            case GameState::Finished:
+            {
+                board.setDimmedAndDisabled(false);
+                all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Move);
+                break;
+            }
         }
+
+        header.updateGameState(a_state);
 
         return;
     }
@@ -788,6 +816,16 @@ namespace wf
         all_players[current_player_index]->getHand()->repaint();
         board.repaint();
         selection.repaint();
+        return;
+    }
+    
+    void Game::triggerAutoRestart()
+    {
+        if (getState() == GameState::Finished)
+        {
+            emit autoRestart();
+        }
+
         return;
     }
     
@@ -927,6 +965,25 @@ namespace wf
 
             record_tracker.insert(score);
         }
+    }
+    
+    bool Game::isAIMirror()
+    {
+        for (auto player : all_players)
+        {
+            if (player->getType() != PlayerType::AI)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    void Game::scheduleAutoRestart()
+    {
+        QTimer::singleShot(settings->getAutoRestartDelay() * 1000, this, &Game::triggerAutoRestart);
+        return;
     }
 
     std::vector<Letter*> Game::getAllLetters()

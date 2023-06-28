@@ -20,6 +20,7 @@ namespace wf
     
     Settings::~Settings()
     {
+        newGameApply();
         save();
     }
     
@@ -28,30 +29,28 @@ namespace wf
         // Save main window dimensions and position
         setValue("window/geometry", main_window->saveGeometry());
 
-        // Save dictionary language
+        // Save general settings
         setValue("common/dictionary", getLanguage()->asString());
-
-        // Save modifier distribution
         setValue("common/modifiers", getModifierPattern()->getDistributionAsText());
-
-        // Save letter colouring
         setValue("common/letter_colouring", getLetterColouring());
 
-        // Save left player
+        // Save left player settings
         setValue("player_left/name", getLeftPlayer()->getName());
         setValue("player_left/type", getLeftPlayer()->getTypeAsString());
         setValue("player_left/random_name", getLeftPlayer()->usesRandomName());
         setValue("player_left/ai_difficulty", getLeftPlayer()->getAIDifficulty());
 
-        // Save right player
+        // Save right player settings
         setValue("player_right/name", getRightPlayer()->getName());
         setValue("player_right/type", getRightPlayer()->getTypeAsString());
         setValue("player_right/random_name", getRightPlayer()->usesRandomName());
         setValue("player_right/ai_difficulty", getRightPlayer()->getAIDifficulty());
 
-        // Save minimum AI turn time
+        // Save AI settings
         setValue("ai/minimum_turn_time", getMinimumAITurnTime());
         setValue("ai/letter_placing_delay", getAILetterPlacingDelay());
+        setValue("ai/auto_restart_delay", getAutoRestartDelay());
+        setValue("ai/auto_restart_enabled", isAutoRestartEnabled());
 
         return;
     }
@@ -69,18 +68,14 @@ namespace wf
             main_window->restoreGeometry(geometry);
         }
 
-        // Load dictionary language
+        // Load general settings
         QString dictionary = value("common/dictionary", "English").toString();
         setLanguage(dictionary);
-
-        // Load modifier distribution
         QString modifier_distribution = value("common/modifiers", "Default").toString();
         setModifierPattern(modifier_distribution);
-
-        // Load letter colouring
         setLetterColouring(value("common/letter_colouring", "Default").toString());
 
-        // Load left player
+        // Load left player settings
         QString left_player_name = value("player_left/name", "Player 1").toString();
         QString left_player_type = value("player_left/type", "Human").toString();
         bool left_player_uses_random_name = value("player_left/random_name", "false").toBool();
@@ -91,7 +86,7 @@ namespace wf
         getLeftPlayer()->setRandomNames(random_names);
         getLeftPlayer()->setAIDifficulty(left_player_ai_difficulty);
 
-        // Load right player
+        // Load right player settings
         QString right_player_name = value("player_right/name", "Player 2").toString();
         QString right_player_type = value("player_right/type", "AI").toString();
         bool right_player_uses_random_name = value("player_right/random_name", "true").toBool();
@@ -102,9 +97,11 @@ namespace wf
         getRightPlayer()->setRandomNames(random_names);
         getRightPlayer()->setAIDifficulty(right_player_ai_difficulty);
 
-        // Load minimum AI turn time
+        // Load AI settings
         setMinimumAITurnTime(value("ai/minimum_turn_time", "2").toInt());
         setAILetterPlacingDelay(value("ai/letter_placing_delay", "100").toInt());
+        setAutoRestartDelay(value("ai/auto_restart_delay", "31").toInt());
+        enableAutoRestart(value("ai/auto_restart_enabled", "false").toBool());
 
         return;
     }
@@ -127,6 +124,7 @@ namespace wf
         minimum_ai_turn_time = minimum_ai_turn_time_temp;
         ai_letter_placing_delay = ai_letter_placing_delay_temp;
         letter_colouring = letter_colouring_temp;
+        auto_restart_delay = auto_restart_delay_temp;
         
         return;
     }
@@ -350,5 +348,32 @@ namespace wf
     int Settings::getMaximumAIDifficulty() const
     {
         return maximum_ai_difficulty;
+    }
+    
+    void Settings::setAutoRestartDelay(int a_time)
+    {
+        auto_restart_delay_temp = a_time;
+        return;
+    }
+    
+    int Settings::getAutoRestartDelay()
+    {
+        return auto_restart_delay;
+    }
+    
+    int Settings::getTempAutoRestartDelay()
+    {
+        return auto_restart_delay_temp;
+    }
+    
+    void Settings::enableAutoRestart(bool a_enabled)
+    {
+        auto_restart_enabled = a_enabled;
+        return;
+    }
+    
+    bool Settings::isAutoRestartEnabled()
+    {
+        return auto_restart_enabled;
     }
 }

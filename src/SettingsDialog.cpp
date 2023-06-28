@@ -61,6 +61,8 @@ namespace wf
 
         settings->setMinimumAITurnTime(minimum_ai_turn_time_slider.value());
         settings->setAILetterPlacingDelay(ai_letter_placing_delay_slider.value() * ai_letter_placing_delay_step);
+        settings->setAutoRestartDelay(auto_restart_delay_slider.value());
+        settings->enableAutoRestart(!(auto_restart_delay_slider.value() == maximum_auto_restart_delay));
 
         emit settingsSaved();
         return;
@@ -104,6 +106,18 @@ namespace wf
         // AI letter placing delay
         value = ai_letter_placing_delay_slider.value();
         ai_letter_placing_delay_display_label.setText(QString::number(value * ai_letter_placing_delay_step) + " ms");
+
+        // AI mirror auto restart delay
+        value = auto_restart_delay_slider.value();
+
+        if (value == maximum_auto_restart_delay)
+        {
+            auto_restart_delay_display_label.setText("Auto restart disabled");
+        }
+        else
+        {
+            auto_restart_delay_display_label.setText(QString::number(value) + " seconds after game over");
+        }
 
         return;
     }
@@ -304,6 +318,7 @@ namespace wf
     {
         connect(&minimum_ai_turn_time_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
         connect(&ai_letter_placing_delay_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
+        connect(&auto_restart_delay_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
 
         minimum_ai_turn_time_slider.setMinimum(minimum_ai_turn_time);
         minimum_ai_turn_time_slider.setMaximum(maximum_ai_turn_time);
@@ -322,6 +337,15 @@ namespace wf
         ai_letter_placing_delay_slider.setOrientation(Qt::Orientation::Horizontal);
         ai_letter_placing_delay_slider.setValue(settings->getTempAILetterPlacingDelay() / ai_letter_placing_delay_step);
         ai_letter_placing_delay_display_label.setAlignment(Qt::AlignCenter);
+
+        auto_restart_delay_slider.setMinimum(minimum_auto_restart_delay);
+        auto_restart_delay_slider.setMaximum(maximum_auto_restart_delay);
+        auto_restart_delay_slider.setTickPosition(QSlider::TicksBothSides);
+        auto_restart_delay_slider.setTickInterval(1);
+        auto_restart_delay_slider.setPageStep(5);
+        auto_restart_delay_slider.setOrientation(Qt::Orientation::Horizontal);
+        auto_restart_delay_slider.setValue(settings->getTempAutoRestartDelay());
+        auto_restart_delay_display_label.setAlignment(Qt::AlignCenter);
         
         ai_settings_layout.addWidget(&minimum_ai_turn_time_label, 0, 0);
         ai_settings_layout.addWidget(&minimum_ai_turn_time_display_label, 0, 1);
@@ -330,6 +354,10 @@ namespace wf
         ai_settings_layout.addWidget(&ai_letter_placing_delay_label, 2, 0);
         ai_settings_layout.addWidget(&ai_letter_placing_delay_display_label, 2, 1);
         ai_settings_layout.addWidget(&ai_letter_placing_delay_slider, 3, 1);
+
+        ai_settings_layout.addWidget(&auto_restart_delay_label, 4, 0);
+        ai_settings_layout.addWidget(&auto_restart_delay_display_label, 4, 1);
+        ai_settings_layout.addWidget(&auto_restart_delay_slider, 5, 1);
         
         ai_settings.setLayout(&ai_settings_layout);
         grid_layout.addWidget(&ai_settings, layout_row, 0);
@@ -420,6 +448,7 @@ namespace wf
         // AI
         minimum_ai_turn_time_slider.setValue(settings->getTempMinimumAITurnTime());
         ai_letter_placing_delay_slider.setValue(settings->getTempAILetterPlacingDelay() / ai_letter_placing_delay_step);
+        auto_restart_delay_slider.setValue(settings->getTempAutoRestartDelay());
 
         return;
     }

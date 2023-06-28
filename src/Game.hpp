@@ -20,6 +20,7 @@
 #include <QStackedWidget>
 #include <QString>
 #include <QThread>
+#include <QTimer>
 #include <QWidget>
 
 #include "ForwardDeclarations.hpp"
@@ -64,6 +65,7 @@ namespace wf
             void reset();
             void terminatePlayerAI();
             RecordTracker* getRecords();
+            GameState getState() const;
 
         public slots:
             void playButton();
@@ -81,10 +83,12 @@ namespace wf
             void addToSwapLetters(RenderedTile* a_tile);
             void removeFromSwapLetters(RenderedTile* a_tile);
             void repaintHandAndBoard();
+            void triggerAutoRestart();
         
         signals:
             void playAI();
             void cancelAI();
+            void autoRestart();
 
         private:
             void loadLetters();
@@ -102,13 +106,15 @@ namespace wf
             void mouseMoveEvent(QMouseEvent* a_event);
             void showCorrectButtons();
             void displayProposedPlayValue();
-            void setGameState(GameState a_state);
+            void setState(GameState a_state);
             int swapLetters();
             void clearSwapList();
             bool isGameOver();
             Player* getHighestScoringPlayer();
             void finalisePoints();
             void saveScores();
+            bool isAIMirror();
+            void scheduleAutoRestart();
 
             GameState state = GameState::Play;
             LetterPool letter_pool;

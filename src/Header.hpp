@@ -18,6 +18,7 @@
 #include "Player.hpp"
 #include "Settings.hpp"
 
+#include "GameState.hpp"
 #include "PlayType.hpp"
 
 namespace wf
@@ -33,6 +34,7 @@ namespace wf
             void setLeftPlayer(Player* a_player);
             void setRightPlayer(Player* a_player);
             void updateWithPlay(PlayType a_play_type, Player* a_player = nullptr, QString a_word = "", int a_value = 0);
+            void updateGameState(GameState a_state);
             void reset();
         
         private:
@@ -54,6 +56,7 @@ namespace wf
             Player* last_play_player = nullptr;
             QString last_play_word;
             int last_play_value;
+            GameState game_state;
     };
 }
 

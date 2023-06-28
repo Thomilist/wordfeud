@@ -50,6 +50,8 @@ namespace wf
             int getLetterPenaltyPoints();
             void setType(PlayerType a_type);
             PlayerType getType();
+            void declareWinner(bool a_has_won = true);
+            bool hasWon();
         
         protected:
             Settings* settings;
@@ -65,6 +67,7 @@ namespace wf
             RenderedBoard hand;
             QSize hand_size;
             int player_index;
+            bool has_won = false;
     };
 }
 

@@ -68,6 +68,11 @@ namespace wf
             void setLetterColouring(QString a_colour);
             int getMinimumAIDifficulty() const;
             int getMaximumAIDifficulty() const;
+            void setAutoRestartDelay(int a_time);
+            int getAutoRestartDelay();
+            int getTempAutoRestartDelay();
+            void enableAutoRestart(bool a_enabled);
+            bool isAutoRestartEnabled();
 
         private:
             QMainWindow* main_window;
@@ -81,6 +86,7 @@ namespace wf
             std::set<QString> random_names;
             const int minimum_ai_difficulty = 1;
             const int maximum_ai_difficulty = 10;
+            bool auto_restart_enabled;
 
             // User-facing settings
             Language* current_language;
@@ -88,6 +94,7 @@ namespace wf
             int minimum_ai_turn_time;
             int ai_letter_placing_delay;
             QString letter_colouring;
+            int auto_restart_delay;
 
             PlayerSettings left_player;
             PlayerSettings right_player;
@@ -98,6 +105,7 @@ namespace wf
             int minimum_ai_turn_time_temp;
             int ai_letter_placing_delay_temp;
             QString letter_colouring_temp;
+            int auto_restart_delay_temp;
     };
 }
 #endif // __SETTINGS_H__

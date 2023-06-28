@@ -214,4 +214,15 @@ namespace wf
     {
         return type;
     }
+    
+    void Player::declareWinner(bool a_has_won)
+    {
+        has_won = a_has_won;
+        return;
+    }
+    
+    bool Player::hasWon()
+    {
+        return has_won;
+    }
 }

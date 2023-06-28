@@ -20,6 +20,7 @@ namespace wf
     , open_github("Open on GitHub", &help_menu)
     {
         connect(&settings_dialog, &SettingsDialog::settingsSaved, &game, &Game::repaintHandAndBoard);
+        connect(&game, &Game::autoRestart, this, &Wordfeud::startNewGame);
         
         main_window.setCentralWidget(&game);
         main_window.setMouseTracking(true);

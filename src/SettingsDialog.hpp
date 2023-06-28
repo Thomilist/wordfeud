@@ -70,6 +70,8 @@ namespace wf
             const int minimum_ai_letter_placing_delay = 0;
             const int maximum_ai_letter_placing_delay = 1000;
             const int ai_letter_placing_delay_step = 50;
+            const int minimum_auto_restart_delay = 0;
+            const int maximum_auto_restart_delay = 31;
 
             // General settings
             QGroupBox general_settings{"General"};
@@ -116,6 +118,9 @@ namespace wf
             QLabel ai_letter_placing_delay_label{"Letter placing delay:"};
             QLabel ai_letter_placing_delay_display_label;
             QSlider ai_letter_placing_delay_slider;
+            QLabel auto_restart_delay_label{"Auto restart AI mirrors:"};
+            QLabel auto_restart_delay_display_label;
+            QSlider auto_restart_delay_slider;
 
             // Custom buttons
             QDialogButtonBox buttons;

@@ -5,6 +5,42 @@ target_link_libraries(
     Settings
 )
 
+add_library(Discord SHARED IMPORTED
+)
+if (UNIX)
+    set_target_properties(Discord
+        PROPERTIES
+        IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/lib/discord_game_sdk.so
+    )
+elseif (WIN32)
+    set_target_properties(Discord
+        PROPERTIES
+        IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/lib/discord_game_sdk.dll.lib
+    )
+endif()
+
+target_include_directories(
+    Discord
+    INTERFACE
+    ${CMAKE_SOURCE_DIR}/lib
+)
+target_sources(Discord INTERFACE
+    ${CMAKE_SOURCE_DIR}/src/discord/achievement_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/activity_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/application_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/core.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/image_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/lobby_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/network_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/overlay_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/relationship_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/storage_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/store_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/types.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/user_manager.cpp
+    ${CMAKE_SOURCE_DIR}/src/discord/voice_manager.cpp
+)
+
 add_library(Game Game.cpp)
 target_link_libraries(
     Game
@@ -209,6 +245,7 @@ add_library(Wordfeud Wordfeud.cpp)
 target_link_libraries(
     Wordfeud
     Qt5::Widgets
+    Discord
     Game
     RecordDialog
     Settings

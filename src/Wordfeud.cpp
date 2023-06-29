@@ -7,6 +7,8 @@ namespace wf
     : settings(&main_window)
     , game(&settings, &main_window)
     , version(a_version)
+    , discord_core()
+    , discord_state()
     , game_menu("Game", &main_window)
     , start_new_game("New game", &game_menu)
     , open_settings("Settings", &game_menu)
@@ -19,6 +21,8 @@ namespace wf
     , update_dialog(version, &main_window)
     , open_github("Open on GitHub", &help_menu)
     {
+        initialiseDiscord();
+        
         connect(&settings_dialog, &SettingsDialog::settingsSaved, &game, &Game::repaintHandAndBoard);
         connect(&game, &Game::autoRestart, this, &Wordfeud::startNewGame);
         connect(&settings_dialog, &SettingsDialog::settingsSaved, &game, &Game::applySettingsWhileGameOver);
@@ -53,6 +57,12 @@ namespace wf
     void Wordfeud::viewHelp()
     {
         QDesktopServices::openUrl(QUrl{"https://github.com/Thomilist/wordfeud/wiki/How-to-play/", QUrl::TolerantMode});
+        return;
+    }
+    
+    void Wordfeud::openGitHub()
+    {
+        QDesktopServices::openUrl(QUrl{"https://github.com/Thomilist/wordfeud", QUrl::TolerantMode});
         return;
     }
     
@@ -102,9 +112,54 @@ namespace wf
         return;
     }
     
-    void Wordfeud::openGitHub()
+    void Wordfeud::initialiseDiscord()
     {
-        QDesktopServices::openUrl(QUrl{"https://github.com/Thomilist/wordfeud", QUrl::TolerantMode});
+        discord::Core::Create(1123687191290314832, DiscordCreateFlags_Default, &discord_core);
+        discord_state.core.reset(discord_core);
+
+        if (!discord_state.core)
+        {
+            std::cout << "Discord init FAIL\n";
+            return;
+        }
+
+        discord_state.core->SetLogHook(discord::LogLevel::Debug, [this](discord::LogLevel a_level, const char* a_message) {discordLogHook(a_level, a_message);});
+        
+        discord::Activity activity;
+        activity.SetDetails("Testing Discord integration");
+        activity.SetState("State field");
+        activity.GetAssets().SetSmallImage("icon_x1024");
+        activity.GetAssets().SetSmallText("Small image text");
+        activity.GetAssets().SetLargeImage("icon_x1024");
+        activity.GetAssets().SetLargeText("Large image text");
+        activity.GetSecrets().SetJoin("Join secret");
+        activity.GetParty().GetSize().SetCurrentSize(1);
+        activity.GetParty().GetSize().SetMaxSize(2);
+        activity.GetParty().SetId("Party ID");
+        activity.GetParty().SetPrivacy(discord::ActivityPartyPrivacy::Private);
+        activity.SetType(discord::ActivityType::Playing);
+
+        discord_state.core->ActivityManager().UpdateActivity(activity, [this](discord::Result a_result) {discordResultCallback(a_result);});
+        return;
+    }
+    
+    void Wordfeud::discordResultCallback(discord::Result a_result)
+    {
+        if (a_result == discord::Result::Ok)
+        {
+            std::cout << "Discord OK\n";
+        }
+        else
+        {
+            std::cout << "Discord FAIL\n";
+        }
+
+        return;
+    }
+    
+    void Wordfeud::discordLogHook(discord::LogLevel a_level, const char* a_message)
+    {
+        std::cerr << "Log(" << static_cast<uint32_t>(a_level) << "): " << a_message << "\n";
         return;
     }
 }

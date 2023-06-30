@@ -1,9 +1,6 @@
 #ifndef __WORDFEUD_H__
 #define __WORDFEUD_H__
 
-#include <iostream>
-#include <memory>
-
 #include <QAction>
 #include <QDesktopServices>
 #include <QEventLoop>
@@ -14,8 +11,6 @@
 #include <QMenuBar>
 #include <QObject>
 #include <QUrl>
-
-#include "discord/discord.h"
 
 #include "ForwardDeclarations.hpp"
 
@@ -28,11 +23,6 @@
 
 namespace wf
 {
-    struct DiscordState
-    {
-        std::unique_ptr<discord::Core> core;
-    };
-    
     class Wordfeud : public QObject
     {
         Q_OBJECT
@@ -51,16 +41,11 @@ namespace wf
             void initialiseGameMenu();
             void initialiseHelpMenu();
             void automaticUpdateCheck();
-            void initialiseDiscord();
-            void discordResultCallback(discord::Result a_result);
-            void discordLogHook(discord::LogLevel a_level, const char* a_message);
 
             QMainWindow main_window;
             Settings settings;
             Game game;
             Version* version;
-            discord::Core* discord_core;
-            DiscordState discord_state;
 
             QMenu game_menu;
             QAction start_new_game;

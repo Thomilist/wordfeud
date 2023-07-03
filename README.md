@@ -8,4 +8,5 @@ A clone of the mobile game Wordfeud written in C++ using Qt 5.15.
 * [Letter points and distributions; rules](https://wordfeud.com/wf/help/)
 * [English word list](https://github.com/dwyl/english-words)
 * [Danish word list](https://ordregister.dk)
+* [German word list](https://gist.github.com/MarvinJWendt/2f4f4154b8ae218600eb091a5706b5f4)
 * [Style sheet](https://github.com/Alexhuszagh/BreezeStyleSheets)

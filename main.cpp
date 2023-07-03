@@ -33,6 +33,7 @@ SOFTWARE.
 #include <QObject>
 #include <QString>
 #include <QTextStream>
+#include <QThreadPool>
 
 #include "src/ForwardDeclarations.hpp"
 
@@ -42,6 +43,7 @@ SOFTWARE.
 int main(int argc, char* argv[])
 {
     QApplication application{argc, argv};
+    QThreadPool::globalInstance()->setExpiryTimeout(-1);
 
     QCoreApplication::setOrganizationName("Thomilist");
     QCoreApplication::setApplicationName("wordfeud");

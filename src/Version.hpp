@@ -1,6 +1,7 @@
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
+#include <optional>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -33,7 +34,7 @@ namespace wf
             void save();
             static size_t writeCallback(char *buffer, size_t size, size_t nmemb, void *userp);
             std::string fetchJSONFromGithub();
-            std::string readVersionFromJSON(std::string a_json_string);
+            std::optional<std::string> readVersionFromJSON(std::string a_json_string);
             std::vector<int> toDigits(std::string a_version);
             bool isNewerThanCurrent(std::string a_version);
 

@@ -5,8 +5,8 @@ namespace wf
 {
     Wordfeud::Wordfeud(Version* a_version)
     : settings(&main_window)
-    , game(&settings, &main_window)
     , version(a_version)
+    , game(&settings, &main_window)
     , game_menu("Game", &main_window)
     , start_new_game("New game", &game_menu)
     , open_settings("Settings", &game_menu)

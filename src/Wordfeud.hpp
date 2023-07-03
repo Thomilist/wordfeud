@@ -44,8 +44,8 @@ namespace wf
 
             QMainWindow main_window;
             Settings settings;
-            Game game;
             Version* version;
+            Game game;
 
             QMenu game_menu;
             QAction start_new_game;

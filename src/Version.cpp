@@ -41,10 +41,16 @@ namespace wf
         try
         {
             std::string all_releases_json = fetchJSONFromGithub();
-            std::string latest_release_tag = readVersionFromJSON(all_releases_json);
-            upstream_version = QString::fromStdString(latest_release_tag);
+            std::optional<std::string> latest_release_tag = readVersionFromJSON(all_releases_json);
 
-            if (isNewerThanCurrent(latest_release_tag))
+            if (!latest_release_tag.has_value())
+            {
+                return UpdateStatus::Inaccessible;
+            }
+
+            upstream_version = QString::fromStdString(latest_release_tag.value());
+
+            if (isNewerThanCurrent(latest_release_tag.value()))
             {
                 return UpdateStatus::NewerAvailable;
             }
@@ -101,9 +107,15 @@ namespace wf
         return buffer;
     }
     
-    std::string Version::readVersionFromJSON(std::string a_json_string)
+    std::optional<std::string> Version::readVersionFromJSON(std::string a_json_string)
     {
         nlohmann::json json = nlohmann::json::parse(a_json_string);
+
+        if (!json.is_array() && !json[0].contains("tag_name"))
+        {
+            return std::nullopt;
+        }
+
         return json[0]["tag_name"];
     }
     

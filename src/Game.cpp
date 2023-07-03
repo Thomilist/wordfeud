@@ -257,7 +257,7 @@ namespace wf
             
             if (isAIMirror() && settings->isAutoRestartEnabled())
             {
-                settings->midGameApply();
+                settings->nextTurnApply();
                 scheduleAutoRestart();
             }
             else
@@ -293,7 +293,7 @@ namespace wf
             hands.setCurrentIndex(current_player_index);
         }
         
-        settings->midGameApply();
+        settings->nextTurnApply();
         setCorrectButtonState();
         showCorrectButtons();
         repaint();
@@ -830,12 +830,16 @@ namespace wf
         return;
     }
     
-    void Game::applySettingsWhileGameOver()
+    void Game::applySettings()
     {
+        settings->immediateApply();
+        
         if (getState() == GameState::Finished)
         {
-            settings->midGameApply();
+            settings->nextTurnApply();
         }
+
+        repaint();
 
         return;
     }

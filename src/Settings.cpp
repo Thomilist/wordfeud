@@ -115,18 +115,26 @@ namespace wf
         getLeftPlayer()->apply();
         getRightPlayer()->apply();
 
-        midGameApply();
+        nextTurnApply();
 
         return;
     }
     
-    void Settings::midGameApply()
+    void Settings::nextTurnApply()
     {
         minimum_ai_turn_time = minimum_ai_turn_time_temp;
         ai_letter_placing_delay = ai_letter_placing_delay_temp;
-        letter_colouring = letter_colouring_temp;
         auto_restart_delay = auto_restart_delay_temp;
+
+        immediateApply();
         
+        return;
+    }
+    
+    void Settings::immediateApply()
+    {
+        letter_colouring = letter_colouring_temp;
+
         return;
     }
     

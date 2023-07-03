@@ -36,7 +36,8 @@ namespace wf
             void save();
             void load();
             void newGameApply();
-            void midGameApply();
+            void nextTurnApply();
+            void immediateApply();
             void setGridDimensions(int a_rows, int a_collumns);
             void setTileSize(int a_size);
             void setLanguage(LanguageName a_language);

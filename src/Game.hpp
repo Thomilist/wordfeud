@@ -84,7 +84,7 @@ namespace wf
             void removeFromSwapLetters(RenderedTile* a_tile);
             void repaintHandAndBoard();
             void triggerAutoRestart();
-            void applySettingsWhileGameOver();
+            void applySettings();
         
         signals:
             void playAI();

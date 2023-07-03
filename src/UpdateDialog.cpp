@@ -42,11 +42,12 @@ namespace wf
             }
             case UpdateStatus::UpToDate:
             {
-                if (!a_quiet)
+                if (a_quiet)
                 {
-                    createYouHaveLatestVersion();
+                    return;
                 }
 
+                createYouHaveLatestVersion();
                 break;
             }
             case UpdateStatus::Inaccessible:

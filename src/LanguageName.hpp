@@ -5,8 +5,9 @@ namespace wf
 {
     enum class LanguageName
     {
+        Danish,
         English,
-        Danish
+        German
     };
 }
 

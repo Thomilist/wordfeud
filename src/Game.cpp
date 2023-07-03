@@ -275,7 +275,7 @@ namespace wf
                 
                 game_over.setIcon(QMessageBox::Icon::Information);
                 game_over.setWindowTitle(" ");
-                game_over.open();
+                game_over.exec();
             }
 
             return;

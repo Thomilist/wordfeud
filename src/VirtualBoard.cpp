@@ -165,7 +165,6 @@ namespace wf
             return;
         }
 
-        proposed_words_valid = true;
         findProposedWords(a_exit_early);
         
         if (proposed_words_valid)
@@ -517,6 +516,7 @@ namespace wf
     void VirtualBoard::findProposedWords(bool a_exit_early)
     {
         proposed_words.clear();
+        proposed_words_valid = true;
         
         if (proposed_letters.empty())
         {
@@ -558,17 +558,17 @@ namespace wf
             {
                 word = findWordWithLetter(tile, direction);
 
-                if (a_exit_early)
-                {
-                    if (!settings->getLanguage()->isInWordList(word.getWordAsText().toLower()))
-                    {
-                        proposed_words_valid = false;
-                        return;
-                    }
-                }
-                
                 if (word.getLength() > 1)
                 {
+                    if (a_exit_early)
+                    {
+                        if (!settings->getLanguage()->isInWordList(word.getWordAsText()))
+                        {
+                            proposed_words_valid = false;
+                            return;
+                        }
+                    }
+                    
                     proposed_words.push_back(word);
                 }
 
@@ -669,7 +669,7 @@ namespace wf
 
         for (auto word : proposed_words)
         {
-            if (!settings->getLanguage()->isInWordList(word.getWordAsText().toLower()))
+            if (!settings->getLanguage()->isInWordList(word.getWordAsText()))
             {
                 invalid_words.push_back(word);
                 proposed_words_valid = false;

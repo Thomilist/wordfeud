@@ -4,35 +4,7 @@ namespace wf
     Language::Language(LanguageName a_language)
         : language(a_language)
     {
-        switch (a_language)
-        {
-            case LanguageName::English:
-            {
-                language_string = "English";
-                word_list.reserve(370105);
-                loadWordListFromFilePlain(":/words/english.txt");
-                //word_list =
-                //{
-                //    #include "../resources/words/English_word_list_export.txt"
-                //};
-                loadLettersFromFile(":/letters/english.csv");
-                break;
-            }
-            case LanguageName::Danish:
-            {
-                language_string = "Danish";
-                word_list.reserve(530916);
-                loadWordListFromFileCOR(":/words/cor1.02.tsv");
-                //word_list =
-                //{
-                //    #include "../resources/words/Danish_word_list_export.txt"
-                //};
-                loadLettersFromFile(":/letters/danish.csv");
-                break;
-            }
-        }
-
-        //exportWordList();
+        loadLanguage(a_language);
     }
     
     Language::~Language()
@@ -85,7 +57,7 @@ namespace wf
             while (!words.atEnd())
             {
                 QString word = word_list_file.readLine();
-                word_list.insert(word.trimmed());
+                word_list.insert(word.trimmed().toUpper());
             }
 
             word_list_file.close();
@@ -116,7 +88,7 @@ namespace wf
                     continue;
                 }
 
-                word_list.insert(word.trimmed());
+                word_list.insert(word.trimmed().toUpper());
             }
 
             word_list_file.close();
@@ -165,5 +137,38 @@ namespace wf
     const LanguageName& Language::asEnum() const
     {
         return language;
+    }
+    
+    void Language::loadLanguage(LanguageName a_language)
+    {
+        switch (a_language)
+        {
+            case LanguageName::Danish:
+            {
+                language_string = "Danish";
+                word_list.reserve(530916);
+                loadWordListFromFileCOR(":/words/cor1.02.tsv");
+                loadLettersFromFile(":/letters/danish.csv");
+                break;
+            }
+            case LanguageName::English:
+            {
+                language_string = "English";
+                word_list.reserve(370105);
+                loadWordListFromFilePlain(":/words/english.txt");
+                loadLettersFromFile(":/letters/english.csv");
+                break;
+            }
+            case LanguageName::German:
+            {
+                language_string = "German";
+                word_list.reserve(1908815);
+                loadWordListFromFilePlain(":/words/german.txt");
+                loadLettersFromFile(":/letters/german.csv");
+                break;
+            }
+        }
+
+        return;
     }
 }

@@ -33,6 +33,7 @@ namespace wf
             const LanguageName& asEnum() const;
 
         private:
+            void loadLanguage(LanguageName a_language);
             void loadLettersFromFile(QString a_file_path);
             void loadWordListFromFilePlain(QString a_file_path);
             void loadWordListFromFileCOR(QString a_file_path);
@@ -44,4 +45,5 @@ namespace wf
             LanguageName language;
     };
 }
+
 #endif // __LANGUAGE_H__

@@ -7,7 +7,8 @@ namespace wf
         : main_window(a_main_window)
         , languages{
             Language{LanguageName::Danish},
-            Language{LanguageName::English}}
+            Language{LanguageName::English},
+            Language{LanguageName::German}}
     {
         int monospace_font_family_id = QFontDatabase::addApplicationFont(":/fonts/NotoSansMono-Regular.ttf");
         QString monospace_font_family = QFontDatabase::applicationFontFamilies(monospace_font_family_id).at(0);

@@ -1,0 +1,9 @@
+Thomas Emil Jensen
+Bjarne Stroustrup
+Scott Meyers
+Herb Sutter
+Linus Torvalds
+Richard Stallman
+John Carmack
+Donald Knuth
+Dylan Beattie

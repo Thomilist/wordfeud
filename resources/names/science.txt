@@ -18,6 +18,5 @@ Blaise Pascal
 Leonhard Euler
 Pierre-Simon Laplace
 Grace Hopper
-Bjarne Stroustrup
 Galileo Galilei
 Greta Thunberg

@@ -67,6 +67,7 @@ namespace wf
             bool rollDifficultyDice();
             void initialiseWildcardSubstitutes();
             bool isCombinationTriedAlready();
+            bool isPositionRelevant(int a_column, int a_row);
 
             Settings* settings;
             VirtualBoard sandbox_board;

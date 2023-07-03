@@ -200,6 +200,11 @@ namespace wf
     
     void PlayerAIWorker::startSearchOnTile(int a_column, int a_row)
     {
+        if (!isPositionRelevant(a_column, a_row))
+        {
+            return;
+        }
+        
         current_combination.clear();
         tried_combinations.clear();
         tried_combinations.reserve(200000);
@@ -378,5 +383,37 @@ namespace wf
         }
 
         return tried_already;
+    }
+    
+    bool PlayerAIWorker::isPositionRelevant(int a_column, int a_row)
+    {
+        for (int reach = available_letter_count; reach > 0; --reach)
+        {
+            if (indexOutOfBounds(a_column, a_row))
+            {
+                return false;
+            }
+            
+            if (touch_evaluation[a_column][a_row] > 0)
+            {
+                return true;
+            }
+
+            switch (direction)
+            {
+                case Direction::Horisontal:
+                {
+                    ++a_column;
+                    break;
+                }
+                case Direction::Vertical:
+                {
+                    ++a_row;
+                    break;
+                }
+            }
+        }
+
+        return false;
     }
 }

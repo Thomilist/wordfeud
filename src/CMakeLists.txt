@@ -4,6 +4,16 @@ target_link_libraries(
     Qt5::Widgets
     Version
 )
+add_custom_target(
+    AlwaysRebuildAboutDialog
+    ALL
+    COMMAND
+    ${CMAKE_COMMAND} -E touch_nocreate ${CMAKE_SOURCE_DIR}/src/AboutDialog.cpp
+)
+add_dependencies(
+    AboutDialog
+    AlwaysRebuildAboutDialog
+)
 
 add_library(ButtonPanel ButtonPanel.cpp)
 target_link_libraries(

@@ -82,7 +82,7 @@ namespace wf
     
     void AboutDialog::setBuildDateTimeText()
     {
-        build_date_time_key.setText("Date:");
+        build_date_time_key.setText("Build date:");
 
         build_date_time_value.setText
         (

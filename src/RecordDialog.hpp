@@ -26,7 +26,7 @@ namespace wf
         Q_OBJECT
         
         public:
-            RecordDialog(RecordTracker* a_record_tracker, QWidget* a_parent);
+            RecordDialog(RecordTracker* a_record_tracker, QWidget* a_parent = nullptr);
             ~RecordDialog();
 
         public slots:

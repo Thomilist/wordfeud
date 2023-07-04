@@ -42,8 +42,10 @@ namespace wf
             void setTileSize(int a_size);
             void setLanguage(LanguageName a_language);
             void setLanguage(QString a_language);
-            Language* getLanguage();
+            Language* getCurrentLanguage();
             Language* getTempLanguage();
+            Language* getLanguage(LanguageName a_language);
+            Language* getLanguage(QString a_language);
             std::vector<Language>& getAvailableLanguages();
             const QSize& getBoardDimensions() const;
             const QSize& getBoardTileSize() const;

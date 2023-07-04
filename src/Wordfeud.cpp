@@ -13,6 +13,9 @@ namespace wf
     , settings_dialog(&settings, this, &main_window)
     , show_records("Records", &game_menu)
     , record_dialog(game.getRecords(), &main_window)
+    , tools_menu("Tools", &main_window)
+    , dictionary_lookup("Dictionary lookup", &tools_menu)
+    , dictionary_lookup_dialog(&settings, &main_window)
     , help_menu("Help", &main_window)
     , view_help("View help", &help_menu)
     , view_about("About", &help_menu)
@@ -32,6 +35,7 @@ namespace wf
         main_window.setWindowIcon(QIcon{":/icon/icon.ico"});
 
         initialiseGameMenu();
+        initialiseToolsMenu();
         initialiseHelpMenu();
 
         main_window.show();
@@ -86,6 +90,16 @@ namespace wf
         connect(&show_records, &QAction::triggered, &record_dialog, &RecordDialog::open);
         connect(&open_settings, &QAction::triggered, &settings_dialog, &SettingsDialog::open);
         connect(settings_dialog.getSaveAndStartNewGameButton(), &QPushButton::clicked, this, &Wordfeud::startNewGame);
+
+        return;
+    }
+    
+    void Wordfeud::initialiseToolsMenu()
+    {
+        main_window.menuBar()->addMenu(&tools_menu);
+        tools_menu.addAction(&dictionary_lookup);
+
+        connect(&dictionary_lookup, &QAction::triggered, &dictionary_lookup_dialog, &DictionaryLookupDialog::open);
 
         return;
     }

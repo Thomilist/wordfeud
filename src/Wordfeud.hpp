@@ -16,6 +16,7 @@
 #include "ForwardDeclarations.hpp"
 
 #include "AboutDialog.hpp"
+#include "DictionaryLookupDialog.hpp"
 #include "Game.hpp"
 #include "RecordDialog.hpp"
 #include "Settings.hpp"
@@ -42,6 +43,7 @@ namespace wf
 
         private:
             void initialiseGameMenu();
+            void initialiseToolsMenu();
             void initialiseHelpMenu();
             void automaticUpdateCheck();
 
@@ -56,6 +58,10 @@ namespace wf
             SettingsDialog settings_dialog;
             QAction show_records;
             RecordDialog record_dialog;
+
+            QMenu tools_menu;
+            QAction dictionary_lookup;
+            DictionaryLookupDialog dictionary_lookup_dialog;
 
             QMenu help_menu;
             QAction view_help;

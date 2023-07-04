@@ -31,7 +31,7 @@ namespace wf
         setValue("window/geometry", main_window->saveGeometry());
 
         // Save general settings
-        setValue("common/dictionary", getLanguage()->asString());
+        setValue("common/dictionary", getCurrentLanguage()->asString());
         setValue("common/modifiers", getModifierPattern()->getDistributionAsText());
         setValue("common/letter_colouring", getLetterColouring());
 
@@ -182,7 +182,7 @@ namespace wf
         return;
     }
     
-    Language* Settings::getLanguage()
+    Language* Settings::getCurrentLanguage()
     {
         return current_language;
     }
@@ -190,6 +190,32 @@ namespace wf
     Language* Settings::getTempLanguage()
     {
         return current_language_temp;
+    }
+    
+    Language* Settings::getLanguage(LanguageName a_language)
+    {
+        for (auto& language : languages)
+        {
+            if (language.asEnum() == a_language)
+            {
+                return &language;
+            }
+        }
+
+        return nullptr;
+    }
+    
+    Language* Settings::getLanguage(QString a_language)
+    {
+        for (auto& language : languages)
+        {
+            if (language.asString() == a_language)
+            {
+                return &language;
+            }
+        }
+
+        return nullptr;
     }
     
     std::vector<Language>& Settings::getAvailableLanguages()

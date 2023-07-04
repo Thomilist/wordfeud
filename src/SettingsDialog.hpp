@@ -33,7 +33,7 @@ namespace wf
             SettingsDialog(
                 Settings* a_settings,
                 Wordfeud* a_wordfeud,
-                QWidget* a_parent);
+                QWidget* a_parent = nullptr);
             ~SettingsDialog();
 
             QPushButton* getSaveAndStartNewGameButton();

@@ -5,6 +5,7 @@ namespace wf
 {
     class AboutDialog;
     class ButtonPanel;
+    class DictionaryLookupDialog;
     class Game;
     class Header;
     class Language;

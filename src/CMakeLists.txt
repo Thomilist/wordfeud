@@ -12,6 +12,13 @@ target_link_libraries(
     Settings
 )
 
+add_library(DictionaryLookupDialog DictionaryLookupDialog.cpp)
+target_link_libraries(
+    DictionaryLookupDialog
+    Qt5::Widgets
+    Settings
+)
+
 add_library(Game Game.cpp)
 target_link_libraries(
     Game
@@ -217,6 +224,7 @@ target_link_libraries(
     Wordfeud
     Qt5::Widgets
     AboutDialog
+    DictionaryLookupDialog
     Game
     RecordDialog
     Settings

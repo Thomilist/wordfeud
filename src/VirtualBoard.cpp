@@ -562,7 +562,7 @@ namespace wf
                 {
                     if (a_exit_early)
                     {
-                        if (!settings->getLanguage()->isInWordList(word.getWordAsText()))
+                        if (!settings->getCurrentLanguage()->isInWordList(word.getWordAsText()))
                         {
                             proposed_words_valid = false;
                             return;
@@ -669,7 +669,7 @@ namespace wf
 
         for (auto word : proposed_words)
         {
-            if (!settings->getLanguage()->isInWordList(word.getWordAsText()))
+            if (!settings->getCurrentLanguage()->isInWordList(word.getWordAsText()))
             {
                 invalid_words.push_back(word);
                 proposed_words_valid = false;

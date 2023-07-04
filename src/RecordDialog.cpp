@@ -6,11 +6,11 @@ namespace wf
     RecordDialog::RecordDialog(RecordTracker* a_record_tracker, QWidget* a_parent)
         : QDialog(a_parent, QDialog().windowFlags() & ~Qt::WindowContextHelpButtonHint)
         , record_tracker(a_record_tracker)
-        , buttons(QDialogButtonBox::Ok)
+        , buttons(QDialogButtonBox::Close)
     {
         setModal(true);
         setWindowTitle("Records");
-        connect(&buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
+        connect(&buttons, &QDialogButtonBox::rejected, this, &QDialog::accept);
 
         player_table = new QTableWidget();
         player_ai_table = new QTableWidget();

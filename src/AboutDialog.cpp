@@ -6,11 +6,12 @@ namespace wf
     AboutDialog::AboutDialog(Version* a_version, QWidget* a_parent)
         : QDialog(a_parent, QDialog().windowFlags() & ~Qt::WindowContextHelpButtonHint)
         , version(a_version)
-        , buttons(QDialogButtonBox::Ok)
+        , buttons(QDialogButtonBox::Close)
     {
         setModal(true);
         setWindowTitle("About wordfeud");
-        connect(&buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
+        
+        connect(&buttons, &QDialogButtonBox::rejected, this, &QDialog::accept);
 
         setText();
         icon.setPixmap(QPixmap{":/icon/icon.ico"}.scaledToHeight(90));

@@ -25,7 +25,7 @@ namespace wf
         Q_OBJECT
 
         public:
-            AboutDialog(Version* a_version, QWidget* a_parent);
+            AboutDialog(Version* a_version, QWidget* a_parent = nullptr);
             ~AboutDialog();
 
         public slots:

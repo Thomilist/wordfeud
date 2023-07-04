@@ -88,7 +88,7 @@ namespace wf
             + ", but version "
             + version->getUpstreamVersion()
             + " is available for download "
-            + "<a href=\"https://github.com/Thomilist/wordfeud/releases/latest/\">here</a>."
+            + "<a style=\"color:#1d99f3\" href=\"https://github.com/Thomilist/wordfeud/releases/latest/\">here</a>."
         );
 
         return;

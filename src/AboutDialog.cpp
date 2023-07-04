@@ -101,7 +101,7 @@ namespace wf
         license_value.setText
         (
             QString()
-            + "<a href=\"https://github.com/Thomilist/wordfeud/blob/0.5.0/LICENSE\">"
+            + "<a style=\"color:#1d99f3\" href=\"https://github.com/Thomilist/wordfeud/blob/0.5.0/LICENSE\">"
             + "MIT License"
             + "</a>"
         );
@@ -124,7 +124,7 @@ namespace wf
         author_username_value.setText
         (
             QString()
-            + "<a href=\"https://github.com/Thomilist/\">"
+            + "<a style=\"color:#1d99f3\" href=\"https://github.com/Thomilist/\">"
             + "@"
             + QCoreApplication::organizationName()
             + "</a>"

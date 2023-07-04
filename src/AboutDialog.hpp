@@ -35,6 +35,7 @@ namespace wf
             void setText();
             void setVersionText();
             void setBuildDateTimeText();
+            void setLicenseText();
             void setAuthorText();
             QString getBuildDateTime();
 
@@ -49,6 +50,9 @@ namespace wf
 
             QLabel build_date_time_key;
             QLabel build_date_time_value;
+
+            QLabel license_key;
+            QLabel license_value;
 
             QLabel author_key;
             QLabel author_name_value;

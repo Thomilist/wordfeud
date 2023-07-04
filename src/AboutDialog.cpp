@@ -30,6 +30,9 @@ namespace wf
         grid_layout.addWidget(&build_date_time_key, layout_row, key_column, Qt::AlignLeft);
         grid_layout.addWidget(&build_date_time_value, layout_row++, value_column, Qt::AlignRight);
 
+        grid_layout.addWidget(&license_key, layout_row, key_column, Qt::AlignLeft);
+        grid_layout.addWidget(&license_value, layout_row++, value_column, Qt::AlignRight);
+
         grid_layout.addWidget(&author_key, layout_row, key_column, Qt::AlignLeft);
         grid_layout.addWidget(&author_name_value, layout_row++, value_column, Qt::AlignRight);
         grid_layout.addWidget(&author_username_value, layout_row++, value_column, Qt::AlignRight);
@@ -54,6 +57,7 @@ namespace wf
     {
         setVersionText();
         setBuildDateTimeText();
+        setLicenseText();
         setAuthorText();
 
         return;
@@ -87,6 +91,24 @@ namespace wf
         return;
     }
     
+    void AboutDialog::setLicenseText()
+    {
+        license_key.setText("License:");
+
+        license_value.setTextFormat(Qt::RichText);
+        license_value.setTextInteractionFlags(Qt::TextBrowserInteraction);
+        license_value.setOpenExternalLinks(true);
+        license_value.setText
+        (
+            QString()
+            + "<a href=\"https://github.com/Thomilist/wordfeud/blob/0.5.0/LICENSE\">"
+            + "MIT License"
+            + "</a>"
+        );
+
+        return;
+    }
+    
     void AboutDialog::setAuthorText()
     {
         author_key.setText("Author:");
@@ -107,6 +129,8 @@ namespace wf
             + QCoreApplication::organizationName()
             + "</a>"
         );
+
+        return;
     }
     
     QString AboutDialog::getBuildDateTime()

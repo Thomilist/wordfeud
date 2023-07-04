@@ -1,3 +1,10 @@
+add_library(AboutDialog AboutDialog.cpp)
+target_link_libraries(
+    AboutDialog
+    Qt5::Widgets
+    Version
+)
+
 add_library(ButtonPanel ButtonPanel.cpp)
 target_link_libraries(
     ButtonPanel
@@ -209,6 +216,7 @@ add_library(Wordfeud Wordfeud.cpp)
 target_link_libraries(
     Wordfeud
     Qt5::Widgets
+    AboutDialog
     Game
     RecordDialog
     Settings

@@ -24,10 +24,10 @@ namespace wf
         player_ai_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
         combined_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-        int row = 0;
+        int layout_row = 0;
 
-        grid_layout.addWidget(&tab_widget, row++, 0);
-        grid_layout.addWidget(&buttons, row++, 0, Qt::AlignCenter);
+        grid_layout.addWidget(&tab_widget, layout_row++, 0);
+        grid_layout.addWidget(&buttons, layout_row++, 0, Qt::AlignCenter);
 
         setLayout(&grid_layout);
     }

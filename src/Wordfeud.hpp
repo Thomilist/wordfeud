@@ -9,11 +9,13 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QObject>
 #include <QUrl>
 
 #include "ForwardDeclarations.hpp"
 
+#include "AboutDialog.hpp"
 #include "Game.hpp"
 #include "RecordDialog.hpp"
 #include "Settings.hpp"
@@ -36,6 +38,7 @@ namespace wf
             void startNewGame();
             void viewHelp();
             void openGitHub();
+            void reportIssue();
 
         private:
             void initialiseGameMenu();
@@ -56,9 +59,12 @@ namespace wf
 
             QMenu help_menu;
             QAction view_help;
+            QAction view_about;
+            AboutDialog about_dialog;
             QAction check_for_updates;
             UpdateDialog update_dialog;
             QAction open_github;
+            QAction report_issue;
     };
 }
 

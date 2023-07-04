@@ -3,6 +3,7 @@
 
 namespace wf
 {
+    class AboutDialog;
     class ButtonPanel;
     class Game;
     class Header;
@@ -22,6 +23,8 @@ namespace wf
     class RenderedTile;
     class Settings;
     class SettingsDialog;
+    class UpdateDialog;
+    class Version;
     class VirtualBoard;
     class VirtualTile;
     class Word;

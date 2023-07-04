@@ -15,9 +15,12 @@ namespace wf
     , record_dialog(game.getRecords(), &main_window)
     , help_menu("Help", &main_window)
     , view_help("View help", &help_menu)
+    , view_about("About", &help_menu)
+    , about_dialog(a_version, &main_window)
     , check_for_updates("Check for updates", &help_menu)
     , update_dialog(version, &main_window)
     , open_github("Open on GitHub", &help_menu)
+    , report_issue("Report issue", &help_menu)
     {
         connect(&settings_dialog, &SettingsDialog::settingsSaved, &game, &Game::repaintHandAndBoard);
         connect(&game, &Game::autoRestart, this, &Wordfeud::startNewGame);
@@ -62,6 +65,12 @@ namespace wf
         return;
     }
     
+    void Wordfeud::reportIssue()
+    {
+        QDesktopServices::openUrl(QUrl{"https://github.com/Thomilist/wordfeud/issues", QUrl::TolerantMode});
+        return;
+    }
+    
     void Wordfeud::initialiseGameMenu()
     {
         main_window.menuBar()->addMenu(&game_menu);
@@ -85,14 +94,18 @@ namespace wf
     {
         main_window.menuBar()->addMenu(&help_menu);
         help_menu.addAction(&view_help);
+        help_menu.addAction(&view_about);
         help_menu.addAction(&check_for_updates);
         help_menu.addAction(&open_github);
+        help_menu.addAction(&report_issue);
 
         view_help.setShortcut(QKeySequence{"F1"});
 
         connect(&view_help, &QAction::triggered, this, &Wordfeud::viewHelp);
+        connect(&view_about, &QAction::triggered, &about_dialog, &AboutDialog::open);
         connect(&check_for_updates, &QAction::triggered, &update_dialog, &UpdateDialog::manualUpdateCheck);
         connect(&open_github, &QAction::triggered, this, &Wordfeud::openGitHub);
+        connect(&report_issue, &QAction::triggered, this, &Wordfeud::reportIssue);
 
         return;
     }

@@ -1,0 +1,59 @@
+#ifndef __ABOUTDIALOG_H__
+#define __ABOUTDIALOG_H__
+
+#include <QDebug>
+
+#include <QCoreApplication>
+#include <QDateTime>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLocale>
+#include <QPixmap>
+#include <QString>
+#include <QWidget>
+
+#include "ForwardDeclarations.hpp"
+
+#include "Version.hpp"
+
+namespace wf
+{
+    class AboutDialog : public QDialog
+    {
+        Q_OBJECT
+
+        public:
+            AboutDialog(Version* a_version, QWidget* a_parent);
+            ~AboutDialog();
+
+        public slots:
+            void open();
+        
+        private:
+            void setText();
+            void setVersionText();
+            void setBuildDateTimeText();
+            void setAuthorText();
+            QString getBuildDateTime();
+
+            Version* version;
+            QGridLayout grid_layout;
+            QDialogButtonBox buttons;
+
+            QLabel icon;
+
+            QLabel version_key;
+            QLabel version_value;
+
+            QLabel build_date_time_key;
+            QLabel build_date_time_value;
+
+            QLabel author_key;
+            QLabel author_name_value;
+            QLabel author_username_value;
+    };
+}
+
+#endif // __ABOUTDIALOG_H__

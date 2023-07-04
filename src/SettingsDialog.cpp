@@ -122,6 +122,12 @@ namespace wf
         return;
     }
     
+    void SettingsDialog::viewSettingsHelp()
+    {
+        QDesktopServices::openUrl(QUrl{"https://github.com/Thomilist/wordfeud/wiki/Settings", QUrl::TolerantMode});
+        return;
+    }
+    
     void SettingsDialog::createGeneralSettingsGroup()
     {
         int subrow = 0;
@@ -368,7 +374,8 @@ namespace wf
     
     void SettingsDialog::createButtons()
     {
-        grid_layout.addWidget(&buttons, layout_row++, 0, 1, 2);
+        grid_layout.addWidget(&buttons, layout_row++, 0, 1, 2, Qt::AlignCenter);
+        buttons.addButton(QDialogButtonBox::Help);
         buttons.addButton(&save_and_start_new_game_button, QDialogButtonBox::AcceptRole);
         buttons.addButton(QDialogButtonBox::Save);
         buttons.addButton(QDialogButtonBox::Cancel);
@@ -378,6 +385,7 @@ namespace wf
             button->setIcon(QIcon{});
         }
 
+        connect(&buttons, &QDialogButtonBox::helpRequested, this, &SettingsDialog::viewSettingsHelp);
         connect(&buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
         connect(&buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
         connect(&buttons, &QDialogButtonBox::accepted, this, &SettingsDialog::saveSettings);

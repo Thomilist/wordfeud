@@ -3,6 +3,7 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -17,6 +18,7 @@
 #include <QSizePolicy>
 #include <QSlider>
 #include <QString>
+#include <QUrl>
 #include <QWidget>
 
 #include "ForwardDeclarations.hpp"
@@ -43,6 +45,7 @@ namespace wf
             void saveSettings();
             void setNameFieldStates(int a_state);
             void updateSliders();
+            void viewSettingsHelp();
 
         signals:
             void settingsSaved();

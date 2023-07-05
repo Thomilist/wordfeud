@@ -5,15 +5,19 @@
 #include <utility>
 #include <vector>
 
+#include <QDebug>
+
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
+#include <QFileInfo>
 #include <QFont>
 #include <QFontDatabase>
 #include <QMainWindow>
 #include <QSettings>
 #include <QSize>
 #include <QString>
+#include <QStringBuilder>
 #include <QTextStream>
 
 #include "ForwardDeclarations.hpp"
@@ -47,6 +51,8 @@ namespace wf
             Language* getLanguage(LanguageName a_language);
             Language* getLanguage(QString a_language);
             std::vector<Language>& getAvailableLanguages();
+            void detectExternalLanguages();
+            void loadExternalLanguages();
             const QSize& getBoardDimensions() const;
             const QSize& getBoardTileSize() const;
             const QSize& getHandDimensions() const;
@@ -59,7 +65,7 @@ namespace wf
             PlayerSettings* getLeftPlayer();
             PlayerSettings* getRightPlayer();
             PlayerSettings* getPlayer(int a_index);
-            void loadRandomNames(QString a_directory);
+            void loadRandomNames();
             int getMinimumAITurnTime() const;
             int getTempMinimumAITurnTime() const;
             void setMinimumAITurnTime(int a_time);
@@ -80,6 +86,7 @@ namespace wf
         private:
             QMainWindow* main_window;
             std::vector<Language> languages;
+            std::vector<QString> external_languages;
             QSize board_dimensions{15,15};
             QSize board_tile_size{42,42};
             QSize hand_dimensions{7,1};

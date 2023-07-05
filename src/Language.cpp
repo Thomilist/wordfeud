@@ -4,7 +4,13 @@ namespace wf
     Language::Language(LanguageName a_language)
         : language(a_language)
     {
-        loadLanguage(a_language);
+        loadInternalLanguage(a_language);
+    }
+    
+    Language::Language(QString a_language)
+        : language_string(a_language)
+    {
+        loadExternalLanguage(a_language);
     }
     
     Language::~Language()
@@ -139,7 +145,7 @@ namespace wf
         return language;
     }
     
-    void Language::loadLanguage(LanguageName a_language)
+    void Language::loadInternalLanguage(LanguageName a_language)
     {
         switch (a_language)
         {
@@ -147,28 +153,49 @@ namespace wf
             {
                 language_string = "Danish";
                 word_list.reserve(530916);
-                loadWordListFromFileCOR(":/dictionaries/danish/danish-words.txt");
-                loadLettersFromFile(":/dictionaries/danish/danish-letters.csv");
+                loadWordListFromFileCOR(":/dictionaries/internal/Danish/Danish-words.txt");
+                loadLettersFromFile(":/dictionaries/internal/Danish/Danish-letters.csv");
                 break;
             }
             case LanguageName::English:
             {
                 language_string = "English";
                 word_list.reserve(370105);
-                loadWordListFromFilePlain(":/dictionaries/english/english-words.txt");
-                loadLettersFromFile(":/dictionaries/english/english-letters.csv");
+                loadWordListFromFilePlain(":/dictionaries/internal/English/English-words.txt");
+                loadLettersFromFile(":/dictionaries/internal/English/English-letters.csv");
                 break;
             }
             case LanguageName::German:
             {
                 language_string = "German";
                 word_list.reserve(1908815);
-                loadWordListFromFilePlain(":/dictionaries/german/german-words.txt");
-                loadLettersFromFile(":/dictionaries/german/german-letters.csv");
+                loadWordListFromFilePlain(":/dictionaries/internal/German/German-words.txt");
+                loadLettersFromFile(":/dictionaries/internal/German/German-letters.csv");
+                break;
+            }
+            default:
+            {
                 break;
             }
         }
 
+        return;
+    }
+    
+    void Language::loadExternalLanguage(QString a_language)
+    {
+        QString words_path{QString() % "./resources/dictionaries/external/" % a_language % "/" % a_language % "-words.txt"};
+        QString letters_path{QString() % "./resources/dictionaries/external/" % a_language % "/" % a_language % "-letters.csv"};
+
+        if (!QFile::exists(words_path) || !QFile::exists(letters_path))
+        {
+            language = LanguageName::Invalid;
+            return;
+        }
+
+        language = LanguageName::External;
+        loadWordListFromFilePlain(words_path);
+        loadLettersFromFile(letters_path);
         return;
     }
 }

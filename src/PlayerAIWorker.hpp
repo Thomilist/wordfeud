@@ -8,8 +8,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include <QDebug>
-
 #include <QChar>
 #include <QObject>
 #include <QPoint>

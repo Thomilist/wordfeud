@@ -5,6 +5,8 @@ namespace wf
 {
     enum class LanguageName
     {
+        External,
+        Invalid,
         Danish,
         English,
         German

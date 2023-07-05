@@ -85,7 +85,7 @@ namespace wf
         {
             language_dropdown.addItem(language.asString());
 
-            if (language.asEnum() == settings->getTempLanguage()->asEnum())
+            if (language.asString() == settings->getTempLanguage()->asString())
             {
                 language_dropdown.setCurrentIndex(index);
                 lookup_language = &language;

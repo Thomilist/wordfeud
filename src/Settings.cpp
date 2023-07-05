@@ -59,7 +59,11 @@ namespace wf
     void Settings::load()
     {
         // Load random names
-        loadRandomNames("resources/names/");
+        loadRandomNames();
+
+        // Load external languages
+        detectExternalLanguages();
+        loadExternalLanguages();
         
         // Load main window dimensions and position
         const QByteArray geometry = value("window/geometry", QByteArray()).toByteArray();
@@ -223,6 +227,59 @@ namespace wf
         return languages;
     }
     
+    void Settings::detectExternalLanguages()
+    {
+        external_languages.clear();
+        
+        QDir directory{"resources/dictionaries/external/"};
+
+        if (!directory.exists())
+        {
+            QDir().mkpath(directory.absolutePath());
+        }
+
+        QDirIterator dictionary_directory{directory};
+        QString language_path;
+        QString language_name;
+        QString words_path;
+        QString letters_path;
+
+        while (dictionary_directory.hasNext())
+        {
+            language_path = dictionary_directory.next();
+            QFileInfo file_info{language_path};
+
+            if (!file_info.isDir())
+            {
+                continue;
+            }
+
+            language_name = file_info.baseName();
+
+            words_path = QString() % language_path % "/" % language_name % "-words.txt";
+            letters_path = QString() % language_path % "/" % language_name % "-letters.csv";
+
+            if (!QFile::exists(words_path) || !QFile::exists(letters_path))
+            {
+                continue;
+            }
+
+            external_languages.push_back(language_name);
+        }
+
+        return;
+    }
+    
+    void Settings::loadExternalLanguages()
+    {
+        for (auto language_name : external_languages)
+        {
+            languages.push_back(Language(language_name));
+        }
+
+        return;
+    }
+    
     const QSize& Settings::getBoardDimensions() const
     {
         return board_dimensions;
@@ -298,9 +355,9 @@ namespace wf
         }
     }
     
-    void Settings::loadRandomNames(QString a_directory)
+    void Settings::loadRandomNames()
     {
-        QDir directory{a_directory};
+        QDir directory{"resources/names/"};
         QDirIterator name_directory{directory};
         QString file_path;
         QString name;

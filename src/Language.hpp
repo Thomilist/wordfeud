@@ -5,6 +5,7 @@
 #include <QHash>
 #include <QIODevice>
 #include <QString>
+#include <QStringBuilder>
 #include <QStringList>
 #include <QTextStream>
 
@@ -24,6 +25,7 @@ namespace wf
     {
         public:
             Language(LanguageName a_language);
+            Language(QString a_language);
             ~Language();
 
             const std::vector<LetterData>& getLetterList() const;
@@ -33,7 +35,8 @@ namespace wf
             const LanguageName& asEnum() const;
 
         private:
-            void loadLanguage(LanguageName a_language);
+            void loadInternalLanguage(LanguageName a_language);
+            void loadExternalLanguage(QString a_language);
             void loadLettersFromFile(QString a_file_path);
             void loadWordListFromFilePlain(QString a_file_path);
             void loadWordListFromFileCOR(QString a_file_path);

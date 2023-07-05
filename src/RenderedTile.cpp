@@ -164,6 +164,8 @@ namespace wf
     
     void RenderedTile::paintEvent(QPaintEvent*)
     {
+        Letter* current_letter = letter;
+        
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing, true);
         QFont monospace_font = settings->getMonospaceFont();
@@ -231,7 +233,7 @@ namespace wf
             painter.drawText(tile_shape, Qt::AlignCenter, modifier->getText());
         }
 
-        if (letter != nullptr)
+        if (current_letter != nullptr)
         {
             int alpha = 255;
             
@@ -248,7 +250,7 @@ namespace wf
             }
             
             // Draw letter background
-            switch (letter->getStatus())
+            switch (current_letter->getStatus())
             {
                 case LetterStatus::Proposed:
                 {
@@ -285,14 +287,14 @@ namespace wf
 
             // Draw letter text
             monospace_font.setBold(false);
-            monospace_font.setPointSize(size().height() / (1 + letter->getText().length()));
+            monospace_font.setPointSize(size().height() / (1 + current_letter->getText().length()));
 
             // Wildcard letters in hand should always be blank
-            if (!(board_type == BoardType::Hand && letter->getType() == LetterType::Wildcard))
+            if (!(board_type == BoardType::Hand && current_letter->getType() == LetterType::Wildcard))
             {
                 if (settings->getLetterColouring() == QString("Player colour"))
                 {
-                    painter.setPen(letter->getOwner()->getColor());
+                    painter.setPen(current_letter->getOwner()->getColor());
                 }
                 else
                 {
@@ -300,13 +302,13 @@ namespace wf
                 }
                 
                 painter.setFont(monospace_font);
-                painter.drawText(letter_alignment, Qt::AlignCenter, letter->getText());
+                painter.drawText(letter_alignment, Qt::AlignCenter, current_letter->getText());
 
-                if (letter->getPoints() != 0)
+                if (current_letter->getPoints() != 0)
                 {
                     monospace_font.setPointSize(size().height() / 5);
                     painter.setFont(monospace_font);
-                    painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, letter->getPointsAsText());
+                    painter.drawText(points_alignment, Qt::AlignRight | Qt::AlignVCenter, current_letter->getPointsAsText());
                 }
             }
 
@@ -326,7 +328,7 @@ namespace wf
             return;
         }
 
-        if (letter == nullptr && (modifier == nullptr || modifier->getType() == ModifierType::None))
+        if (current_letter == nullptr && (modifier == nullptr || modifier->getType() == ModifierType::None))
         {
             // Draw dark gray background
             painter.setBrush(QColor{50, 50, 50});

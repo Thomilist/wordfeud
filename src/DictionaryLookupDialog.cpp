@@ -19,8 +19,8 @@ namespace wf
         int board_height = settings->getBoardDimensions().height();
         max_word_length = board_width > board_height ? board_width : board_height;
 
-        word_input.setMaxLength(max_word_length);
-        word_input.setFixedWidth(250);
+        word_input.setMaxLength(max_word_length * 2);
+        word_input.setFixedWidth(350);
 
         int layout_row = 0;
 

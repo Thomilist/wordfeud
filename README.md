@@ -1,7 +1,7 @@
 # wordfeud
-A clone of the mobile game Wordfeud written in C++ using Qt 5.15.
+A clone of the mobile game Wordfeud written in C++ using Qt 5.15. Made for learning purposes. For more details, see the [wiki](https://github.com/Thomilist/wordfeud/wiki).
 
-![image](https://user-images.githubusercontent.com/66553086/228712413-2da52538-c3fd-4281-b412-6a46a8bea219.png)
+![example game](https://github.com/Thomilist/wordfeud/blob/main/docs/images/example_game_1.png)
 
 ## Sources
 

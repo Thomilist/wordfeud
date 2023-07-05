@@ -147,24 +147,24 @@ namespace wf
             {
                 language_string = "Danish";
                 word_list.reserve(530916);
-                loadWordListFromFileCOR(":/words/cor1.02.tsv");
-                loadLettersFromFile(":/letters/danish.csv");
+                loadWordListFromFileCOR(":/dictionaries/danish/danish-words.txt");
+                loadLettersFromFile(":/dictionaries/danish/danish-letters.csv");
                 break;
             }
             case LanguageName::English:
             {
                 language_string = "English";
                 word_list.reserve(370105);
-                loadWordListFromFilePlain(":/words/english.txt");
-                loadLettersFromFile(":/letters/english.csv");
+                loadWordListFromFilePlain(":/dictionaries/english/english-words.txt");
+                loadLettersFromFile(":/dictionaries/english/english-letters.csv");
                 break;
             }
             case LanguageName::German:
             {
                 language_string = "German";
                 word_list.reserve(1908815);
-                loadWordListFromFilePlain(":/words/german.txt");
-                loadLettersFromFile(":/letters/german.csv");
+                loadWordListFromFilePlain(":/dictionaries/german/german-words.txt");
+                loadLettersFromFile(":/dictionaries/german/german-letters.csv");
                 break;
             }
         }

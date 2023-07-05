@@ -271,9 +271,9 @@ namespace wf
 
             // Alignment boxes for letter text and points
             QRect letter_alignment{
-                size().width() * 2 / 10,
+                size().width() * 10 / 100,
                 size().height() * 0 / 10,
-                size().width() * 45 / 100,
+                size().width() * 65 / 100,
                 size().height() * 10 / 10
             };
             QRect points_alignment{
@@ -283,12 +283,11 @@ namespace wf
                 size().height() * 3 / 10
             };
 
-            // Draw text in black
+            // Draw letter text
             monospace_font.setBold(false);
-            monospace_font.setPointSize(size().height() / 2);
+            monospace_font.setPointSize(size().height() / (1 + letter->getText().length()));
 
             // Wildcard letters in hand should always be blank
-            // Without this check, the text would be drawn if the tile is re-rendered while the PlayerAI is cycling through wildcard options
             if (!(board_type == BoardType::Hand && letter->getType() == LetterType::Wildcard))
             {
                 if (settings->getLetterColouring() == QString("Player colour"))

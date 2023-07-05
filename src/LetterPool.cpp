@@ -15,7 +15,7 @@ namespace wf
 
         for (const auto letter : pool)
         {
-            if (letter->getText().isLetter() && !non_wildcard_letters.contains(letter->getText()))
+            if (letter->getText().length() > 0 && !non_wildcard_letters.contains(letter->getText()))
             {
                 non_wildcard_letters.append(letter->getText());
             }

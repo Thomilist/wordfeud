@@ -194,6 +194,7 @@ namespace wf
         }
         
         current_combination.clear();
+        current_combination_sizes = std::stack<int>();
         tried_combinations.clear();
         tried_combinations.reserve(200000);
         findPlayRecursively(a_column, a_row);
@@ -260,7 +261,11 @@ namespace wf
     
     void PlayerAIWorker::tryLetterAndRecurse(Letter*& a_letter, VirtualTile* a_tile, int a_column, int a_row)
     {
-        current_combination.push_back(a_letter->getText());
+        // Some letter pieces contain more than one character. This is handled by appending the length.
+        // QStringBuilder's more efficient string concatenator % is used for performance.
+        current_combination = current_combination % a_letter->getText() % " ";
+        current_combination_sizes.push(a_letter->getText().length() + 1);
+
         a_tile->placeLetter(a_letter);
         a_letter = nullptr;
         sandbox_board.proposeLetter(a_tile);
@@ -283,7 +288,10 @@ namespace wf
         ++available_letter_count;
         sandbox_board.unproposeLetter(a_tile);
         a_letter = a_tile->removeLetter();
-        current_combination.chop(1);
+
+        // The length is used to chop off the correct amount since handling of >1 character letters pieces was added.
+        current_combination.chop(current_combination_sizes.top());
+        current_combination_sizes.pop();
 
         return;
     }
@@ -368,6 +376,7 @@ namespace wf
         if (!tried_already)
         {
             tried_combinations.insert(current_combination);
+            //qDebug() << current_combination;
         }
 
         return tried_already;

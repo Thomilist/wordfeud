@@ -7,12 +7,12 @@ namespace wf
     }
 
     Letter::Letter(
-        QChar a_letter,
+        QString a_letter,
         int a_points)
         : text(a_letter)
         , points(a_points)
     {
-        if (a_letter.isLetter())
+        if (a_letter.length() > 0)
         {
             type = LetterType::Letter;
         }
@@ -25,7 +25,7 @@ namespace wf
     Letter::~Letter()
     { }
     
-    QChar Letter::getText() const
+    QString Letter::getText() const
     {
         if (getType() == LetterType::Wildcard)
         {
@@ -63,13 +63,13 @@ namespace wf
         return status;
     }
     
-    void Letter::setWildcardText(QChar a_text)
+    void Letter::setWildcardText(QString a_text)
     {
         wildcard_text = a_text;
         return;
     }
     
-    QChar Letter::getWildcardText() const
+    QString Letter::getWildcardText() const
     {
         return wildcard_text;
     }

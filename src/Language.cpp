@@ -29,7 +29,7 @@ namespace wf
                 {
                     LetterData letter_data = 
                     {
-                        letter_data_split.at(0).size() == 0 ? QChar{} : letter_data_split.at(0).front(),
+                        letter_data_split.at(0).size() == 0 ? QString{} : letter_data_split.at(0),
                         letter_data_split.at(1).toInt(),
                         letter_data_split.at(2).toInt()
                     };

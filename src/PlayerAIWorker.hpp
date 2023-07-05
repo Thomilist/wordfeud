@@ -4,12 +4,17 @@
 #include <algorithm>
 #include <map>
 #include <random>
+#include <stack>
 #include <unordered_set>
 #include <vector>
+
+#include <QDebug>
 
 #include <QChar>
 #include <QObject>
 #include <QPoint>
+#include <QString>
+#include <QStringBuilder>
 
 #include "Letter.hpp"
 #include "LetterPool.hpp"
@@ -85,6 +90,7 @@ namespace wf
             std::map<Letter*, std::vector<Letter*>> wildcard_substitutes;
             std::unordered_set<QString> tried_combinations;
             QString current_combination;
+            std::stack<int> current_combination_sizes;
     };
 }
 

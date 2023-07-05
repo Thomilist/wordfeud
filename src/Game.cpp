@@ -757,7 +757,7 @@ namespace wf
     
     void Game::assignWildcardLetter(RenderedTile* a_tile)
     {
-        if (a_tile->getLetter()->getWildcardText().isLetter())
+        if (a_tile->getLetter()->getWildcardText().length() > 0)
         {
             return;
         }

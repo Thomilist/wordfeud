@@ -2,7 +2,6 @@
 #define __LETTER_H__
 
 #include <QString>
-#include <QChar>
 #include <QLabel>
 #include <QPixmap>
 
@@ -15,7 +14,7 @@ namespace wf
 {
     struct LetterData
     {
-        QChar letter;
+        QString letter;
         int count;
         int points;
     };
@@ -25,24 +24,24 @@ namespace wf
         public:
             Letter();
             Letter(
-                QChar a_letter,
+                QString a_letter,
                 int a_points);
             ~Letter();
 
-            QChar getText() const;
+            QString getText() const;
             QString getPointsAsText() const;
             int getPoints() const;
             LetterType getType() const;
             void setStatus(LetterStatus a_status);
             LetterStatus getStatus() const;
-            void setWildcardText(QChar a_text);
-            QChar getWildcardText() const;
+            void setWildcardText(QString a_text);
+            QString getWildcardText() const;
             void setOwner(Player* a_player);
             Player* getOwner();
 
         private:
-            QChar text;
-            QChar wildcard_text;
+            QString text;
+            QString wildcard_text;
             int points;
             LetterType type;
             LetterStatus status = LetterStatus::Free;

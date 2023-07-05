@@ -80,6 +80,7 @@ namespace wf
             void findBestPlay();
             void executeBestPlay();
             void updateRelevantLines();
+            bool isLineRelevant(Direction a_direction, int a_index);
             void initialiseTouchEvaluation(VirtualBoard* a_board);
             void evaluateBoard(VirtualBoard* a_board);
             int evaluateTile(VirtualTile* a_tile);

@@ -10,8 +10,6 @@ namespace wf
         LetterPool* a_letter_pool,
         Direction a_direction,
         int a_line_index,
-        std::set<int> a_relevant_rows,
-        std::set<int> a_relevant_columns,
         std::vector<std::vector<int>> a_touch_evaluation,
         int a_difficulty)
         : settings(a_settings)
@@ -21,8 +19,6 @@ namespace wf
         , letter_pool(a_letter_pool)
         , direction(a_direction)
         , line_index(a_line_index)
-        , relevant_rows(a_relevant_rows)
-        , relevant_columns(a_relevant_columns)
         , touch_evaluation(a_touch_evaluation)
         , rng(random_seed())
         , random_distribution(0, 50000)
@@ -157,20 +153,12 @@ namespace wf
         {
             case Direction::Horisontal:
             {
-                if (relevant_rows.contains(line_index))
-                {
-                    findPlayInHorisontalLine();
-                }
-
+                findPlayInHorisontalLine();
                 break;
             }
             case Direction::Vertical:
             {
-                if (relevant_columns.contains(line_index))
-                {
-                    findPlayInVerticalLine();
-                }
-
+                findPlayInVerticalLine();
                 break;
             }
         }

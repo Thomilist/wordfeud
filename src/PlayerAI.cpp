@@ -205,6 +205,11 @@ namespace wf
                     ++index
                 )
             {
+                if (!isLineRelevant(direction, index))
+                {
+                    continue;
+                }
+
                 worker = new PlayerAIWorker
                 (
                     settings,
@@ -213,8 +218,6 @@ namespace wf
                     letter_pool,
                     direction,
                     index,
-                    relevant_rows,
-                    relevant_collumns,
                     touch_evaluation,
                     difficulty
                 );
@@ -337,6 +340,27 @@ namespace wf
         }
 
         return;
+    }
+    
+    bool PlayerAI::isLineRelevant(Direction a_direction, int a_index)
+    {
+        bool relevant = false;
+        
+        switch (a_direction)
+        {
+            case Direction::Horisontal:
+            {
+                relevant = relevant_rows.contains(a_index);
+                break;
+            }
+            case Direction::Vertical:
+            {
+                relevant = relevant_collumns.contains(a_index);
+                break;
+            }
+        }
+
+        return relevant;
     }
     
     void PlayerAI::initialiseTouchEvaluation(VirtualBoard* a_board)

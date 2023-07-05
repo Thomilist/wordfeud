@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <map>
 #include <random>
-#include <set>
 #include <unordered_set>
 #include <vector>
 
@@ -35,8 +34,6 @@ namespace wf
                 LetterPool* a_letter_pool,
                 Direction a_direction,
                 int a_line_index,
-                std::set<int> a_relevant_rows,
-                std::set<int> a_relevant_columns,
                 std::vector<std::vector<int>> a_touch_evaluation,
                 int a_difficulty);
             ~PlayerAIWorker();
@@ -76,8 +73,6 @@ namespace wf
             LetterPool* letter_pool;
             Direction direction;
             int line_index;
-            std::set<int> relevant_rows;
-            std::set<int> relevant_columns;
             std::vector<std::vector<int>> touch_evaluation;
             std::vector<Letter*> available_letters;
             int available_letter_count = 0;

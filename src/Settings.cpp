@@ -5,10 +5,6 @@ namespace wf
 {
     Settings::Settings(QMainWindow* a_main_window)
         : main_window(a_main_window)
-        , languages{
-            Language{LanguageName::Danish},
-            Language{LanguageName::English},
-            Language{LanguageName::German}}
     {
         int monospace_font_family_id = QFontDatabase::addApplicationFont(":/fonts/NotoSansMono-Regular.ttf");
         QString monospace_font_family = QFontDatabase::applicationFontFamilies(monospace_font_family_id).at(0);
@@ -16,6 +12,7 @@ namespace wf
         monospace_font.setStyleHint(QFont::TypeWriter);
 
         load();
+        std::sort(languages.begin(), languages.end());
         newGameApply();
     }
     
@@ -31,7 +28,7 @@ namespace wf
         setValue("window/geometry", main_window->saveGeometry());
 
         // Save general settings
-        setValue("common/dictionary", getCurrentLanguage()->asString());
+        setValue("common/dictionary", getCurrentLanguage()->getName());
         setValue("common/modifiers", getModifierPattern()->getDistributionAsText());
         setValue("common/letter_colouring", getLetterColouring());
 
@@ -61,9 +58,10 @@ namespace wf
         // Load random names
         loadRandomNames();
 
-        // Load external languages
-        detectExternalLanguages();
-        loadExternalLanguages();
+        // Load languages
+        detectLanguages();
+        createDefaultLanguagesIfNoneFound();
+        loadLanguages();
         
         // Load main window dimensions and position
         const QByteArray geometry = value("window/geometry", QByteArray()).toByteArray();
@@ -158,30 +156,18 @@ namespace wf
         return;
     }
     
-    void Settings::setLanguage(LanguageName a_language)
+    void Settings::setLanguage(QString a_language)
     {
         for (auto& language : languages)
         {
-            if (language.asEnum() == a_language)
+            if (language.getName() == a_language)
             {
                 current_language_temp = &language;
                 return;
             }
         }
 
-        return;
-    }
-    
-    void Settings::setLanguage(QString a_language)
-    {
-        for (auto& language : languages)
-        {
-            if (language.asString() == a_language)
-            {
-                current_language_temp = &language;
-                return;
-            }
-        }
+        setLanguage("English");
 
         return;
     }
@@ -196,24 +182,11 @@ namespace wf
         return current_language_temp;
     }
     
-    Language* Settings::getLanguage(LanguageName a_language)
-    {
-        for (auto& language : languages)
-        {
-            if (language.asEnum() == a_language)
-            {
-                return &language;
-            }
-        }
-
-        return nullptr;
-    }
-    
     Language* Settings::getLanguage(QString a_language)
     {
         for (auto& language : languages)
         {
-            if (language.asString() == a_language)
+            if (language.getName() == a_language)
             {
                 return &language;
             }
@@ -222,16 +195,22 @@ namespace wf
         return nullptr;
     }
     
-    std::vector<Language>& Settings::getAvailableLanguages()
+    std::vector<Language>& Settings::getLoadedLanguages()
     {
         return languages;
     }
     
-    void Settings::detectExternalLanguages()
+    std::set<QString> Settings::getAvailableLanguages()
     {
-        external_languages.clear();
+        detectLanguages();
+        return language_names;
+    }
+    
+    void Settings::detectLanguages()
+    {
+        language_names.clear();
         
-        QDir directory{"resources/dictionaries/external/"};
+        QDir directory{"resources/dictionaries/"};
 
         if (!directory.exists())
         {
@@ -264,16 +243,36 @@ namespace wf
                 continue;
             }
 
-            external_languages.push_back(language_name);
+            language_names.insert(language_name);
         }
 
         return;
     }
     
-    void Settings::loadExternalLanguages()
+    void Settings::createDefaultLanguagesIfNoneFound()
     {
-        for (auto language_name : external_languages)
+        if (!language_names.empty())
         {
+            return;
+        }
+        
+        for (QString language_name : {"Danish", "English"})
+        {
+            Language language;
+            language.loadLettersFromFile(":/dictionaries/" % language_name % "/" % language_name % "-letters.csv");
+            language.loadWordListFromFilePlain(":/dictionaries/" % language_name % "/" % language_name % "-words.txt");
+            language.setName(language_name);
+            languages.push_back(language);
+        }
+
+        return;
+    }
+    
+    void Settings::loadLanguages()
+    {
+        for (auto language_name : language_names)
+        {
+            qDebug() << language_name;
             languages.push_back(Language(language_name));
         }
 
@@ -448,12 +447,12 @@ namespace wf
         return;
     }
     
-    int Settings::getAutoRestartDelay()
+    int Settings::getAutoRestartDelay() const
     {
         return auto_restart_delay;
     }
     
-    int Settings::getTempAutoRestartDelay()
+    int Settings::getTempAutoRestartDelay() const
     {
         return auto_restart_delay_temp;
     }
@@ -464,7 +463,7 @@ namespace wf
         return;
     }
     
-    bool Settings::isAutoRestartEnabled()
+    bool Settings::isAutoRestartEnabled() const
     {
         return auto_restart_enabled;
     }

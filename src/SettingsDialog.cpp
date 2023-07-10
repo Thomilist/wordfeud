@@ -149,13 +149,24 @@ namespace wf
         general_settings_layout.addWidget(&language_label, a_row, 0);
         general_settings_layout.addWidget(&language_dropdown, a_row, 1);
 
+        if (settings->getLoadedLanguages().empty())
+        {
+            language_dropdown.addItem("Error: No dictionaries");
+            language_dropdown.setDisabled(true);
+            return;
+        }
+
         int index = 0;
 
-        for (auto language : settings->getAvailableLanguages())
+        for (auto language : settings->getLoadedLanguages())
         {
-            language_dropdown.addItem(language.asString());
+            qDebug() << "createLanguageDropdown";
+            qDebug() << language.getName();
+            qDebug() << settings->getTempLanguage()->getName();
+            
+            language_dropdown.addItem(language.getName());
 
-            if (language.asString() == settings->getTempLanguage()->asString())
+            if (language.getName() == settings->getTempLanguage()->getName())
             {
                 language_dropdown.setCurrentIndex(index);
             }
@@ -398,7 +409,7 @@ namespace wf
         // General
         for (int index = 0; index < language_dropdown.count(); ++index)
         {
-            if (language_dropdown.itemText(index) == settings->getTempLanguage()->asString())
+            if (language_dropdown.itemText(index) == settings->getTempLanguage()->getName())
             {
                 language_dropdown.setCurrentIndex(index);
                 break;

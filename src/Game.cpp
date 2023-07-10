@@ -75,6 +75,11 @@ namespace wf
     {
         all_letters.clear();
 
+        if (settings->getCurrentLanguage() == nullptr)
+        {
+            return;
+        }
+
         for (const auto& letter_data : settings->getCurrentLanguage()->getLetterList())
         {
             for (int n = 0; n < letter_data.count; ++n)
@@ -952,7 +957,7 @@ namespace wf
             score.player_type = player->getType();
             score.points = player->getScore();
             score.timestamp = QDateTime::currentDateTime().toString(RecordTracker::getDateTimeFormat());
-            score.dictionary = settings->getCurrentLanguage()->asString();
+            score.dictionary = settings->getCurrentLanguage()->getName();
             score.modifier_pattern = settings->getModifierPattern()->getDistributionAsText();
 
             if (player == winning_player)

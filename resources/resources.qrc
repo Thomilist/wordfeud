@@ -1,11 +1,9 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>dictionaries/internal/Danish/Danish-letters.csv</file>
-    <file>dictionaries/internal/Danish/Danish-words.txt</file>
-    <file>dictionaries/internal/English/English-letters.csv</file>
-    <file>dictionaries/internal/English/English-words.txt</file>
-    <file>dictionaries/internal/German/German-letters.csv</file>
-    <file>dictionaries/internal/German/German-words.txt</file>
+    <file>dictionaries/Danish/Danish-letters.csv</file>
+    <file>dictionaries/Danish/Danish-words.txt</file>
+    <file>dictionaries/English/English-letters.csv</file>
+    <file>dictionaries/English/English-words.txt</file>
     <file>fonts/NotoSansMono-Regular.ttf</file>
     <file>icon/icon.ico</file>
 </qresource>

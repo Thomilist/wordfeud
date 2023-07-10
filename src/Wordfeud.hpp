@@ -16,6 +16,8 @@
 #include "ForwardDeclarations.hpp"
 
 #include "AboutDialog.hpp"
+#include "DictionaryEditor.hpp"
+#include "DictionaryEditorLauncher.hpp"
 #include "DictionaryLookupDialog.hpp"
 #include "Game.hpp"
 #include "RecordDialog.hpp"
@@ -62,6 +64,9 @@ namespace wf
             QMenu tools_menu;
             QAction dictionary_lookup;
             DictionaryLookupDialog dictionary_lookup_dialog;
+            QAction open_dictionary_editor;
+            DictionaryEditorLauncher dictionary_editor_launcher;
+            DictionaryEditor dictionary_editor;
 
             QMenu help_menu;
             QAction view_help;

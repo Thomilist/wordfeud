@@ -81,11 +81,11 @@ namespace wf
 
         int index = 0;
 
-        for (auto& language : settings->getAvailableLanguages())
+        for (auto& language : settings->getLoadedLanguages())
         {
-            language_dropdown.addItem(language.asString());
+            language_dropdown.addItem(language.getName());
 
-            if (language.asString() == settings->getTempLanguage()->asString())
+            if (language.getName() == settings->getTempLanguage()->getName())
             {
                 language_dropdown.setCurrentIndex(index);
                 lookup_language = &language;

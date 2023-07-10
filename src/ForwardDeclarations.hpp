@@ -5,6 +5,8 @@ namespace wf
 {
     class AboutDialog;
     class ButtonPanel;
+    class DictionaryEditor;
+    class DictionaryEditorLauncher;
     class DictionaryLookupDialog;
     class Game;
     class Header;
@@ -36,9 +38,9 @@ namespace wf
     struct Score;
 
     enum class BoardType;
+    enum class DictionaryEditorMode;
     enum class Direction;
     enum class GameState;
-    enum class LanguageName;
     enum class LetterStatus;
     enum class LetterType;
     enum class ModifierDistribution;

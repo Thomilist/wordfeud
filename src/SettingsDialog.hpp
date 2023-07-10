@@ -1,6 +1,8 @@
 #ifndef __SETTINGSDIALOG_H__
 #define __SETTINGSDIALOG_H__
 
+#include <QDebug>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDesktopServices>

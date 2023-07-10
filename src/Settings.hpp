@@ -1,6 +1,7 @@
 #ifndef __SETTINGS_H__
 #define __SETTINGS_H__
 
+#include <algorithm>
 #include <set>
 #include <utility>
 #include <vector>
@@ -26,7 +27,6 @@
 #include "ModifierPattern.hpp"
 #include "PlayerSettings.hpp"
 
-#include "LanguageName.hpp"
 #include "PlayerType.hpp"
 
 namespace wf
@@ -44,15 +44,15 @@ namespace wf
             void immediateApply();
             void setGridDimensions(int a_rows, int a_collumns);
             void setTileSize(int a_size);
-            void setLanguage(LanguageName a_language);
             void setLanguage(QString a_language);
             Language* getCurrentLanguage();
             Language* getTempLanguage();
-            Language* getLanguage(LanguageName a_language);
             Language* getLanguage(QString a_language);
-            std::vector<Language>& getAvailableLanguages();
-            void detectExternalLanguages();
-            void loadExternalLanguages();
+            std::vector<Language>& getLoadedLanguages();
+            std::set<QString> getAvailableLanguages();
+            void detectLanguages();
+            void createDefaultLanguagesIfNoneFound();
+            void loadLanguages();
             const QSize& getBoardDimensions() const;
             const QSize& getBoardTileSize() const;
             const QSize& getHandDimensions() const;
@@ -78,15 +78,15 @@ namespace wf
             int getMinimumAIDifficulty() const;
             int getMaximumAIDifficulty() const;
             void setAutoRestartDelay(int a_time);
-            int getAutoRestartDelay();
-            int getTempAutoRestartDelay();
+            int getAutoRestartDelay() const;
+            int getTempAutoRestartDelay() const;
             void enableAutoRestart(bool a_enabled);
-            bool isAutoRestartEnabled();
+            bool isAutoRestartEnabled() const;
 
         private:
             QMainWindow* main_window;
             std::vector<Language> languages;
-            std::vector<QString> external_languages;
+            std::set<QString> language_names;
             QSize board_dimensions{15,15};
             QSize board_tile_size{42,42};
             QSize hand_dimensions{7,1};
@@ -99,7 +99,7 @@ namespace wf
             bool auto_restart_enabled;
 
             // User-facing settings
-            Language* current_language;
+            Language* current_language = nullptr;
             ModifierPattern modifier_pattern;
             int minimum_ai_turn_time;
             int ai_letter_placing_delay;

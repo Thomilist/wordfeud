@@ -1,7 +1,11 @@
 #ifndef __LANGUAGE_H__
 #define __LANGUAGE_H__
 
+#include <QDebug>
+
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QHash>
 #include <QIODevice>
 #include <QString>
@@ -17,35 +21,35 @@
 
 #include "Letter.hpp"
 
-#include "LanguageName.hpp"
-
 namespace wf
 {
     class Language
     {
         public:
-            Language(LanguageName a_language);
+            Language();
             Language(QString a_language);
             ~Language();
+            friend bool operator<(Language& a_first, Language& a_second);
 
             const std::vector<LetterData>& getLetterList() const;
             const std::unordered_set<QString>& getWordList() const;
             bool isInWordList(QString a_word);
-            const QString& asString() const;
-            const LanguageName& asEnum() const;
-
-        private:
-            void loadInternalLanguage(LanguageName a_language);
-            void loadExternalLanguage(QString a_language);
+            const QString& getName() const;
+            void setName(QString a_name);
+            void loadLanguage(QString a_language);
             void loadLettersFromFile(QString a_file_path);
             void loadWordListFromFilePlain(QString a_file_path);
             void loadWordListFromFileCOR(QString a_file_path);
             void exportWordList();
+            void exportWordList(QString a_file_path);
+            void exportLetterList();
+            void exportLetterList(QString a_file_path);
+
+        private:
             std::vector<LetterData> letter_list;
             std::unordered_map<QString, QString> letter_transformations;
             std::unordered_set<QString> word_list;
-            QString language_string;
-            LanguageName language;
+            QString language_name;
     };
 }
 

@@ -44,7 +44,6 @@
 #include "BoardType.hpp"
 #include "Direction.hpp"
 #include "GameState.hpp"
-#include "LanguageName.hpp"
 #include "LetterStatus.hpp"
 #include "ModifierType.hpp"
 #include "PlayerType.hpp"

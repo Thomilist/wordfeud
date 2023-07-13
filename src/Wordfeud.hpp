@@ -23,6 +23,7 @@
 #include "RecordDialog.hpp"
 #include "Settings.hpp"
 #include "SettingsDialog.hpp"
+#include "StartupProgressDialog.hpp"
 #include "UpdateDialog.hpp"
 #include "Version.hpp"
 
@@ -50,6 +51,7 @@ namespace wf
             void automaticUpdateCheck();
 
             QMainWindow main_window;
+            StartupProgressDialog startup_progress_dialog;
             Settings settings;
             Version* version;
             Game game;

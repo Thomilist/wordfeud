@@ -14,11 +14,30 @@ namespace wf
         setLayout(&grid_layout);
         setWindowTitle("Settings");
 
-        createGeneralSettingsGroup();
-        createLeftPlayerSettingsGroup();
-        createRightPlayerSettingsGroup();
-        createAISettingsGroup();
-        createButtons();
+        grid_layout.addLayout(&left_column_layout, 0, 0);
+        grid_layout.addLayout(&right_column_layout, 0, 1);
+
+        // Left collumn
+        int layout_row = 0;
+
+        createGeneralSettingsGroup(&left_column_layout, layout_row++);
+        createStartupGroup(&left_column_layout, layout_row++);
+        createAISettingsGroup(&left_column_layout, layout_row++);
+
+        left_column_padding.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+        left_column_layout.addWidget(&left_column_padding, layout_row++, 0);
+
+        // Right collumn
+        layout_row = 0;
+
+        createLeftPlayerSettingsGroup(&right_column_layout, layout_row++);
+        createRightPlayerSettingsGroup(&right_column_layout, layout_row++);
+
+        right_column_padding.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+        right_column_layout.addWidget(&right_column_padding, layout_row++, 0);
+
+        // Bottom
+        createButtons(&grid_layout, 1);
 
         layout()->setSizeConstraint(QLayout::SetFixedSize);
     }
@@ -43,26 +62,45 @@ namespace wf
     
     void SettingsDialog::saveSettings()
     {
+        // General
         settings->setLanguage(language_dropdown.currentText());
         settings->setModifierPattern(modifier_distribution_dropdown.currentText());
         settings->setLetterColouring(letter_colouring_dropdown.currentText());
 
+        // Startup
+        std::set<QString> languages_to_load;
+
+        for (int index = 0; index < languages_to_load_list.count(); ++index)
+        {
+            auto language_item = languages_to_load_list.item(index);
+
+            if (language_item->checkState() == Qt::Checked)
+            {
+                languages_to_load.insert(language_item->text());
+            }
+        }
+
+        settings->setLanguagesToLoad(languages_to_load);
+
+        // AI
+        settings->setMinimumAITurnTime(minimum_ai_turn_time_slider.value());
+        settings->setAILetterPlacingDelay(ai_letter_placing_delay_slider.value() * ai_letter_placing_delay_step);
+        settings->setAutoRestartDelay(auto_restart_delay_slider.value());
+        settings->enableAutoRestart(!(auto_restart_delay_slider.value() == maximum_auto_restart_delay));
+
+        // Player 1
         PlayerSettings* left_player = settings->getLeftPlayer();
         left_player->setName(left_player_name_edit.text());
         left_player->setTypeWithString(left_player_type_dropdown.currentText());
         left_player->setRandomNameUse(left_player_random_name_checkbox.checkState());
         left_player->setAIDifficulty(left_player_ai_difficulty_slider.value());
 
+        // Player 2
         PlayerSettings* right_player = settings->getRightPlayer();
         right_player->setName(right_player_name_edit.text());
         right_player->setTypeWithString(right_player_type_dropdown.currentText());
         right_player->setRandomNameUse(right_player_random_name_checkbox.checkState());
         right_player->setAIDifficulty(right_player_ai_difficulty_slider.value());
-
-        settings->setMinimumAITurnTime(minimum_ai_turn_time_slider.value());
-        settings->setAILetterPlacingDelay(ai_letter_placing_delay_slider.value() * ai_letter_placing_delay_step);
-        settings->setAutoRestartDelay(auto_restart_delay_slider.value());
-        settings->enableAutoRestart(!(auto_restart_delay_slider.value() == maximum_auto_restart_delay));
 
         emit settingsSaved();
         return;
@@ -128,7 +166,7 @@ namespace wf
         return;
     }
     
-    void SettingsDialog::createGeneralSettingsGroup()
+    void SettingsDialog::createGeneralSettingsGroup(QGridLayout* a_grid_layout, int a_row)
     {
         int subrow = 0;
 
@@ -137,9 +175,8 @@ namespace wf
         createLetterColouringDropdown(subrow++);
 
         general_settings.setLayout(&general_settings_layout);
-        grid_layout.addWidget(&general_settings, layout_row, 0);
-
-        ++layout_row;
+        general_settings.setMinimumWidth(minimum_group_box_width);
+        a_grid_layout->addWidget(&general_settings, a_row, 0);
 
         return;
     }
@@ -160,9 +197,6 @@ namespace wf
 
         for (auto language : settings->getLoadedLanguages())
         {
-            qDebug() << "createLanguageDropdown";
-            qDebug() << language.getName();
-            qDebug() << settings->getTempLanguage()->getName();
             
             language_dropdown.addItem(language.getName());
 
@@ -221,7 +255,7 @@ namespace wf
         return;
     }
     
-    void SettingsDialog::createLeftPlayerSettingsGroup()
+    void SettingsDialog::createLeftPlayerSettingsGroup(QGridLayout* a_grid_layout, int a_row)
     {
         connect(&left_player_random_name_checkbox, &QCheckBox::stateChanged, this, &SettingsDialog::setNameFieldStates);
         connect(&left_player_ai_difficulty_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
@@ -270,13 +304,13 @@ namespace wf
 
         // Insert into dialog box
         left_player_settings.setLayout(&left_player_settings_layout);
-        grid_layout.addWidget(&left_player_settings, layout_row, 0);
-        ++layout_row;
+        left_player_settings.setMinimumWidth(minimum_group_box_width);
+        a_grid_layout->addWidget(&left_player_settings, a_row, 0);
 
         return;
     }
     
-    void SettingsDialog::createRightPlayerSettingsGroup()
+    void SettingsDialog::createRightPlayerSettingsGroup(QGridLayout* a_grid_layout, int a_row)
     {
         connect(&right_player_random_name_checkbox, &QCheckBox::stateChanged, this, &SettingsDialog::setNameFieldStates);
         connect(&right_player_ai_difficulty_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
@@ -325,13 +359,56 @@ namespace wf
 
         // Insert into dialog box
         right_player_settings.setLayout(&right_player_settings_layout);
-        grid_layout.addWidget(&right_player_settings, layout_row, 0);
-        ++layout_row;
+        right_player_settings.setMinimumWidth(minimum_group_box_width);
+        a_grid_layout->addWidget(&right_player_settings, a_row, 0);
 
         return;
     }
     
-    void SettingsDialog::createAISettingsGroup()
+    void SettingsDialog::createStartupGroup(QGridLayout* a_grid_layout, int a_row)
+    {
+        // List of languages to load
+        createLanguagesToLoadList();
+        languages_to_load_notice.setTextFormat(Qt::RichText);
+
+        startup_settings_layout.addWidget(&languages_to_load_label, 0, 0);
+        startup_settings_layout.addWidget(&languages_to_load_list, 1, 0);
+        startup_settings_layout.addWidget(&languages_to_load_notice, 2, 0);
+
+        // Insert into dialog box
+        startup_settings.setLayout(&startup_settings_layout);
+        startup_settings.setMinimumWidth(minimum_group_box_width);
+        a_grid_layout->addWidget(&startup_settings, a_row, 0);
+
+        return;
+    }
+    
+    void SettingsDialog::createLanguagesToLoadList()
+    {
+        languages_to_load_list.clear();
+        settings->detectLanguages();
+        auto languages_to_load = settings->getLanguagesToLoadAsStrings();
+
+        for (auto language : settings->getAvailableLanguagesAsStrings())
+        {
+            QListWidgetItem* language_item = new QListWidgetItem(language, &languages_to_load_list);
+
+            if (languages_to_load.contains(language))
+            {
+                language_item->setCheckState(Qt::Checked);
+            }
+            else
+            {
+                language_item->setCheckState(Qt::Unchecked);
+            }
+
+            languages_to_load_list.addItem(language_item);
+        }
+        
+        return;
+    }
+    
+    void SettingsDialog::createAISettingsGroup(QGridLayout* a_grid_layout, int a_row)
     {
         connect(&minimum_ai_turn_time_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
         connect(&ai_letter_placing_delay_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
@@ -377,15 +454,14 @@ namespace wf
         ai_settings_layout.addWidget(&auto_restart_delay_slider, 5, 1);
         
         ai_settings.setLayout(&ai_settings_layout);
-        grid_layout.addWidget(&ai_settings, layout_row, 0);
-        ++layout_row;
+        ai_settings.setMinimumWidth(minimum_group_box_width);
+        a_grid_layout->addWidget(&ai_settings, a_row, 0);
 
         return;
     }
     
-    void SettingsDialog::createButtons()
+    void SettingsDialog::createButtons(QGridLayout* a_grid_layout, int a_row)
     {
-        grid_layout.addWidget(&buttons, layout_row++, 0, 1, 2, Qt::AlignCenter);
         buttons.addButton(QDialogButtonBox::Help);
         buttons.addButton(&save_and_start_new_game_button, QDialogButtonBox::AcceptRole);
         buttons.addButton(QDialogButtonBox::Save);
@@ -401,13 +477,15 @@ namespace wf
         connect(&buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
         connect(&buttons, &QDialogButtonBox::accepted, this, &SettingsDialog::saveSettings);
 
+        a_grid_layout->addWidget(&buttons, a_row, 0, 1, 2, Qt::AlignCenter);
+
         return;
     }
     
     void SettingsDialog::loadCurrentSettings()
     {
         // General
-        for (int index = 0; index < language_dropdown.count(); ++index)
+        for (int index = 0; index < language_dropdown.count() && !settings->getLoadedLanguages().empty(); ++index)
         {
             if (language_dropdown.itemText(index) == settings->getTempLanguage()->getName())
             {
@@ -433,6 +511,14 @@ namespace wf
                 break;
             }
         }
+
+        // Startup
+        createLanguagesToLoadList();
+
+        // AI
+        minimum_ai_turn_time_slider.setValue(settings->getTempMinimumAITurnTime());
+        ai_letter_placing_delay_slider.setValue(settings->getTempAILetterPlacingDelay() / ai_letter_placing_delay_step);
+        auto_restart_delay_slider.setValue(settings->getTempAutoRestartDelay());
 
         // Player 1
         left_player_name_edit.setText(settings->getLeftPlayer()->getTempName());
@@ -463,11 +549,6 @@ namespace wf
         }
         
         right_player_ai_difficulty_slider.setValue(settings->getRightPlayer()->getTempAIDifficulty());
-
-        // AI
-        minimum_ai_turn_time_slider.setValue(settings->getTempMinimumAITurnTime());
-        ai_letter_placing_delay_slider.setValue(settings->getTempAILetterPlacingDelay() / ai_letter_placing_delay_step);
-        auto_restart_delay_slider.setValue(settings->getTempAutoRestartDelay());
 
         return;
     }

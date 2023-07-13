@@ -2,9 +2,7 @@
 
 namespace wf
 {
-    Header::Header(
-        Settings* a_settings,
-        QWidget* a_parent)
+    Header::Header(Settings* a_settings, QWidget* a_parent)
         : QWidget(a_parent)
         , settings(a_settings)
     {

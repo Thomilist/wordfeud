@@ -7,9 +7,7 @@ namespace wf
         : settings(a_settings)
     { }
     
-    VirtualBoard::VirtualBoard(
-        Settings* a_settings,
-        VirtualBoard* a_board)
+    VirtualBoard::VirtualBoard(Settings* a_settings, VirtualBoard* a_board)
         : settings(a_settings)
     {
         setWithBoard(a_board);

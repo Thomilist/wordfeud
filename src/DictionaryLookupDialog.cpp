@@ -34,6 +34,7 @@ namespace wf
         grid_layout.addWidget(&buttons, layout_row++, 0, 1, 2, Qt::AlignCenter);
         
         setLayout(&grid_layout);
+        layout()->setSizeConstraint(QLayout::SetFixedSize);
         updateStatusDisplay();
     }
     

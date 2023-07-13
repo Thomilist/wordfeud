@@ -3,17 +3,23 @@
 
 namespace wf
 {
-    Settings::Settings(QMainWindow* a_main_window)
+    Settings::Settings(QMainWindow* a_main_window, StartupProgressDialog* a_startup_progress_dialog)
         : main_window(a_main_window)
     {
+        connect(this, &Settings::languagesCounted, a_startup_progress_dialog, &StartupProgressDialog::setLanguageCount);
+        connect(this, &Settings::updateLoadingText, a_startup_progress_dialog, &StartupProgressDialog::setText);
+        connect(this, &Settings::incrementLoadingProgress, a_startup_progress_dialog, &StartupProgressDialog::incrementProgress);
+        
         int monospace_font_family_id = QFontDatabase::addApplicationFont(":/fonts/NotoSansMono-Regular.ttf");
         QString monospace_font_family = QFontDatabase::applicationFontFamilies(monospace_font_family_id).at(0);
         monospace_font.setFamily(monospace_font_family);
         monospace_font.setStyleHint(QFont::TypeWriter);
 
         load();
-        std::sort(languages.begin(), languages.end());
+        std::sort(loaded_languages.begin(), loaded_languages.end());
         newGameApply();
+        emit incrementLoadingProgress();
+        emit updateLoadingText("Initialising game...");
     }
     
     Settings::~Settings()
@@ -24,11 +30,22 @@ namespace wf
     
     void Settings::save()
     {
+        // Save first time state
+        setValue("meta/first_time", first_time);
+        
         // Save main window dimensions and position
         setValue("window/geometry", main_window->saveGeometry());
 
         // Save general settings
-        setValue("common/dictionary", getCurrentLanguage()->getName());
+        if (current_language == nullptr)
+        {
+            setValue("common/dictionary", "Error: No dictionaries");
+        }
+        else
+        {
+            setValue("common/dictionary", getCurrentLanguage()->getName());
+        }
+        
         setValue("common/modifiers", getModifierPattern()->getDistributionAsText());
         setValue("common/letter_colouring", getLetterColouring());
 
@@ -50,18 +67,69 @@ namespace wf
         setValue("ai/auto_restart_delay", getAutoRestartDelay());
         setValue("ai/auto_restart_enabled", isAutoRestartEnabled());
 
+        // Save list of languages to load
+        beginGroup("startup");
+        beginWriteArray("dictionaries");
+
+        int index = 0;
+
+        for (auto language : languages_to_load)
+        {
+            setArrayIndex(index++);
+            setValue("dictionary", language);
+        }
+
+        endArray();
+        endGroup();
+
         return;
     }
     
     void Settings::load()
     {
-        // Load random names
-        loadRandomNames();
+        // Check if this is the first launch
+        first_time = value("meta/first_time", "true").toBool();
+        
+        // Load list of languages to load
+        if (first_time)
+        {
+            for (QString language_name : default_languages)
+            {
+                languages_to_load.insert(language_name);
+            }
+        }
+        else
+        {
+            beginGroup("startup");
+            int size = beginReadArray("dictionaries");
+
+            for (int index = 0; index < size; ++index)
+            {
+                setArrayIndex(index);
+                languages_to_load.insert(value("dictionary").toString());
+            }
+
+            endArray();
+            endGroup();
+        }
 
         // Load languages
         detectLanguages();
-        createDefaultLanguagesIfNoneFound();
-        loadLanguages();
+
+        if (available_languages_names.empty())
+        {
+            createDefaultLanguages();
+        }
+        else
+        {
+            loadLanguages();
+        }
+
+        // Load random names
+        loadRandomNames();
+
+        // Load the rest of the settings
+        emit updateLoadingText("Loading settings...");
         
         // Load main window dimensions and position
         const QByteArray geometry = value("window/geometry", QByteArray()).toByteArray();
@@ -106,6 +174,15 @@ namespace wf
         setAutoRestartDelay(value("ai/auto_restart_delay", "31").toInt());
         enableAutoRestart(value("ai/auto_restart_enabled", "false").toBool());
 
+        first_time = false;
+        return;
+    }
+    
+    void Settings::newSessionApply()
+    {
+        
+        
+        newGameApply();
         return;
     }
     
@@ -118,7 +195,6 @@ namespace wf
         getRightPlayer()->apply();
 
         nextTurnApply();
-
         return;
     }
     
@@ -129,7 +205,6 @@ namespace wf
         auto_restart_delay = auto_restart_delay_temp;
 
         immediateApply();
-        
         return;
     }
     
@@ -158,7 +233,7 @@ namespace wf
     
     void Settings::setLanguage(QString a_language)
     {
-        for (auto& language : languages)
+        for (auto& language : loaded_languages)
         {
             if (language.getName() == a_language)
             {
@@ -167,7 +242,10 @@ namespace wf
             }
         }
 
-        setLanguage("English");
+        if (!loaded_languages.empty())
+        {
+            current_language_temp = &loaded_languages.at(0);
+        }
 
         return;
     }
@@ -184,7 +262,7 @@ namespace wf
     
     Language* Settings::getLanguage(QString a_language)
     {
-        for (auto& language : languages)
+        for (auto& language : loaded_languages)
         {
             if (language.getName() == a_language)
             {
@@ -197,18 +275,34 @@ namespace wf
     
     std::vector<Language>& Settings::getLoadedLanguages()
     {
-        return languages;
+        return loaded_languages;
     }
     
-    std::set<QString> Settings::getAvailableLanguages()
+    const std::set<QString> Settings::getLoadedLanguagesAsString() const
+    {
+        return loaded_languages_names;
+    }
+    
+    const std::set<QString> Settings::getAvailableLanguagesAsStrings()
     {
         detectLanguages();
-        return language_names;
+        return available_languages_names;
+    }
+    
+    const std::set<QString> Settings::getLanguagesToLoadAsStrings()
+    {
+        return languages_to_load;
+    }
+    
+    void Settings::setLanguagesToLoad(std::set<QString> a_language_names)
+    {
+        languages_to_load = a_language_names;
+        return;
     }
     
     void Settings::detectLanguages()
     {
-        language_names.clear();
+        available_languages_names.clear();
         
         QDir directory{"resources/dictionaries/"};
 
@@ -243,26 +337,30 @@ namespace wf
                 continue;
             }
 
-            language_names.insert(language_name);
+            available_languages_names.insert(language_name);
         }
 
         return;
     }
     
-    void Settings::createDefaultLanguagesIfNoneFound()
+    void Settings::createDefaultLanguages()
     {
-        if (!language_names.empty())
-        {
-            return;
-        }
+        emit languagesCounted(default_languages.size());
         
-        for (QString language_name : {"Danish", "English"})
+        for (QString language_name : default_languages)
         {
-            Language language;
-            language.loadLettersFromFile(":/dictionaries/" % language_name % "/" % language_name % "-letters.csv");
-            language.loadWordListFromFilePlain(":/dictionaries/" % language_name % "/" % language_name % "-words.txt");
-            language.setName(language_name);
-            languages.push_back(language);
+            emit updateLoadingText(QString() % "Loading dictionaries... (" % language_name % ")");
+
+            if (languages_to_load.contains(language_name))
+            {
+                Language language;
+                language.loadLettersFromFile(":/dictionaries/" % language_name % "/" % language_name % "-letters.csv");
+                language.loadWordListFromFilePlain(":/dictionaries/" % language_name % "/" % language_name % "-words.txt");
+                language.setName(language_name);
+                loaded_languages.push_back(language);
+            }
+
+            emit incrementLoadingProgress();
         }
 
         return;
@@ -270,10 +368,18 @@ namespace wf
     
     void Settings::loadLanguages()
     {
-        for (auto language_name : language_names)
+        emit languagesCounted(available_languages_names.size());
+
+        for (auto language_name : available_languages_names)
         {
-            qDebug() << language_name;
-            languages.push_back(Language(language_name));
+            emit updateLoadingText(QString() % "Loading dictionaries... (" % language_name % ")");
+
+            if (languages_to_load.contains(language_name))
+            {
+                loaded_languages.push_back(Language(language_name));
+                loaded_languages_names.insert(language_name);
+            }
+            emit incrementLoadingProgress();
         }
 
         return;
@@ -302,6 +408,11 @@ namespace wf
     const QSize& Settings::getSelectionTileSize() const
     {
         return selection_tile_size;
+    }
+    
+    const QSize& Settings::getDisplayTileSize() const
+    {
+        return display_tile_size;
     }
     
     QFont Settings::getMonospaceFont() const
@@ -356,6 +467,8 @@ namespace wf
     
     void Settings::loadRandomNames()
     {
+        emit updateLoadingText("Loading names...");
+        
         QDir directory{"resources/names/"};
         QDirIterator name_directory{directory};
         QString file_path;
@@ -368,6 +481,8 @@ namespace wf
 
             if (name_file.open(QIODevice::ReadOnly))
             {
+                emit updateLoadingText(QString() % "Loading names... (" % name_file.fileName() % ")");
+                
                 QTextStream names{&name_file};
 
                 while (!names.atEnd())
@@ -379,6 +494,8 @@ namespace wf
                 name_file.close();
             }
         }
+
+        emit incrementLoadingProgress();
 
         return;
     }

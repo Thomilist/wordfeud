@@ -1,7 +1,10 @@
 #ifndef __LANGUAGE_H__
 #define __LANGUAGE_H__
 
-#include <QDebug>
+#include <algorithm>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
 
 #include <QDir>
 #include <QFile>
@@ -12,10 +15,6 @@
 #include <QStringBuilder>
 #include <QStringList>
 #include <QTextStream>
-
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
 
 #include "ForwardDeclarations.hpp"
 
@@ -31,8 +30,9 @@ namespace wf
             ~Language();
             friend bool operator<(Language& a_first, Language& a_second);
 
-            const std::vector<LetterData>& getLetterList() const;
-            const std::unordered_set<QString>& getWordList() const;
+            void setLetterList(std::vector<LetterData>* a_letter_list);
+            std::vector<LetterData>* getLetterList();
+            const std::unordered_set<QString>* getWordList() const;
             bool isInWordList(QString a_word);
             const QString& getName() const;
             void setName(QString a_name);
@@ -44,6 +44,9 @@ namespace wf
             void exportWordList(QString a_file_path);
             void exportLetterList();
             void exportLetterList(QString a_file_path);
+            void addLetter(LetterData a_letter_data);
+            bool removeLetter(size_t a_index);
+            void removeAllLetters();
 
         private:
             std::vector<LetterData> letter_list;

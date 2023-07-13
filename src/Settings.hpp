@@ -6,8 +6,6 @@
 #include <utility>
 #include <vector>
 
-#include <QDebug>
-
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
@@ -19,6 +17,7 @@
 #include <QSize>
 #include <QString>
 #include <QStringBuilder>
+#include <QStringList>
 #include <QTextStream>
 
 #include "ForwardDeclarations.hpp"
@@ -26,6 +25,7 @@
 #include "Language.hpp"
 #include "ModifierPattern.hpp"
 #include "PlayerSettings.hpp"
+#include "StartupProgressDialog.hpp"
 
 #include "PlayerType.hpp"
 
@@ -33,12 +33,15 @@ namespace wf
 {
     class Settings : public QSettings
     {
+        Q_OBJECT
+        
         public:
-            Settings(QMainWindow* a_main_window);
+            Settings(QMainWindow* a_main_window, StartupProgressDialog* a_startup_progress_dialog);
             ~Settings();
 
             void save();
             void load();
+            void newSessionApply();
             void newGameApply();
             void nextTurnApply();
             void immediateApply();
@@ -49,15 +52,19 @@ namespace wf
             Language* getTempLanguage();
             Language* getLanguage(QString a_language);
             std::vector<Language>& getLoadedLanguages();
-            std::set<QString> getAvailableLanguages();
+            const std::set<QString> getLoadedLanguagesAsString() const;
+            const std::set<QString> getAvailableLanguagesAsStrings();
+            const std::set<QString> getLanguagesToLoadAsStrings();
+            void setLanguagesToLoad(std::set<QString> a_language_names);
             void detectLanguages();
-            void createDefaultLanguagesIfNoneFound();
+            void createDefaultLanguages();
             void loadLanguages();
             const QSize& getBoardDimensions() const;
             const QSize& getBoardTileSize() const;
             const QSize& getHandDimensions() const;
             const QSize& getHandTileSize() const;
             const QSize& getSelectionTileSize() const;
+            const QSize& getDisplayTileSize() const;
             QFont getMonospaceFont() const;
             ModifierPattern* getModifierPattern();
             const QString getTempModifierPattern() const;
@@ -82,16 +89,25 @@ namespace wf
             int getTempAutoRestartDelay() const;
             void enableAutoRestart(bool a_enabled);
             bool isAutoRestartEnabled() const;
+        
+        signals:
+            void languagesCounted(int a_count);
+            void updateLoadingText(QString a_text);
+            void incrementLoadingProgress();
 
         private:
             QMainWindow* main_window;
-            std::vector<Language> languages;
-            std::set<QString> language_names;
+            bool first_time = true;
+            QStringList default_languages{"Danish", "English"};
+            std::vector<Language> loaded_languages;
+            std::set<QString> loaded_languages_names;
+            std::set<QString> available_languages_names;
             QSize board_dimensions{15,15};
             QSize board_tile_size{42,42};
             QSize hand_dimensions{7,1};
             QSize hand_tile_size{90,90};
             QSize selection_tile_size{64,64};
+            QSize display_tile_size{200,200};
             QFont monospace_font;
             std::set<QString> random_names;
             const int minimum_ai_difficulty = 1;
@@ -101,13 +117,16 @@ namespace wf
             // User-facing settings
             Language* current_language = nullptr;
             ModifierPattern modifier_pattern;
-            int minimum_ai_turn_time;
-            int ai_letter_placing_delay;
             QString letter_colouring;
-            int auto_restart_delay;
 
             PlayerSettings left_player;
             PlayerSettings right_player;
+            
+            int minimum_ai_turn_time;
+            int ai_letter_placing_delay;
+            int auto_restart_delay;
+
+            std::set<QString> languages_to_load;
 
             // Temporary user-facing settings
             Language* current_language_temp;

@@ -12,7 +12,9 @@ namespace wf
     class Header;
     class Language;
     class Letter;
+    class LetterEditorWidget;
     class LetterPool;
+    class LetterTableModel;
     class Modifier;
     class ModifierPattern;
     class Player;
@@ -26,6 +28,7 @@ namespace wf
     class RenderedTile;
     class Settings;
     class SettingsDialog;
+    class StartupProgressDialog;
     class UpdateDialog;
     class Version;
     class VirtualBoard;

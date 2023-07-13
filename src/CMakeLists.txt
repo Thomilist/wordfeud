@@ -26,6 +26,9 @@ add_library(DictionaryEditor DictionaryEditor.cpp)
 target_link_libraries(
     DictionaryEditor
     Qt5::Widgets
+    LetterEditorWidget
+    LetterTableModel
+    Settings
 )
 
 add_library(DictionaryEditorLauncher DictionaryEditorLauncher.cpp)
@@ -83,9 +86,25 @@ target_link_libraries(
     Qt5::Widgets
 )
 
+add_library(LetterEditorWidget LetterEditorWidget.cpp)
+target_link_libraries(
+    LetterEditorWidget
+    Qt5::Widgets
+    Letter
+    RenderedTile
+)
+
 add_library(LetterPool LetterPool.cpp)
 target_link_libraries(
     LetterPool
+    Qt5::Widgets
+    Language
+    Letter
+)
+
+add_library(LetterTableModel LetterTableModel.cpp)
+target_link_libraries(
+    LetterTableModel
     Qt5::Widgets
     Language
     Letter
@@ -192,6 +211,7 @@ target_link_libraries(
     Language
     ModifierPattern
     PlayerSettings
+    StartupProgressDialog
 )
 
 add_library(SettingsDialog SettingsDialog.cpp)
@@ -199,6 +219,12 @@ target_link_libraries(
     SettingsDialog
     Qt5::Widgets
     Settings
+)
+
+add_library(StartupProgressDialog StartupProgressDialog.cpp)
+target_link_libraries(
+    StartupProgressDialog
+    Qt5::Widgets
 )
 
 add_library(UpdateDialog UpdateDialog.cpp)
@@ -254,5 +280,6 @@ target_link_libraries(
     RecordDialog
     Settings
     SettingsDialog
+    StartupProgressDialog
     UpdateDialog
 )

@@ -62,6 +62,13 @@ namespace wf
                 tile_size = settings->getSelectionTileSize();
                 break;
             }
+            case BoardType::Display:
+            {
+                grid_dimensions.setHeight(0);
+                grid_dimensions.setWidth(0);
+                tile_size = settings->getDisplayTileSize();
+                break;
+            }
         }
         
         board_size.setHeight(grid_dimensions.height() * tile_size.height());

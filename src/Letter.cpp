@@ -6,9 +6,7 @@ namespace wf
         type = LetterType::None;
     }
 
-    Letter::Letter(
-        QString a_letter,
-        int a_points)
+    Letter::Letter(QString a_letter, int a_points)
         : text(a_letter)
         , points(a_points)
     {
@@ -25,6 +23,12 @@ namespace wf
     Letter::~Letter()
     { }
     
+    void Letter::setText(QString a_text)
+    {
+        text = a_text;
+        return;
+    }
+    
     QString Letter::getText() const
     {
         if (getType() == LetterType::Wildcard)
@@ -35,6 +39,12 @@ namespace wf
         {
             return text;
         }
+    }
+    
+    void Letter::setPoints(int a_points)
+    {
+        points = a_points;
+        return;
     }
     
     QString Letter::getPointsAsText() const

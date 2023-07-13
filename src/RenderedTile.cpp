@@ -34,6 +34,11 @@ namespace wf
                 tile_size = settings->getSelectionTileSize();
                 break;
             }
+            case BoardType::Display:
+            {
+                tile_size = settings->getDisplayTileSize();
+                break;
+            }
         }
         
         setMouseTracking(true);
@@ -80,6 +85,10 @@ namespace wf
                 break;
             }
             case BoardType::Selection:
+            {
+                break;
+            }
+            case BoardType::Display:
             {
                 break;
             }

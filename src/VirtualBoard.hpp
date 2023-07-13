@@ -25,10 +25,7 @@ namespace wf
     {
         public:
             VirtualBoard(Settings* a_settings);
-            VirtualBoard(
-                Settings* a_settings,
-                VirtualBoard* a_board
-            );
+            VirtualBoard(Settings* a_settings, VirtualBoard* a_board);
             ~VirtualBoard();
 
             void setWithBoard(VirtualBoard* a_board);

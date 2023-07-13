@@ -15,6 +15,7 @@ namespace wf
     {
         setModal(true);
         setLayout(&grid_layout);
+        layout()->setSizeConstraint(QLayout::SetFixedSize);
         setWindowTitle("Open dictionary editor");
 
         connect(&buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -78,7 +79,7 @@ namespace wf
     {
         dictionary_dropdown.clear();
         
-        for (const auto& language : settings->getAvailableLanguages())
+        for (const auto& language : settings->getAvailableLanguagesAsStrings())
         {
             dictionary_dropdown.addItem(language);
         }

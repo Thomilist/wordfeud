@@ -4,29 +4,29 @@
 namespace wf
 {
     Wordfeud::Wordfeud(Version* a_version)
-    : settings(&main_window)
-    , version(a_version)
-    , game(&settings, &main_window)
-    , game_menu("Game", &main_window)
-    , start_new_game("New game", &game_menu)
-    , open_settings("Settings", &game_menu)
-    , settings_dialog(&settings, this, &main_window)
-    , show_records("Records", &game_menu)
-    , record_dialog(game.getRecords(), &main_window)
-    , tools_menu("Tools", &main_window)
-    , dictionary_lookup("Dictionary lookup", &tools_menu)
-    , dictionary_lookup_dialog(&settings, &main_window)
-    , open_dictionary_editor("Dictionary editor", &tools_menu)
-    , dictionary_editor_launcher(&settings, &main_window)
-    , dictionary_editor(&settings, &main_window)
-    , help_menu("Help", &main_window)
-    , view_help("View help", &help_menu)
-    , view_about("About", &help_menu)
-    , about_dialog(a_version, &main_window)
-    , check_for_updates("Check for updates", &help_menu)
-    , update_dialog(version, &main_window)
-    , open_github("Open on GitHub", &help_menu)
-    , report_issue("Report issue", &help_menu)
+        : settings(&main_window, &startup_progress_dialog)
+        , version(a_version)
+        , game(&settings, &main_window)
+        , game_menu("Game", &main_window)
+        , start_new_game("New game", &game_menu)
+        , open_settings("Settings", &game_menu)
+        , settings_dialog(&settings, this, &main_window)
+        , show_records("Records", &game_menu)
+        , record_dialog(game.getRecords(), &main_window)
+        , tools_menu("Tools", &main_window)
+        , dictionary_lookup("Dictionary lookup", &tools_menu)
+        , dictionary_lookup_dialog(&settings, &main_window)
+        , open_dictionary_editor("Dictionary editor", &tools_menu)
+        , dictionary_editor_launcher(&settings, &main_window)
+        , dictionary_editor(&settings, &main_window)
+        , help_menu("Help", &main_window)
+        , view_help("View help", &help_menu)
+        , view_about("About", &help_menu)
+        , about_dialog(a_version, &main_window)
+        , check_for_updates("Check for updates", &help_menu)
+        , update_dialog(version, &main_window)
+        , open_github("Open on GitHub", &help_menu)
+        , report_issue("Report issue", &help_menu)
     {
         connect(&settings_dialog, &SettingsDialog::settingsSaved, &game, &Game::repaintHandAndBoard);
         connect(&game, &Game::autoRestart, this, &Wordfeud::startNewGame);
@@ -40,6 +40,8 @@ namespace wf
         initialiseGameMenu();
         initialiseToolsMenu();
         initialiseHelpMenu();
+
+        startup_progress_dialog.incrementProgress();
 
         main_window.show();
         automaticUpdateCheck();

@@ -1,6 +1,8 @@
 #ifndef __SETTINGSDIALOG_H__
 #define __SETTINGSDIALOG_H__
 
+#include <set>
+
 #include <QDebug>
 
 #include <QCheckBox>
@@ -14,6 +16,8 @@
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
+#include <QListWidget>
+#include <QListWidgetItem>
 #include <QPushButton>
 #include <QRegExp>
 #include <QRegExpValidator>
@@ -53,21 +57,27 @@ namespace wf
             void settingsSaved();
         
         private:
-            void createGeneralSettingsGroup();
+            void createGeneralSettingsGroup(QGridLayout* a_grid_layout, int a_row);
             void createLanguageDropdown(int a_row);
             void createModifierDistributionDropdown(int a_row);
             void createLetterColouringDropdown(int a_row);
-            void createLeftPlayerSettingsGroup();
-            void createRightPlayerSettingsGroup();
-            void createAISettingsGroup();
-            void createButtons();
+            void createLeftPlayerSettingsGroup(QGridLayout* a_grid_layout, int a_row);
+            void createRightPlayerSettingsGroup(QGridLayout* a_grid_layout, int a_row);
+            void createStartupGroup(QGridLayout* a_grid_layout, int a_row);
+            void createLanguagesToLoadList();
+            void createAISettingsGroup(QGridLayout* a_grid_layout, int a_row);
+            void createButtons(QGridLayout* a_grid_layout, int a_row);
             void loadCurrentSettings();
 
             Wordfeud* wordfeud;
             Settings* settings;
             QGridLayout grid_layout;
-            int layout_row = 0;
+            QGridLayout left_column_layout;
+            QGridLayout right_column_layout;
+            QWidget left_column_padding;
+            QWidget right_column_padding;
             QRegExp player_name_regex{QString{"^[\\w ]*[^\\W_][\\w ]*$"}};
+            const int minimum_group_box_width = 400;
             const int maximum_name_length = 26;
             const int minimum_shown_ai_difficulty = 0;
             const int minimum_ai_turn_time = 0;
@@ -100,6 +110,13 @@ namespace wf
             QLabel left_player_ai_difficulty_label{"AI difficulty:"};
             QLabel left_player_ai_difficulty_display_label;
             QSlider left_player_ai_difficulty_slider;
+
+            // Startup group
+            QGroupBox startup_settings{"Startup"};
+            QGridLayout startup_settings_layout;
+            QLabel languages_to_load_label{"Dictionaries to load*:"};
+            QListWidget languages_to_load_list;
+            QLabel languages_to_load_notice{"<i>* Takes effect at program startup</i>"};
 
             // Right player settings
             QGroupBox right_player_settings{"Player 2"};

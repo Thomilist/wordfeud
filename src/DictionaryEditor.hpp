@@ -4,6 +4,8 @@
 #include <set>
 #include <vector>
 
+#include <QDebug>
+
 #include <QButtonGroup>
 #include <QComboBox>
 #include <QDesktopServices>
@@ -13,20 +15,28 @@
 #include <QFont>
 #include <QGridLayout>
 #include <QGroupBox>
+#include <QHeaderView>
+#include <QItemSelectionModel>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QModelIndex>
+#include <QModelIndexList>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QRegExp>
 #include <QRegExpValidator>
+#include <QScrollBar>
 #include <QString>
 #include <QStringBuilder>
+#include <QTableView>
 #include <QUrl>
 #include <QWidget>
 
 #include "ForwardDeclarations.hpp"
 
+#include "LetterEditorWidget.hpp"
+#include "LetterTableModel.hpp"
 #include "Settings.hpp"
 
 #include "DictionaryEditorMode.hpp"
@@ -48,6 +58,10 @@ namespace wf
             void updateInterfaceState();
             void browseWordSource();
             void saveAndClose();
+            void removeSelectedLetters();
+        
+        signals:
+            void letterPoolChanged(const QModelIndex& a_index = QModelIndex());
         
         private:
             void populateEditor();
@@ -58,6 +72,8 @@ namespace wf
             void createWordGroup();
             void createLetterGroup();
             void createNameGroup();
+            void loadLettersFromSource();
+            void resizeTable();
 
             Settings* settings;
             QGridLayout grid_layout;
@@ -68,13 +84,10 @@ namespace wf
 
             // Existing dictionaries
             std::set<QString> dictionaries;
+            Language* source_language = nullptr;
 
             // Dictionary metadata
             bool dictionary_name_valid = false;
-
-            // Dictionary word data
-
-            // Dictionary letter data
 
             // UI elements
 
@@ -93,6 +106,9 @@ namespace wf
             // Letter group elements
             QGroupBox letter_group{"Letter Pool"};
             QGridLayout letter_group_layout;
+            LetterEditorWidget letter_editor;
+            QTableView letter_table;
+            LetterTableModel letter_table_model;
 
             // Name group elements
             QGroupBox name_group{"Dictionary Name"};

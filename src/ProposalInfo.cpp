@@ -2,9 +2,7 @@
 
 namespace wf
 {
-    ProposalInfo::ProposalInfo(
-                Settings* a_settings,
-                QWidget* a_parent)
+    ProposalInfo::ProposalInfo(Settings* a_settings, QWidget* a_parent)
         : QWidget(a_parent)
         , settings(a_settings)
     {

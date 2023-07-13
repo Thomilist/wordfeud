@@ -25,9 +25,7 @@ namespace wf
         Q_OBJECT
 
         public:
-            ButtonPanel(
-                Settings* a_settings,
-                QWidget* a_parent = nullptr);
+            ButtonPanel(Settings* a_settings, QWidget* a_parent = nullptr);
             ~ButtonPanel();
 
             QPushButton* getPlayButton();

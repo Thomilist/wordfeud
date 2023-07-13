@@ -2,9 +2,7 @@
 
 namespace wf
 {
-    ButtonPanel::ButtonPanel(
-        Settings* a_settings,
-        QWidget* a_parent)
+    ButtonPanel::ButtonPanel(Settings* a_settings, QWidget* a_parent)
         : QWidget(a_parent)
         , settings(a_settings)
         , play_pass_stack(this)

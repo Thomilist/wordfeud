@@ -12,10 +12,13 @@ namespace wf
             "resources/dictionaries",
             "Plain text (*.txt)"
         )
+        , letter_editor(settings, this)
+        , letter_table_model(&language)
         , button_box(QDialogButtonBox::Help | QDialogButtonBox::Save | QDialogButtonBox::Discard)
     {
         setModal(true);
         setLayout(&grid_layout);
+        layout()->setSizeConstraint(QLayout::SetFixedSize);
         setWindowTitle("Dictionary Editor");
 
         button_box.button(QDialogButtonBox::Save)->setText("Save && Close");
@@ -23,6 +26,8 @@ namespace wf
         connect(&button_box, &QDialogButtonBox::accepted, this, &DictionaryEditor::saveAndClose);
         connect(button_box.button(QDialogButtonBox::Discard), &QPushButton::clicked, this, &QDialog::reject);
         connect(&button_box, &QDialogButtonBox::helpRequested, this, &DictionaryEditor::viewEditorHelp);
+
+        letter_table.setModel(&letter_table_model);
 
         word_source_dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
 
@@ -74,6 +79,13 @@ namespace wf
         mode = a_mode;
         language.setName(a_language);
 
+        if (a_mode == DictionaryEditorMode::OpenCopy || a_mode == DictionaryEditorMode::EditExisting)
+        {
+            source_language = settings->getLanguage(a_language);
+            loadLettersFromSource();
+        }
+
+        resizeTable();
         populateEditor();
         
         QDialog::open();
@@ -107,7 +119,9 @@ namespace wf
             dictionary_name_valid = true;
         }
 
-        button_box.button(QDialogButtonBox::Save)->setDisabled(!dictionary_name_valid);
+        bool word_source_specified = !word_source_edit.text().isEmpty();
+
+        button_box.button(QDialogButtonBox::Save)->setDisabled(!dictionary_name_valid || !word_source_specified);
 
         return;
     }
@@ -139,6 +153,26 @@ namespace wf
         return;
     }
     
+    void DictionaryEditor::removeSelectedLetters()
+    {
+        std::set<int, std::greater<int>> selected_columns;
+        auto selection_model = letter_table.selectionModel();
+        QModelIndexList selected_indices = selection_model->selectedIndexes();
+
+        for (auto index : selected_indices)
+        {
+            selected_columns.insert(index.column());
+        }
+
+        for (auto index : selected_columns)
+        {
+            qDebug() << index;
+            letter_table_model.removeColumns(index, 1);
+        }
+
+        return;
+    }
+    
     void DictionaryEditor::populateEditor()
     {
         detectExistingDictionaries();
@@ -152,7 +186,7 @@ namespace wf
     
     void DictionaryEditor::detectExistingDictionaries()
     {
-        dictionaries = settings->getAvailableLanguages();
+        dictionaries = settings->getAvailableLanguagesAsStrings();
         return;
     }
     
@@ -275,6 +309,7 @@ namespace wf
     void DictionaryEditor::createWordGroup()
     {
         connect(&word_source_browse_button, &QPushButton::clicked, this, &DictionaryEditor::browseWordSource);
+        connect(&word_source_edit, &QLineEdit::textChanged, this, &DictionaryEditor::updateInterfaceState);
 
         word_source_edit.setReadOnly(true);
         
@@ -290,6 +325,17 @@ namespace wf
     
     void DictionaryEditor::createLetterGroup()
     {
+        connect(&letter_editor, &LetterEditorWidget::addToPool, &letter_table_model, &LetterTableModel::addLetter);
+        connect(&letter_editor, &LetterEditorWidget::removeSelected, this, &DictionaryEditor::removeSelectedLetters);
+        
+        letter_table.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+        letter_table.horizontalHeader()->setVisible(false);
+        
+        int layout_row = 0;
+
+        letter_group_layout.addWidget(&letter_editor, layout_row++, 0, Qt::AlignCenter);
+        letter_group_layout.addWidget(&letter_table, layout_row++, 0, Qt::AlignCenter);
+
         letter_group.setLayout(&letter_group_layout);
         return;
     }
@@ -305,6 +351,40 @@ namespace wf
         name_group_layout.addWidget(&name_validation_label, layout_row++, 1, Qt::AlignRight);
 
         name_group.setLayout(&name_group_layout);
+        return;
+    }
+    
+    void DictionaryEditor::loadLettersFromSource()
+    {
+        if (source_language == nullptr)
+        {
+            return;
+        }
+
+        letter_table_model.setLetterList(source_language->getLetterList());
+        letter_table.repaint();
+
+        return;
+    }
+    
+    void DictionaryEditor::resizeTable()
+    {
+        // Width (it's just wide, no magic here)
+        letter_table.setMinimumWidth(800);
+        letter_table.resizeColumnsToContents();
+
+        // Height to fit the three rows
+        int scroll_bar_height = letter_table.horizontalScrollBar()->height();
+        int total_row_height = 0;
+
+        for (int index = 0; index < letter_table.verticalHeader()->count(); ++index)
+        {
+            total_row_height += letter_table.verticalHeader()->sectionSize(index);
+        }
+
+        int total_height = scroll_bar_height + total_row_height;
+        letter_table.setFixedHeight(total_height);
+
         return;
     }
 }

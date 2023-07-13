@@ -17,9 +17,7 @@ namespace wf
     class ProposalInfo : public QWidget
     {
         public:
-            ProposalInfo(
-                Settings* a_settings,
-                QWidget* a_parent = nullptr);
+            ProposalInfo(Settings* a_settings, QWidget* a_parent = nullptr);
             ~ProposalInfo();
 
             void setProposedPlay(bool a_valid, int a_points);

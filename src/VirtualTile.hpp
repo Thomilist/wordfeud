@@ -23,6 +23,7 @@ namespace wf
 
             virtual void placeLetter(Letter* a_letter);
             [[nodiscard]] virtual Letter* removeLetter();
+            void overwriteLetter(Letter* a_letter);
             void setModifier(Modifier* a_modifier);
             Modifier* getModifier() const;
             Letter* getLetter() const;

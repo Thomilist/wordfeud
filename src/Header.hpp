@@ -26,9 +26,7 @@ namespace wf
     class Header : public QWidget
     {
         public:
-            Header(
-                Settings* a_settings,
-                QWidget* a_parent = nullptr);
+            Header(Settings* a_settings, QWidget* a_parent = nullptr);
             ~Header();
 
             void setLeftPlayer(Player* a_player);

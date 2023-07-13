@@ -1,9 +1,7 @@
 #include "Game.hpp"
 namespace wf
 {
-    Game::Game(
-        Settings* a_settings,
-        QWidget* a_parent)
+    Game::Game(Settings* a_settings, QWidget* a_parent)
         : QWidget(a_parent)
         , settings(a_settings)
         , game_layout(this)
@@ -80,7 +78,7 @@ namespace wf
             return;
         }
 
-        for (const auto& letter_data : settings->getCurrentLanguage()->getLetterList())
+        for (const auto& letter_data : *settings->getCurrentLanguage()->getLetterList())
         {
             for (int n = 0; n < letter_data.count; ++n)
             {

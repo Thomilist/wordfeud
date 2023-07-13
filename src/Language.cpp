@@ -13,19 +13,26 @@ namespace wf
     Language::~Language()
     { }
     
+    void Language::setLetterList(std::vector<LetterData>* a_letter_list)
+    {
+        letter_list.clear();
+        letter_list = *a_letter_list;
+        return;
+    }
+    
     bool operator<(Language& a_first, Language& a_second)
     {
         return a_first.getName() < a_second.getName();
     }
     
-    const std::vector<LetterData>& Language::getLetterList() const
+    std::vector<LetterData>* Language::getLetterList()
     {
-        return letter_list;
+        return &letter_list;
     }
     
-    const std::unordered_set<QString>& Language::getWordList() const
+    const std::unordered_set<QString>* Language::getWordList() const
     {
-        return word_list;
+        return &word_list;
     }
     
     bool Language::isInWordList(QString a_word)
@@ -154,8 +161,6 @@ namespace wf
     
     void Language::exportWordList(QString a_file_path)
     {
-        qDebug() << a_file_path;
-        
         QFile export_file{a_file_path};
         QFileInfo export_file_info{export_file};
         QDir export_directory{export_file_info.absoluteDir()};
@@ -209,6 +214,29 @@ namespace wf
             export_file.close();
         }
 
+        return;
+    }
+    
+    void Language::addLetter(LetterData a_letter_data)
+    {
+        letter_list.push_back(a_letter_data);
+        return;
+    }
+    
+    bool Language::removeLetter(size_t a_index)
+    {
+        if (a_index >= letter_list.size())
+        {
+            return false;
+        }
+
+        letter_list.erase(letter_list.begin() + a_index);
+        return true;
+    }
+    
+    void Language::removeAllLetters()
+    {
+        letter_list.clear();
         return;
     }
 }

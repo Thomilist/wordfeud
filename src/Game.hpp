@@ -56,9 +56,7 @@ namespace wf
         Q_OBJECT
 
         public:
-            Game(
-                Settings* a_settings,
-                QWidget* a_parent = nullptr);
+            Game(Settings* a_settings, QWidget* a_parent = nullptr);
             ~Game();
         
             void reset();

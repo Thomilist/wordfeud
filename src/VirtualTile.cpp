@@ -41,6 +41,12 @@ namespace wf
         return current_letter;
     }
     
+    void VirtualTile::overwriteLetter(Letter* a_letter)
+    {
+        letter = a_letter;
+        return;
+    }
+    
     void VirtualTile::setModifier(Modifier* a_modifier)
     {
         modifier = a_modifier;

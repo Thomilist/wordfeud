@@ -1,6 +1,8 @@
 #ifndef __LETTER_H__
 #define __LETTER_H__
 
+#include <utility>
+
 #include <QString>
 #include <QLabel>
 #include <QPixmap>
@@ -23,12 +25,12 @@ namespace wf
     {
         public:
             Letter();
-            Letter(
-                QString a_letter,
-                int a_points);
+            Letter(QString a_letter, int a_points);
             ~Letter();
 
+            void setText(QString a_text);
             QString getText() const;
+            void setPoints(int a_points);
             QString getPointsAsText() const;
             int getPoints() const;
             LetterType getType() const;
@@ -42,7 +44,7 @@ namespace wf
         private:
             QString text;
             QString wildcard_text;
-            int points;
+            int points = 0;
             LetterType type;
             LetterStatus status = LetterStatus::Free;
             Player* owner;

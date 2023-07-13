@@ -14,7 +14,7 @@ namespace wf
         connect(&buttons, &QDialogButtonBox::rejected, this, &QDialog::accept);
 
         setText();
-        icon.setPixmap(QPixmap{":/icon/icon.ico"}.scaledToHeight(90));
+        icon.setPixmap(QPixmap{":/icon/icon.ico"}.scaledToHeight(90, Qt::SmoothTransformation));
 
         int layout_row = 0;
         const int icon_column = 0;
@@ -43,6 +43,7 @@ namespace wf
 
         grid_layout.setVerticalSpacing(0);
         setLayout(&grid_layout);
+        layout()->setSizeConstraint(QLayout::SetFixedSize);
     }
     
     AboutDialog::~AboutDialog()

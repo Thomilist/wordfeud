@@ -301,7 +301,7 @@ namespace wf
             // Wildcard letters in hand should always be blank
             if (!(board_type == BoardType::Hand && current_letter->getType() == LetterType::Wildcard))
             {
-                if (settings->getLetterColouring() == QString("Player colour"))
+                if (board_type != BoardType::Display && settings->getLetterColouring() == QString("Player colour"))
                 {
                     painter.setPen(current_letter->getOwner()->getColor());
                 }

@@ -66,6 +66,7 @@ namespace wf
         setValue("ai/letter_placing_delay", getAILetterPlacingDelay());
         setValue("ai/auto_restart_delay", getAutoRestartDelay());
         setValue("ai/auto_restart_enabled", isAutoRestartEnabled());
+        setValue("ai/bias_strength", getBiasStrength());
 
         // Save list of languages to load
         beginGroup("startup");
@@ -173,6 +174,7 @@ namespace wf
         setAILetterPlacingDelay(value("ai/letter_placing_delay", "100").toInt());
         setAutoRestartDelay(value("ai/auto_restart_delay", "31").toInt());
         enableAutoRestart(value("ai/auto_restart_enabled", "false").toBool());
+        setBiasStrength(value("ai/bias_strength", "50").toInt());
 
         first_time = false;
         return;
@@ -193,6 +195,8 @@ namespace wf
 
         getLeftPlayer()->apply();
         getRightPlayer()->apply();
+
+        bias_strength = bias_strength_temp;
 
         nextTurnApply();
         return;
@@ -583,5 +587,21 @@ namespace wf
     bool Settings::isAutoRestartEnabled() const
     {
         return auto_restart_enabled;
+    }
+    
+    int Settings::getBiasStrength() const
+    {
+        return bias_strength;
+    }
+    
+    int Settings::getTempBiasStrength() const
+    {
+        return bias_strength_temp;
+    }
+    
+    void Settings::setBiasStrength(int a_strength)
+    {
+        bias_strength_temp = a_strength;
+        return;
     }
 }

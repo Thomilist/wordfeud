@@ -12,6 +12,12 @@ namespace wf
             "resources/dictionaries",
             "Plain text (*.txt)"
         )
+        , biased_word_source_dialog(
+            this,
+            "Select biased words source",
+            "resources/dictionaries",
+            "Plain text (*.txt)"
+        )
         , letter_editor(settings, this)
         , letter_table_model(&language)
         , button_box(QDialogButtonBox::Help | QDialogButtonBox::Save | QDialogButtonBox::Discard)
@@ -81,6 +87,9 @@ namespace wf
         language.setName(a_language);
         name_edit.setText(a_language);
 
+        word_source_edit.clear();
+        biased_word_source_edit.clear();
+
         if (a_mode == DictionaryEditorMode::OpenCopy || a_mode == DictionaryEditorMode::EditExisting)
         {
             loadExistingLanguage();
@@ -139,6 +148,17 @@ namespace wf
         return;
     }
     
+    void DictionaryEditor::browseBiasedWordSource()
+    {
+        if (biased_word_source_dialog.exec())
+        {
+            QStringList files = biased_word_source_dialog.selectedFiles();
+            biased_word_source_edit.setText(files.front());
+        }
+
+        return;
+    }
+    
     void DictionaryEditor::saveAndClose()
     {
         if (dictionaries.contains(language.getName()))
@@ -162,6 +182,13 @@ namespace wf
         
         language.loadWordListFromFilePlain(word_source_edit.text());
         language.exportWordList(Language::getWordListPath(language.getName()));
+
+        if (!biased_word_source_edit.text().isEmpty())
+        {
+            language.loadWordListFromFilePlain(biased_word_source_edit.text(), true);
+            language.exportWordList(Language::getBiasedWordListPath(language.getName()), true);
+        }
+
         language.exportLetterList(Language::getLetterListPath(language.getName()));
         
         QDialog::accept();
@@ -331,15 +358,27 @@ namespace wf
     void DictionaryEditor::createWordGroup()
     {
         connect(&word_source_browse_button, &QPushButton::clicked, this, &DictionaryEditor::browseWordSource);
+        connect(&biased_word_source_browse_button, &QPushButton::clicked, this, &DictionaryEditor::browseBiasedWordSource);
+        connect(&biased_word_source_clear_button, &QPushButton::clicked, this, [this](){biased_word_source_edit.clear();});
         connect(&word_source_edit, &QLineEdit::textChanged, this, &DictionaryEditor::updateInterfaceState);
 
         word_source_edit.setReadOnly(true);
+        biased_word_source_edit.setReadOnly(true);
+
+        word_group_layout.setColumnStretch(0, 1);
+        word_group_layout.setColumnStretch(1, 0);
+        word_group_layout.setColumnStretch(2, 0);
         
         int layout_row = 0;
 
         word_group_layout.addWidget(&word_source_label, layout_row++, 0);
-        word_group_layout.addWidget(&word_source_edit, layout_row, 0);
-        word_group_layout.addWidget(&word_source_browse_button, layout_row++, 1);
+        word_group_layout.addWidget(&word_source_edit, layout_row, 0, 1, 2);
+        word_group_layout.addWidget(&word_source_browse_button, layout_row++, 2);
+
+        word_group_layout.addWidget(&biased_word_source_label, layout_row++, 0);
+        word_group_layout.addWidget(&biased_word_source_edit, layout_row, 0, 1, 2);
+        word_group_layout.addWidget(&biased_word_source_clear_button, layout_row, 1);
+        word_group_layout.addWidget(&biased_word_source_browse_button, layout_row++, 2);
         
         word_group.setLayout(&word_group_layout);
         return;
@@ -385,6 +424,11 @@ namespace wf
         }
 
         word_source_edit.setText(QFileInfo(Language::getWordListPath(source_language)).canonicalFilePath());
+
+        if (QFile::exists(Language::getBiasedWordListPath(source_language)))
+        {
+            biased_word_source_edit.setText(QFileInfo(Language::getBiasedWordListPath(source_language)).canonicalFilePath());
+        }
 
         Language source_letters;
         source_letters.loadLettersFromFile(Language::getLetterListPath(source_language));

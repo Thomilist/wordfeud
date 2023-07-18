@@ -89,6 +89,7 @@ namespace wf
             std::unordered_set<QString> tried_combinations;
             QString current_combination;
             std::stack<int> current_combination_sizes;
+            bool has_biased_words = false;
     };
 }
 

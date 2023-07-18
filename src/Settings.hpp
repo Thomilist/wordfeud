@@ -89,6 +89,9 @@ namespace wf
             int getTempAutoRestartDelay() const;
             void enableAutoRestart(bool a_enabled);
             bool isAutoRestartEnabled() const;
+            int getBiasStrength() const;
+            int getTempBiasStrength() const;
+            void setBiasStrength(int a_strength);
         
         signals:
             void languagesCounted(int a_count);
@@ -125,16 +128,19 @@ namespace wf
             int minimum_ai_turn_time;
             int ai_letter_placing_delay;
             int auto_restart_delay;
+            int bias_strength;
 
             std::set<QString> languages_to_load;
 
             // Temporary user-facing settings
             Language* current_language_temp;
             QString modifier_pattern_temp;
+            QString letter_colouring_temp;
+
             int minimum_ai_turn_time_temp;
             int ai_letter_placing_delay_temp;
-            QString letter_colouring_temp;
             int auto_restart_delay_temp;
+            int bias_strength_temp;
     };
 }
 #endif // __SETTINGS_H__

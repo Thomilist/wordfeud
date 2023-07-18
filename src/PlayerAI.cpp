@@ -136,6 +136,11 @@ namespace wf
         {
             QThread::msleep(minimum_time - delta_time);
         }
+
+        if (cancelled)
+        {
+            return;
+        }
         
         executeBestPlay();
 
@@ -161,7 +166,12 @@ namespace wf
     
     void PlayerAI::endTurn()
     {
-        if (best_play_score > 0)
+        if (cancelled)
+        {
+            deleteWorkers();
+            return;
+        }
+        else if (best_play_score > 0)
         {
             emit playComplete();
         }

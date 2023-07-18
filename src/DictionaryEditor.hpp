@@ -9,6 +9,7 @@
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFont>
@@ -26,6 +27,7 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QScrollBar>
+#include <QSizePolicy>
 #include <QString>
 #include <QStringBuilder>
 #include <QTableView>
@@ -56,6 +58,7 @@ namespace wf
             void viewEditorHelp();
             void updateInterfaceState();
             void browseWordSource();
+            void browseBiasedWordSource();
             void saveAndClose();
             void removeSelectedLetters();
             void scrollLetterPoolToEnd();
@@ -99,6 +102,11 @@ namespace wf
             QLineEdit word_source_edit;
             QPushButton word_source_browse_button{"..."};
             QFileDialog word_source_dialog;
+            QLabel biased_word_source_label{"Biased words source (optional):"};
+            QLineEdit biased_word_source_edit;
+            QPushButton biased_word_source_clear_button{"Clear"};
+            QPushButton biased_word_source_browse_button{"..."};
+            QFileDialog biased_word_source_dialog;
 
             // Letter group elements
             QGroupBox letter_group{"Letter Pool"};

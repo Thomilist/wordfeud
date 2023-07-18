@@ -137,7 +137,7 @@ namespace wf
         return count;
     }
     
-    void VirtualBoard::evaluateProposedPlay(bool a_force, bool a_skip_placement_check, bool a_exit_early)
+    void VirtualBoard::evaluateProposedPlay(bool a_force, bool a_skip_placement_check, bool a_exit_early, bool a_use_bias)
     {
         if (a_force)
         {
@@ -168,7 +168,7 @@ namespace wf
         if (proposed_words_valid)
         {
             findInvalidProposedWords();
-            calculateProposedPoints();
+            calculateProposedPoints(a_use_bias);
         }
 
         proposed_play_evaluated = true;
@@ -252,6 +252,16 @@ namespace wf
         }
 
         return proposed_play_points;
+    }
+    
+    int VirtualBoard::getProposedPlayPointsBiased(bool a_skip_validation)
+    {
+        if (!proposed_play_evaluated && !a_skip_validation)
+        {
+            evaluateProposedPlay();
+        }
+
+        return proposed_play_points_biased;
     }
     
     Word VirtualBoard::getMostRelevantWord()
@@ -677,13 +687,28 @@ namespace wf
         return;
     }
     
-    void VirtualBoard::calculateProposedPoints()
+    void VirtualBoard::calculateProposedPoints(bool a_use_bias)
     {
         proposed_play_points = 0;
+        proposed_play_points_biased = 0;
 
         for (const auto& word : proposed_words)
         {
-            proposed_play_points += word.calculatePoints();
+            int base_points = word.calculatePoints();
+            
+            proposed_play_points += base_points;
+            
+            if (a_use_bias)
+            {
+                if (settings->getCurrentLanguage()->isInBiasedWordList(word.getWordAsText()))
+                {
+                    proposed_play_points_biased += word.calculatePoints() * settings->getBiasStrength();
+                }
+                else
+                {
+                    proposed_play_points_biased += base_points;
+                }
+            }
         }
 
         std::size_t hand_capacity = settings->getHandDimensions().width() * settings->getHandDimensions().height();

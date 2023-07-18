@@ -37,7 +37,7 @@ namespace wf
             int getGridDimensionInDirection(Direction a_direction);
             int getTileCount() const;
             int getLetterCount();
-            void evaluateProposedPlay(bool a_force = false, bool a_skip_placement_check=false, bool a_exit_early = false);
+            void evaluateProposedPlay(bool a_force = false, bool a_skip_placement_check=false, bool a_exit_early = false, bool a_use_bias = false);
             bool isPlacementValid();
             bool areProposedWordsValid();
             bool isProposedPlayValid();
@@ -45,6 +45,7 @@ namespace wf
             std::vector<Word> getProposedWords();
             std::vector<Word> getInvalidProposedWords();
             int getProposedPlayPoints(bool a_skip_validation = false);
+            int getProposedPlayPointsBiased(bool a_skip_validation = false);
             Word getMostRelevantWord();
             void lockProposedPlay();
             void lockProposedLetters();
@@ -75,7 +76,7 @@ namespace wf
             void findProposedWords(bool a_exit_early);
             Word findWordWithLetter(VirtualTile* a_tile, Direction a_direction);
             void findInvalidProposedWords();
-            void calculateProposedPoints();
+            void calculateProposedPoints(bool a_use_bias);
 
             Settings* settings;
             std::vector<VirtualTile*> proposed_letters;
@@ -87,6 +88,7 @@ namespace wf
             bool proposed_placement_valid = false;
             bool proposed_words_valid = false;
             int proposed_play_points = 0;
+            int proposed_play_points_biased = 0;
             std::set<int> proposed_columns;
             std::set<int> proposed_rows;
     };

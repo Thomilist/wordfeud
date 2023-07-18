@@ -23,6 +23,11 @@ namespace wf
         return QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-words.txt";
     }
     
+    QString Language::getBiasedWordListPath(QString a_language)
+    {
+        return QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-biased-words.txt";
+    }
+    
     QString Language::getLetterListPath(QString a_language)
     {
         return QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-letters.csv";
@@ -55,6 +60,16 @@ namespace wf
         return word_list.contains(a_word);
     }
     
+    bool Language::isInBiasedWordList(QString a_word)
+    {
+        return biased_word_list.contains(a_word);
+    }
+    
+    bool Language::hasBiasedWords()
+    {
+        return !biased_word_list.empty();
+    }
+    
     const QString& Language::getName() const
     {
         return language_name;
@@ -68,16 +83,23 @@ namespace wf
     
     void Language::loadLanguage(QString a_language)
     {
-        QString words_path{getWordListPath(a_language)};
         QString letters_path{getLetterListPath(a_language)};
+        QString words_path{getWordListPath(a_language)};
+        QString biased_words_path{getBiasedWordListPath(a_language)};
 
         if (!QFile::exists(words_path) || !QFile::exists(letters_path))
         {
             return;
         }
 
-        loadWordListFromFilePlain(words_path);
         loadLettersFromFile(letters_path);
+        loadWordListFromFilePlain(words_path);
+
+        if (QFile::exists(biased_words_path))
+        {
+            loadWordListFromFilePlain(biased_words_path, true);
+        }
+
         return;
     }
     
@@ -115,20 +137,32 @@ namespace wf
         return;
     }
     
-    void Language::loadWordListFromFilePlain(QString a_file_path)
+    void Language::loadWordListFromFilePlain(QString a_file_path, bool a_load_biased_words)
     {
         QFile word_list_file{a_file_path};
 
         if (word_list_file.open(QIODevice::ReadOnly))
         {
-            word_list.clear();
+            if (a_load_biased_words)
+            {
+                biased_word_list.clear();
+            }
+            else
+            {
+                word_list.clear();
+            }
             
             QTextStream words{&word_list_file};
 
             while (!words.atEnd())
             {
-                QString word = word_list_file.readLine();
-                word_list.insert(word.trimmed().toUpper());
+                QString word = word_list_file.readLine().trimmed().toUpper();
+                word_list.insert(word);
+
+                if (a_load_biased_words)
+                {
+                    biased_word_list.insert(word);
+                }
             }
 
             word_list_file.close();
@@ -168,13 +202,21 @@ namespace wf
         return;
     }
     
-    void Language::exportWordList()
+    void Language::exportWordList(bool a_export_biased_words)
     {
-        exportWordList("resources/export/" + language_name + "_words_export.txt");
+        if (a_export_biased_words)
+        {
+            exportWordList("resources/export/" + language_name + "_biased_words_export.txt", true);
+        }
+        else
+        {
+            exportWordList("resources/export/" + language_name + "_words_export.txt");
+        }
+        
         return;
     }
     
-    void Language::exportWordList(QString a_file_path)
+    void Language::exportWordList(QString a_file_path, bool a_export_biased_words)
     {
         QFile export_file{a_file_path};
         QFileInfo export_file_info{export_file};
@@ -188,8 +230,9 @@ namespace wf
         if (export_file.open(QIODevice::WriteOnly))
         {
             QTextStream word_export{&export_file};
+            std::unordered_set<QString>& list = a_export_biased_words ? biased_word_list : word_list;
 
-            for (auto word : word_list)
+            for (auto word : list)
             {
                 word_export << word << "\n";
             }

@@ -82,12 +82,6 @@ namespace wf
 
         settings->setLanguagesToLoad(languages_to_load);
 
-        // AI
-        settings->setMinimumAITurnTime(minimum_ai_turn_time_slider.value());
-        settings->setAILetterPlacingDelay(ai_letter_placing_delay_slider.value() * ai_letter_placing_delay_step);
-        settings->setAutoRestartDelay(auto_restart_delay_slider.value());
-        settings->enableAutoRestart(!(auto_restart_delay_slider.value() == maximum_auto_restart_delay));
-
         // Player 1
         PlayerSettings* left_player = settings->getLeftPlayer();
         left_player->setName(left_player_name_edit.text());
@@ -101,6 +95,13 @@ namespace wf
         right_player->setTypeWithString(right_player_type_dropdown.currentText());
         right_player->setRandomNameUse(right_player_random_name_checkbox.checkState());
         right_player->setAIDifficulty(right_player_ai_difficulty_slider.value());
+
+        // AI
+        settings->setMinimumAITurnTime(minimum_ai_turn_time_slider.value());
+        settings->setAILetterPlacingDelay(ai_letter_placing_delay_slider.value() * ai_letter_placing_delay_step);
+        settings->setAutoRestartDelay(auto_restart_delay_slider.value());
+        settings->enableAutoRestart(!(auto_restart_delay_slider.value() == maximum_auto_restart_delay));
+        settings->setBiasStrength(bias_strength_slider.value() * bias_strength_step);
 
         emit settingsSaved();
         return;
@@ -121,7 +122,7 @@ namespace wf
         
         // Left player AI difficulty
         value = left_player_ai_difficulty_slider.value();
-        left_player_ai_difficulty_display_label.setText(QString::number(value * 10) + "%");
+        left_player_ai_difficulty_display_label.setText(QString::number(value * 10) % "%");
 
         if (value < minimum_ai_difficulty)
         {
@@ -130,7 +131,7 @@ namespace wf
 
         // Right player AI difficulty
         value = right_player_ai_difficulty_slider.value();
-        right_player_ai_difficulty_display_label.setText(QString::number(value * 10) + "%");
+        right_player_ai_difficulty_display_label.setText(QString::number(value * 10) % "%");
 
         if (value < minimum_ai_difficulty)
         {
@@ -139,11 +140,11 @@ namespace wf
 
         // Minimum AI turn time
         value = minimum_ai_turn_time_slider.value();
-        minimum_ai_turn_time_display_label.setText(QString::number(value) + " seconds");
+        minimum_ai_turn_time_display_label.setText(QString::number(value) % " seconds");
 
         // AI letter placing delay
         value = ai_letter_placing_delay_slider.value();
-        ai_letter_placing_delay_display_label.setText(QString::number(value * ai_letter_placing_delay_step) + " ms");
+        ai_letter_placing_delay_display_label.setText(QString::number(value * ai_letter_placing_delay_step) % " ms");
 
         // AI mirror auto restart delay
         value = auto_restart_delay_slider.value();
@@ -154,7 +155,19 @@ namespace wf
         }
         else
         {
-            auto_restart_delay_display_label.setText(QString::number(value) + " seconds after game over");
+            auto_restart_delay_display_label.setText(QString::number(value) % " seconds after game over");
+        }
+
+        // Bias strength
+        value = bias_strength_slider.value();
+
+        if (value == minimum_bias_strength)
+        {
+            bias_strength_display_label.setText("Bias disabled");
+        }
+        else
+        {
+            bias_strength_display_label.setText(QString::number(value * bias_strength_step) % "x");
         }
 
         return;
@@ -413,6 +426,7 @@ namespace wf
         connect(&minimum_ai_turn_time_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
         connect(&ai_letter_placing_delay_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
         connect(&auto_restart_delay_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
+        connect(&bias_strength_slider, &QSlider::valueChanged, this, &SettingsDialog::updateSliders);
 
         minimum_ai_turn_time_slider.setMinimum(minimum_ai_turn_time);
         minimum_ai_turn_time_slider.setMaximum(maximum_ai_turn_time);
@@ -440,6 +454,15 @@ namespace wf
         auto_restart_delay_slider.setOrientation(Qt::Orientation::Horizontal);
         auto_restart_delay_slider.setValue(settings->getTempAutoRestartDelay());
         auto_restart_delay_display_label.setAlignment(Qt::AlignCenter);
+
+        bias_strength_slider.setMinimum(minimum_bias_strength / bias_strength_step);
+        bias_strength_slider.setMaximum(maximum_bias_strength / bias_strength_step);
+        bias_strength_slider.setTickPosition(QSlider::TicksBothSides);
+        bias_strength_slider.setTickInterval(1);
+        bias_strength_slider.setPageStep(1);
+        bias_strength_slider.setOrientation(Qt::Orientation::Horizontal);
+        bias_strength_slider.setValue(settings->getTempBiasStrength());
+        bias_strength_display_label.setAlignment(Qt::AlignCenter);
         
         ai_settings_layout.addWidget(&minimum_ai_turn_time_label, 0, 0);
         ai_settings_layout.addWidget(&minimum_ai_turn_time_display_label, 0, 1);
@@ -452,6 +475,10 @@ namespace wf
         ai_settings_layout.addWidget(&auto_restart_delay_label, 4, 0);
         ai_settings_layout.addWidget(&auto_restart_delay_display_label, 4, 1);
         ai_settings_layout.addWidget(&auto_restart_delay_slider, 5, 1);
+
+        ai_settings_layout.addWidget(&bias_strength_label, 6, 0);
+        ai_settings_layout.addWidget(&bias_strength_display_label, 6, 1);
+        ai_settings_layout.addWidget(&bias_strength_slider, 7, 1);
         
         ai_settings.setLayout(&ai_settings_layout);
         ai_settings.setMinimumWidth(minimum_group_box_width);

@@ -24,6 +24,7 @@
 #include <QSizePolicy>
 #include <QSlider>
 #include <QString>
+#include <QStringBuilder>
 #include <QUrl>
 #include <QWidget>
 
@@ -87,6 +88,9 @@ namespace wf
             const int ai_letter_placing_delay_step = 50;
             const int minimum_auto_restart_delay = 0;
             const int maximum_auto_restart_delay = 31;
+            const int minimum_bias_strength = 0;
+            const int maximum_bias_strength = 100;
+            const int bias_strength_step = 10;
 
             // General settings
             QGroupBox general_settings{"General"};
@@ -143,6 +147,9 @@ namespace wf
             QLabel auto_restart_delay_label{"Auto restart AI mirrors:"};
             QLabel auto_restart_delay_display_label;
             QSlider auto_restart_delay_slider;
+            QLabel bias_strength_label{"Biased word strength:"};
+            QLabel bias_strength_display_label;
+            QSlider bias_strength_slider;
 
             // Custom buttons
             QDialogButtonBox buttons;

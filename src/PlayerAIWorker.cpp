@@ -143,6 +143,7 @@ namespace wf
         }
 
         initialiseWildcardSubstitutes();
+        has_biased_words = settings->getCurrentLanguage()->hasBiasedWords() && settings->getBiasStrength() > 0;
 
         return;
     }
@@ -321,15 +322,33 @@ namespace wf
     
     void PlayerAIWorker::updateBestPlay()
     {
-        best_play_board.evaluateProposedPlay(false, true, true);
-        sandbox_board.evaluateProposedPlay(false, true, true);
+        bool force_full_evaluation = false;
+        bool skip_placement_check = true;
+        bool exit_evaluation_early = true;
+        
+        best_play_board.evaluateProposedPlay(force_full_evaluation, skip_placement_check, exit_evaluation_early, has_biased_words);
+        sandbox_board.evaluateProposedPlay(force_full_evaluation, skip_placement_check, exit_evaluation_early, has_biased_words);
 
         if (!sandbox_board.isProposedPlayValid())
         {
             return;
         }
 
-        if (sandbox_board.getProposedPlayPoints() > best_play_board.getProposedPlayPoints())
+        int sandbox_score = 0;
+        int best_play_score = 0;
+
+        if (has_biased_words)
+        {
+            sandbox_score = sandbox_board.getProposedPlayPointsBiased();
+            best_play_score = best_play_board.getProposedPlayPointsBiased();
+        }
+        else
+        {
+            sandbox_score = sandbox_board.getProposedPlayPoints();
+            best_play_score = best_play_board.getProposedPlayPoints();
+        }
+
+        if (sandbox_score > best_play_score)
         {
             if (    difficulty == settings->getMaximumAIDifficulty()
                 ||  rollDifficultyDice())

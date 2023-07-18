@@ -57,7 +57,8 @@ int main(int argc, char* argv[])
     application.setStyleSheet(stylesheet_stream.readAll());
 
     wf::Wordfeud wordfeud{&version};
-    QObject::connect(&application, &QApplication::aboutToQuit, &wordfeud, &wf::Wordfeud::closeWindow);
+    QObject::connect(&application, &QApplication::lastWindowClosed, &wordfeud, &wf::Wordfeud::closeWindow);
+    QObject::connect(&application, &QApplication::lastWindowClosed, &application, &QApplication::quit);
 
     return application.exec();
 }

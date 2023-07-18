@@ -13,6 +13,21 @@ namespace wf
     Language::~Language()
     { }
     
+    QString Language::getPath(QString a_language)
+    {
+        return QString() % "resources/dictionaries/" % a_language % "/";
+    }
+    
+    QString Language::getWordListPath(QString a_language)
+    {
+        return QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-words.txt";
+    }
+    
+    QString Language::getLetterListPath(QString a_language)
+    {
+        return QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-letters.csv";
+    }
+    
     void Language::setLetterList(std::vector<LetterData>* a_letter_list)
     {
         letter_list.clear();
@@ -53,8 +68,8 @@ namespace wf
     
     void Language::loadLanguage(QString a_language)
     {
-        QString words_path{QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-words.txt"};
-        QString letters_path{QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-letters.csv"};
+        QString words_path{getWordListPath(a_language)};
+        QString letters_path{getLetterListPath(a_language)};
 
         if (!QFile::exists(words_path) || !QFile::exists(letters_path))
         {

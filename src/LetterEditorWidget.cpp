@@ -37,10 +37,29 @@ namespace wf
         grid_layout.addWidget(&remove_selected_button, 2, 0, Qt::AlignHCenter | Qt::AlignTop);
 
         setLayout(&grid_layout);
+        reset();
     }
     
     LetterEditorWidget::~LetterEditorWidget()
     { }
+    
+    void LetterEditorWidget::reset()
+    {
+        letter_data.letter = default_text;
+        letter_data.count = default_count;
+        letter_data.points = default_points;
+
+        letter.setText(default_text);
+        letter.setPoints(default_points);
+
+        letter_text_edit.setText(default_text);
+        letter_count_edit.setValue(default_count);
+        letter_points_edit.setValue(default_points);
+
+        repaint();
+
+        return;
+    }
     
     void LetterEditorWidget::updateLetterText(QString a_text)
     {

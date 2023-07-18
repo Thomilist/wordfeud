@@ -141,24 +141,28 @@ namespace wf
     
     void DictionaryEditor::saveAndClose()
     {
+        if (dictionaries.contains(language.getName()))
+        {
+            QMessageBox::StandardButton response = QMessageBox::Yes;
+
+            response = QMessageBox::warning
+            (
+                this,
+                "Overwrite dictionary",
+                QString() % "Are you sure you want to overwrite \"" % language.getName() % "\"?\nThis cannot be undone.",
+                QMessageBox::Yes | QMessageBox::No,
+                QMessageBox::Yes
+            );
+
+            if (response == QMessageBox::No)
+            {
+                return;
+            }
+        }
+        
         language.loadWordListFromFilePlain(word_source_edit.text());
-        language.exportWordList
-        (
-            QString()
-            % "resources/dictionaries/"
-            % language.getName()
-            % "/"
-            % language.getName()
-            % "-words.txt"
-        );
-        language.exportLetterList(
-            QString()
-            % "resources/dictionaries/"
-            % language.getName()
-            % "/"
-            % language.getName()
-            % "-letters.csv"
-        );
+        language.exportWordList(Language::getWordListPath(language.getName()));
+        language.exportLetterList(Language::getLetterListPath(language.getName()));
         
         QDialog::accept();
         return;
@@ -195,6 +199,7 @@ namespace wf
         detectExistingDictionaries();
         updateHeaderText();
         updateNameSuggestion();
+        letter_editor.reset();
 
         updateInterfaceState();
 
@@ -379,26 +384,10 @@ namespace wf
             return;
         }
 
-        word_source_edit.setText(QFileInfo
-        (
-            QString()
-            % "resources/dictionaries/"
-            % source_language
-            % "/"
-            % source_language
-            % "-words.txt"
-        ).canonicalFilePath());
+        word_source_edit.setText(QFileInfo(Language::getWordListPath(source_language)).canonicalFilePath());
 
         Language source_letters;
-        source_letters.loadLettersFromFile
-        (
-            QString()
-            % "resources/dictionaries/"
-            % source_language
-            % "/"
-            % source_language
-            % "-letters.csv"
-        );
+        source_letters.loadLettersFromFile(Language::getLetterListPath(source_language));
 
         letter_table_model.setLetterList(source_letters.getLetterList());
 

@@ -30,6 +30,10 @@ namespace wf
             ~Language();
             friend bool operator<(Language& a_first, Language& a_second);
 
+            static QString getPath(QString a_language);
+            static QString getWordListPath(QString a_language);
+            static QString getLetterListPath(QString a_language);
+
             void setLetterList(std::vector<LetterData>* a_letter_list);
             std::vector<LetterData>* getLetterList();
             const std::unordered_set<QString>* getWordList() const;

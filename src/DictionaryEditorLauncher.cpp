@@ -18,7 +18,6 @@ namespace wf
         layout()->setSizeConstraint(QLayout::SetFixedSize);
         setWindowTitle("Open dictionary editor");
 
-        connect(&buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
         connect(&buttons, &QDialogButtonBox::accepted, this, &DictionaryEditorLauncher::launch);
         connect(&buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
         connect(&buttons, &QDialogButtonBox::helpRequested, this, &DictionaryEditorLauncher::viewEditorHelp);
@@ -47,12 +46,15 @@ namespace wf
     
     void DictionaryEditorLauncher::open()
     {
+        repopulateDictionaryDropdown(nullptr);
         QDialog::open();
         return;
     }
     
     void DictionaryEditorLauncher::launch()
     {
+        QString language_name = dictionary_dropdown.currentText();
+        
         for (auto [button, mode] :
         {
             std::pair{&create_new_button, DictionaryEditorMode::CreateNew},
@@ -62,14 +64,31 @@ namespace wf
         {
             if (button->isChecked())
             {
-                emit launchDictionaryEditor(mode, dictionary_dropdown.currentText());
-                break;
+                QDialog::accept();
+                emit launchDictionaryEditor(mode, language_name);
+                return;
             }
         }
 
         if (delete_existing_button.isChecked())
         {
-            // Are you sure?
+            QMessageBox::StandardButton response = QMessageBox::Yes;
+
+            response = QMessageBox::warning
+            (
+                this,
+                "Delete dictionary",
+                QString() % "Are you sure you want to delete \"" % language_name % "\"?",
+                QMessageBox::Yes | QMessageBox::No,
+                QMessageBox::Yes
+            );
+
+            if (response == QMessageBox::Yes)
+            {
+                QDialog::accept();
+                deleteDictionary(language_name);
+                return;
+            }
         }
 
         return;
@@ -93,7 +112,7 @@ namespace wf
 
         for (auto [button, text] : 
         {
-            std::pair{&create_new_button, "Create New"},
+            std::pair{&create_new_button, "Create"},
             std::pair{&open_copy_button, "Open Copy"},
             std::pair{&edit_existing_button, "Open"},
             std::pair{&delete_existing_button, "Delete"},
@@ -124,6 +143,13 @@ namespace wf
     {
         repopulateDictionaryDropdown(nullptr);
         updateInteractState();
+        return;
+    }
+    
+    void DictionaryEditorLauncher::deleteDictionary(QString a_language)
+    {
+        QDir dictionary_path{Language::getPath(a_language)};
+        dictionary_path.removeRecursively();
         return;
     }
 }

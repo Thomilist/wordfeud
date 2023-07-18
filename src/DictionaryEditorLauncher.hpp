@@ -8,15 +8,20 @@
 #include <QComboBox>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QDir>
 #include <QGridLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QString>
+#include <QStringBuilder>
 #include <QWidget>
 
 #include "ForwardDeclarations.hpp"
 
 #include "DictionaryEditor.hpp"
+#include "Language.hpp"
 #include "Settings.hpp"
 
 #include "DictionaryEditorMode.hpp"
@@ -44,6 +49,7 @@ namespace wf
         private:
             void initialiseRadioButtons();
             void initaliseDictionaryDropdown();
+            void deleteDictionary(QString a_language);
 
             Settings* settings;
             QGridLayout grid_layout;

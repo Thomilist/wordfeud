@@ -25,6 +25,8 @@ namespace wf
         public:
             LetterEditorWidget(Settings* a_settings, QWidget* a_parent = nullptr);
             ~LetterEditorWidget();
+
+            void reset();
         
         public slots:
             void updateLetterText(QString a_text);
@@ -46,10 +48,13 @@ namespace wf
             const int edit_width = 80;
             const int button_width = 150;
             const int maximum_text_length = 3;
-            const int minimum_count = 0;
+            const QString default_text = "";
+            const int minimum_count = 1;
             const int maximum_count = 99;
-            const int minimum_points = 0;
+            const int default_count = 1;
+            const int minimum_points = -9;
             const int maximum_points = 99;
+            const int default_points = 0;
 
             QLineEdit letter_text_edit;
             QSpinBox letter_count_edit;

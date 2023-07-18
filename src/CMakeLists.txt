@@ -36,6 +36,8 @@ target_link_libraries(
     DictionaryEditorLauncher
     Qt5::Widgets
     DictionaryEditor
+    Language
+    Settings
 )
 
 add_library(DictionaryLookupDialog DictionaryLookupDialog.cpp)

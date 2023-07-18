@@ -46,7 +46,7 @@ namespace wf
         beginRemoveColumns(a_parent, a_column, a_column + a_count - 1);
 
         std::vector<LetterData>* letter_list = language->getLetterList();
-        letter_list->erase(letter_list->begin() + a_column, letter_list->begin() + a_column + a_count - 1);
+        letter_list->erase(letter_list->begin() + a_column, letter_list->begin() + a_column + a_count);
 
         endRemoveColumns();
         return true;

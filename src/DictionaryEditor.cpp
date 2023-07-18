@@ -77,16 +77,18 @@ namespace wf
     void DictionaryEditor::launch(DictionaryEditorMode a_mode, QString a_language)
     {
         mode = a_mode;
+        source_language = a_language;
         language.setName(a_language);
+        name_edit.setText(a_language);
 
         if (a_mode == DictionaryEditorMode::OpenCopy || a_mode == DictionaryEditorMode::EditExisting)
         {
-            source_language = settings->getLanguage(a_language);
-            loadLettersFromSource();
+            loadExistingLanguage();
         }
 
         resizeTable();
         populateEditor();
+        repaint();
         
         QDialog::open();
         return;
@@ -140,14 +142,23 @@ namespace wf
     void DictionaryEditor::saveAndClose()
     {
         language.loadWordListFromFilePlain(word_source_edit.text());
-        language.exportWordList(
-                QString()
-                % "resources/dictionaries/"
-                % language.getName()
-                % "/"
-                % language.getName()
-                % "-words.txt"
-            );
+        language.exportWordList
+        (
+            QString()
+            % "resources/dictionaries/"
+            % language.getName()
+            % "/"
+            % language.getName()
+            % "-words.txt"
+        );
+        language.exportLetterList(
+            QString()
+            % "resources/dictionaries/"
+            % language.getName()
+            % "/"
+            % language.getName()
+            % "-letters.csv"
+        );
         
         QDialog::accept();
         return;
@@ -166,7 +177,6 @@ namespace wf
 
         for (auto index : selected_columns)
         {
-            qDebug() << index;
             letter_table_model.removeColumns(index, 1);
         }
 
@@ -354,15 +364,35 @@ namespace wf
         return;
     }
     
-    void DictionaryEditor::loadLettersFromSource()
+    void DictionaryEditor::loadExistingLanguage()
     {
-        if (source_language == nullptr)
+        if (source_language.isEmpty())
         {
             return;
         }
 
-        letter_table_model.setLetterList(source_language->getLetterList());
-        letter_table.repaint();
+        word_source_edit.setText(QFileInfo
+        (
+            QString()
+            % "resources/dictionaries/"
+            % source_language
+            % "/"
+            % source_language
+            % "-words.txt"
+        ).canonicalFilePath());
+
+        Language source_letters;
+        source_letters.loadLettersFromFile
+        (
+            QString()
+            % "resources/dictionaries/"
+            % source_language
+            % "/"
+            % source_language
+            % "-letters.csv"
+        );
+
+        letter_table_model.setLetterList(source_letters.getLetterList());
 
         return;
     }

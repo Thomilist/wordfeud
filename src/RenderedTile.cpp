@@ -68,7 +68,7 @@ namespace wf
                 letter->setStatus(LetterStatus::Proposed);
                 emit proposeLetter(this);
 
-                if (letter->getType() == LetterType::Wildcard && letter->getWildcardText() == QChar{})
+                if (letter->getType() == LetterType::Wildcard && letter->getWildcardText().isEmpty())
                 {
                     emit wildcardPlacedOnBoard(this);
                 }
@@ -79,7 +79,7 @@ namespace wf
             {
                 if (letter->getType() == LetterType::Wildcard)
                 {
-                    letter->setWildcardText(QChar{});
+                    letter->setWildcardText("");
                 }
 
                 break;

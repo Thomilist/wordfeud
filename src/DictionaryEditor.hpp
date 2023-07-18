@@ -4,14 +4,13 @@
 #include <set>
 #include <vector>
 
-#include <QDebug>
-
 #include <QButtonGroup>
 #include <QComboBox>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QFont>
 #include <QGridLayout>
 #include <QGroupBox>
@@ -72,7 +71,7 @@ namespace wf
             void createWordGroup();
             void createLetterGroup();
             void createNameGroup();
-            void loadLettersFromSource();
+            void loadExistingLanguage();
             void resizeTable();
 
             Settings* settings;
@@ -84,7 +83,7 @@ namespace wf
 
             // Existing dictionaries
             std::set<QString> dictionaries;
-            Language* source_language = nullptr;
+            QString source_language;
 
             // Dictionary metadata
             bool dictionary_name_valid = false;

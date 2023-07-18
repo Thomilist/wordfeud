@@ -58,9 +58,7 @@ namespace wf
             void browseWordSource();
             void saveAndClose();
             void removeSelectedLetters();
-        
-        signals:
-            void letterPoolChanged(const QModelIndex& a_index = QModelIndex());
+            void scrollLetterPoolToEnd();
         
         private:
             void populateEditor();

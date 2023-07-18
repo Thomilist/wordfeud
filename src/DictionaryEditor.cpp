@@ -183,6 +183,13 @@ namespace wf
         return;
     }
     
+    void DictionaryEditor::scrollLetterPoolToEnd()
+    {
+        QScrollBar* scroll_bar = letter_table.horizontalScrollBar();
+        scroll_bar->setValue(scroll_bar->maximum());
+        return;
+    }
+    
     void DictionaryEditor::populateEditor()
     {
         detectExistingDictionaries();
@@ -336,6 +343,7 @@ namespace wf
     void DictionaryEditor::createLetterGroup()
     {
         connect(&letter_editor, &LetterEditorWidget::addToPool, &letter_table_model, &LetterTableModel::addLetter);
+        connect(&letter_editor, &LetterEditorWidget::addToPool, this, &DictionaryEditor::scrollLetterPoolToEnd);
         connect(&letter_editor, &LetterEditorWidget::removeSelected, this, &DictionaryEditor::removeSelectedLetters);
         
         letter_table.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);

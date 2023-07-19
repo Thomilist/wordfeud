@@ -23,7 +23,10 @@ namespace wf
         letter_points_edit.setMinimum(minimum_points);
         letter_points_edit.setMaximum(maximum_points);
 
-        letter_text_edit.setMaximumWidth(edit_width);
+        letter_text_edit.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        letter_count_edit.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        letter_points_edit.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        
         add_letter_button.setFixedWidth(button_width);
         remove_selected_button.setFixedWidth(button_width);
 

@@ -414,8 +414,8 @@ namespace wf
         int layout_row = 0;
 
         letter_group_layout.addWidget(&letter_editor, layout_row, 0, 1, 2, Qt::AlignCenter);
-        letter_group_layout.addWidget(&letter_pool_info_label, layout_row, 2, Qt::AlignRight);
-        letter_group_layout.addWidget(&letter_pool_info_values_label, layout_row++, 3, Qt::AlignLeft);
+        letter_group_layout.addWidget(&letter_pool_info_label, layout_row, 2, Qt::AlignRight | Qt::AlignVCenter);
+        letter_group_layout.addWidget(&letter_pool_info_values_label, layout_row++, 3, Qt::AlignLeft | Qt::AlignVCenter);
         letter_group_layout.addWidget(&letter_table, layout_row++, 0, 1, 4, Qt::AlignCenter);
 
         letter_group_layout.setColumnStretch(0, 1);

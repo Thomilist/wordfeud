@@ -89,8 +89,8 @@ namespace wf
             const int minimum_auto_restart_delay = 0;
             const int maximum_auto_restart_delay = 31;
             const int minimum_bias_strength = 0;
-            const int maximum_bias_strength = 100;
-            const int bias_strength_step = 10;
+            const int maximum_bias_strength = 20;
+            const int bias_strength_step = 1;
 
             // General settings
             QGroupBox general_settings{"General"};

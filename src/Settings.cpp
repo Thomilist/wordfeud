@@ -174,7 +174,7 @@ namespace wf
         setAILetterPlacingDelay(value("ai/letter_placing_delay", "100").toInt());
         setAutoRestartDelay(value("ai/auto_restart_delay", "31").toInt());
         enableAutoRestart(value("ai/auto_restart_enabled", "false").toBool());
-        setBiasStrength(value("ai/bias_strength", "50").toInt());
+        setBiasStrength(value("ai/bias_strength", "10").toInt());
 
         first_time = false;
         return;

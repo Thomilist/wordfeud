@@ -66,6 +66,7 @@ namespace wf
     
     void LetterEditorWidget::updateLetterText(QString a_text)
     {
+        a_text = a_text.toUpper();
         letter_data.letter = a_text;
         letter.setText(a_text);
         letter_display.repaint();

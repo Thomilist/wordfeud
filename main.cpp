@@ -1,6 +1,6 @@
 /*
 wordfeud clone
-version 0.5.0
+version 0.6.0
 https://github.com/Thomilist/wordfeud
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>
@@ -33,7 +33,6 @@ SOFTWARE.
 #include <QObject>
 #include <QString>
 #include <QTextStream>
-#include <QThreadPool>
 
 #include "src/ForwardDeclarations.hpp"
 
@@ -43,12 +42,11 @@ SOFTWARE.
 int main(int argc, char* argv[])
 {
     QApplication application{argc, argv};
-    QThreadPool::globalInstance()->setExpiryTimeout(-1);
 
     QCoreApplication::setOrganizationName("Thomilist");
     QCoreApplication::setApplicationName("wordfeud");
 
-    wf::Version version{"0.5.0"};
+    wf::Version version{"0.6.0"};
     QCoreApplication::setApplicationVersion(version.getCurrentVersion());
 
     QFile stylesheet{":/dark/stylesheet.qss"};

@@ -74,6 +74,7 @@ namespace wf
             void createNameGroup();
             void loadExistingLanguage();
             void resizeTable();
+            void updateLetterPoolInfo();
 
             Settings* settings;
             QGridLayout grid_layout;
@@ -114,6 +115,9 @@ namespace wf
             LetterEditorWidget letter_editor;
             QTableView letter_table;
             LetterTableModel letter_table_model;
+            QLabel letter_pool_info_label;
+            QLabel letter_pool_info_values_label;
+            QFont letter_pool_info_font;
 
             // Name group elements
             QGroupBox name_group{"Dictionary Name"};

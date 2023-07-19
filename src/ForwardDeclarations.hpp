@@ -14,6 +14,7 @@ namespace wf
     class Letter;
     class LetterEditorWidget;
     class LetterPool;
+    class LetterTable;
     class LetterTableModel;
     class Modifier;
     class ModifierPattern;

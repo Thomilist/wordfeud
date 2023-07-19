@@ -37,6 +37,7 @@
 #include "ForwardDeclarations.hpp"
 
 #include "LetterEditorWidget.hpp"
+#include "LetterTable.hpp"
 #include "LetterTableModel.hpp"
 #include "Settings.hpp"
 
@@ -113,7 +114,7 @@ namespace wf
             QGroupBox letter_group{"Letter Pool"};
             QGridLayout letter_group_layout;
             LetterEditorWidget letter_editor;
-            QTableView letter_table;
+            LetterTable letter_table;
             LetterTableModel letter_table_model;
             QLabel letter_pool_info_label;
             QLabel letter_pool_info_values_label;

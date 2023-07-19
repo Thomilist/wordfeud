@@ -27,6 +27,7 @@ target_link_libraries(
     DictionaryEditor
     Qt5::Widgets
     LetterEditorWidget
+    LetterTable
     LetterTableModel
     Settings
 )
@@ -102,6 +103,12 @@ target_link_libraries(
     Qt5::Widgets
     Language
     Letter
+)
+
+add_library(LetterTable LetterTable.cpp)
+target_link_libraries(
+    LetterTable
+    Qt5::Widgets
 )
 
 add_library(LetterTableModel LetterTableModel.cpp)

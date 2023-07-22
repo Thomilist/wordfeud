@@ -9,7 +9,7 @@ namespace wf
         , buttons(QDialogButtonBox::Help | QDialogButtonBox::Ok | QDialogButtonBox::Cancel)
         , export_destination_dialog(
             this,
-            "Select word list source",
+            "Choose export destination",
             QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)
         )
     {

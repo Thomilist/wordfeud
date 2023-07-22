@@ -103,7 +103,7 @@ namespace wf
         license_value.setText
         (
             QString()
-            + "<a style=\"color:#1d99f3\" href=\"https://github.com/Thomilist/wordfeud/blob/0.5.0/LICENSE\">"
+            + "<a style=\"color:#1d99f3\" href=\"https://github.com/Thomilist/wordfeud/blob/main/LICENSE\">"
             + "MIT License"
             + "</a>"
         );

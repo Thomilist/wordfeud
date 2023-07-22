@@ -1,6 +1,6 @@
 /*
 wordfeud clone
-version 0.6.0
+version 0.6.1
 https://github.com/Thomilist/wordfeud
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
     QCoreApplication::setOrganizationName("Thomilist");
     QCoreApplication::setApplicationName("wordfeud");
 
-    wf::Version version{"0.6.0"};
+    wf::Version version{"0.6.1"};
     QCoreApplication::setApplicationVersion(version.getCurrentVersion());
 
     QFile stylesheet{":/dark/stylesheet.qss"};

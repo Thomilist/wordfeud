@@ -118,9 +118,9 @@ namespace wf
             // Startup group
             QGroupBox startup_settings{"Startup"};
             QGridLayout startup_settings_layout;
-            QLabel languages_to_load_label{"Dictionaries to load*:"};
+            QLabel languages_to_load_label{"Dictionaries to load:"};
             QListWidget languages_to_load_list;
-            QLabel languages_to_load_notice{"<i>* Takes effect at program startup</i>"};
+            QLabel languages_to_load_notice{"<i>These settings take effect at program startup</i>"};
 
             // Right player settings
             QGroupBox right_player_settings{"Player 2"};

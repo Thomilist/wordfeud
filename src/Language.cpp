@@ -166,7 +166,10 @@ namespace wf
                         letter_data_split.at(2).toInt()
                     };
 
-                    letter_list.push_back(letter_data);
+                    if (letter_data.count > 0)
+                    {
+                        letter_list.push_back(letter_data);
+                    }
                 }
             }
 

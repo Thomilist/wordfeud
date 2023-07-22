@@ -35,6 +35,12 @@ namespace wf
             static QString getBiasedWordListPath(QString a_language);
             static QString getLetterListPath(QString a_language);
 
+            const QString getPath() const;
+            const QString getWordListPath() const;
+            const QString getBiasedWordListPath() const;
+            const QString getLetterListPath() const;
+            bool isInternal();
+            void setInternal(bool a_state);
             void setLetterList(std::vector<LetterData>* a_letter_list);
             std::vector<LetterData>* getLetterList();
             const std::unordered_set<QString>* getWordList() const;
@@ -56,10 +62,14 @@ namespace wf
             void removeAllLetters();
 
         private:
+            QString language_name;
+            bool internal = false;
             std::vector<LetterData> letter_list;
             std::unordered_set<QString> word_list;
             std::unordered_set<QString> biased_word_list;
-            QString language_name;
+            QString letter_list_path;
+            QString word_list_path;
+            QString biased_words_path;
     };
 }
 

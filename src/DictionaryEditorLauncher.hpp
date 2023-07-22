@@ -9,11 +9,14 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QDir>
+#include <QFile>
+#include <QFileDialog>
 #include <QGridLayout>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringBuilder>
 #include <QWidget>
@@ -49,21 +52,26 @@ namespace wf
         private:
             void initialiseRadioButtons();
             void initaliseDictionaryDropdown();
+            bool exportDictionary(QString a_language);
             void deleteDictionary(QString a_language);
 
             Settings* settings;
             QGridLayout grid_layout;
             QDialogButtonBox buttons;
+            bool using_internal_languages = false;
 
-            QLabel choose_dictionary_label;
+            QLabel choose_dictionary_label{"Choose dictionary:"};
 
             QButtonGroup radio_buttons;
-            QRadioButton create_new_button;
-            QRadioButton open_copy_button;
-            QRadioButton edit_existing_button;
-            QRadioButton delete_existing_button;
+            QRadioButton create_new_button{"Create new"};
+            QRadioButton open_copy_button{"Open copy of existing"};
+            QRadioButton edit_existing_button{"Edit existing"};
+            QRadioButton export_existing_button{"Export existing"};
+            QRadioButton delete_existing_button{"Delete existing"};
 
             QComboBox dictionary_dropdown;
+
+            QFileDialog export_destination_dialog;
     };
 }
 

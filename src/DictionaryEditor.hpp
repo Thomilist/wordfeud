@@ -123,7 +123,7 @@ namespace wf
             // Name group elements
             QGroupBox name_group{"Dictionary Name"};
             QGridLayout name_group_layout;
-            QLabel name_label{"Name"};
+            QLabel name_label{"Name:"};
             QLineEdit name_edit;
             QLabel name_validation_label;
             QRegExpValidator name_validator;

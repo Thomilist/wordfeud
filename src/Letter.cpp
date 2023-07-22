@@ -1,6 +1,11 @@
 #include "Letter.hpp"
 namespace wf
 {
+    bool operator<(const LetterData& a_first, const LetterData& a_second)
+    {
+        return std::tie(a_first.letter, a_first.count, a_first.points) < std::tie(a_second.letter, a_second.count, a_second.points);
+    }
+
     Letter::Letter()
     {
         type = LetterType::None;

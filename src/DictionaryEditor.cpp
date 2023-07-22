@@ -133,8 +133,9 @@ namespace wf
         updateLetterPoolInfo();
 
         bool word_source_specified = !word_source_edit.text().isEmpty();
+        bool letter_pool_empty = language.getLetterList()->empty();
 
-        button_box.button(QDialogButtonBox::Save)->setDisabled(!dictionary_name_valid || !word_source_specified);
+        button_box.button(QDialogButtonBox::Save)->setDisabled(!dictionary_name_valid || !word_source_specified || letter_pool_empty);
 
         return;
     }
@@ -304,6 +305,10 @@ namespace wf
 
                 break;
             }
+            default:
+            {
+                break;
+            }
         }
 
         header.setFont(header_font);
@@ -325,15 +330,7 @@ namespace wf
                 language.setName(getUniqueDictionaryName(language.getName() % "_Copy"));
                 break;
             }
-            case DictionaryEditorMode::EditExisting:
-            {
-                break;
-            }
-            case DictionaryEditorMode::ExportExisting:
-            {
-                break;
-            }
-            case DictionaryEditorMode::DeleteExisting:
+            default:
             {
                 break;
             }
@@ -396,34 +393,31 @@ namespace wf
         letter_table.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
         letter_table.horizontalHeader()->setVisible(false);
 
-        letter_pool_info_font.setPixelSize(18);
+        letter_pool_info_font.setPixelSize(16);
         letter_pool_info_label.setAlignment(Qt::AlignRight);
         letter_pool_info_label.setText
         (
             QString()
-            % "Unique letters: \n"
-            % "Normal letters: \n"
-            % "Wildcard letters: \n"
-            % "Total letters: \n"
-            % "Total letter points: \n"
-            % "Average letter points: \n"
+            % "Entries (unique / total): \n"
+            % "Unique letters (ex. wildcards): \n"
+            % "Tiles (normal / wildcard / total): \n"
+            % "Points (average / total): \n"
         );
         letter_pool_info_label.setFont(letter_pool_info_font);
         letter_pool_info_values_label.setFont(letter_pool_info_font);
         
         int layout_row = 0;
 
-        letter_group_layout.addWidget(&letter_editor, layout_row, 0, 1, 2, Qt::AlignCenter);
-        letter_group_layout.addWidget(&letter_pool_info_label, layout_row, 2, Qt::AlignRight | Qt::AlignVCenter);
-        letter_group_layout.addWidget(&letter_pool_info_values_label, layout_row++, 3, Qt::AlignLeft | Qt::AlignVCenter);
-        letter_group_layout.addWidget(&letter_table, layout_row++, 0, 1, 4, Qt::AlignCenter);
+        letter_group_layout.addWidget(&letter_editor, layout_row, 0, Qt::AlignCenter);
+        letter_group_layout.addWidget(&letter_pool_info_label, layout_row, 1, Qt::AlignRight | Qt::AlignVCenter);
+        letter_group_layout.addWidget(&letter_pool_info_values_label, layout_row++, 2, Qt::AlignLeft | Qt::AlignVCenter);
+        letter_group_layout.addWidget(&letter_table, layout_row++, 0, 1, 3, Qt::AlignCenter);
 
-        letter_group_layout.setColumnStretch(0, 1);
+        letter_group_layout.setColumnStretch(0, 2);
         letter_group_layout.setColumnStretch(1, 1);
-        letter_group_layout.setColumnStretch(2, 1);
-        letter_group_layout.setColumnStretch(3, 0);
+        letter_group_layout.setColumnStretch(2, 0);
 
-        letter_group_layout.setColumnMinimumWidth(3, 80);
+        letter_group_layout.setColumnMinimumWidth(2, 120);
 
         letter_group.setLayout(&letter_group_layout);
         return;
@@ -489,27 +483,28 @@ namespace wf
     void DictionaryEditor::updateLetterPoolInfo()
     {
         std::set<QString> unique_letters;
+        std::set<LetterData> unique_entries;
         int normal_letters = 0;
         int wildcard_letters = 0;
         int total_letters = 0;
         int total_letter_points = 0;
         double average_letter_points = 0;
 
-        for (const auto& letter : *language.getLetterList())
+        for (const auto& entry : *language.getLetterList())
         {
-            unique_letters.insert(letter.letter);
-            
-            if (letter.letter.isEmpty())
+            if (entry.letter.isEmpty())
             {
-                wildcard_letters += letter.count;
+                wildcard_letters += entry.count;
             }
             else
             {
-                normal_letters += letter.count;
+                normal_letters += entry.count;
+                unique_letters.insert(entry.letter);
             }
 
-            total_letters += letter.count;
-            total_letter_points += letter.points * letter.count;
+            unique_entries.insert(entry);
+            total_letters += entry.count;
+            total_letter_points += entry.points * entry.count;
         }
 
         average_letter_points = total_letters == 0 ? 0 : static_cast<double>(total_letter_points) / total_letters;
@@ -517,12 +512,10 @@ namespace wf
         letter_pool_info_values_label.setText
         (
             QString()
+            % QString::number(unique_entries.size()) % " / " % QString::number(language.getLetterList()->size()) % "\n"
             % QString::number(unique_letters.size()) % "\n"
-            % QString::number(normal_letters) % "\n"
-            % QString::number(wildcard_letters) % "\n"
-            % QString::number(total_letters) % "\n"
-            % QString::number(total_letter_points) % "\n"
-            % QString::number(average_letter_points, 'f', 2) % "\n"
+            % QString::number(normal_letters) % " / " % QString::number(wildcard_letters) % " / " % QString::number(total_letters) % "\n"
+            % QString::number(average_letter_points, 'f', 2) % " / " % QString::number(total_letter_points) % "\n"
         );
 
         return;

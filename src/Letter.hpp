@@ -20,6 +20,8 @@ namespace wf
         int count;
         int points;
     };
+
+    bool operator<(const LetterData& a_first, const LetterData& a_second);
     
     class Letter
     {

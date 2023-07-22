@@ -5,8 +5,8 @@ namespace wf
     { }
     
     Language::Language(QString a_language)
-        : language_name(a_language)
     {
+        setName(a_language);
         loadLanguage(a_language);
     }
     
@@ -31,6 +31,44 @@ namespace wf
     QString Language::getLetterListPath(QString a_language)
     {
         return QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-letters.csv";
+    }
+    
+    const QString Language::getPath() const
+    {
+        if (internal)
+        {
+            return QString() % ":/dictionaries/" % language_name % "/";
+        }
+        else
+        {
+            return QString() % "resources/dictionaries/" % language_name % "/";
+        }
+    }
+    
+    const QString Language::getWordListPath() const
+    {
+        return word_list_path;
+    }
+    
+    const QString Language::getBiasedWordListPath() const
+    {
+        return biased_words_path;
+    }
+    
+    const QString Language::getLetterListPath() const
+    {
+        return letter_list_path;
+    }
+    
+    bool Language::isInternal()
+    {
+        return internal;
+    }
+    
+    void Language::setInternal(bool a_state)
+    {
+        internal = a_state;
+        return;
     }
     
     void Language::setLetterList(std::vector<LetterData>* a_letter_list)
@@ -110,6 +148,7 @@ namespace wf
         if (letter_file.open(QIODevice::ReadOnly))
         {
             letter_list.clear();
+            letter_list_path = a_file_path;
             
             QTextStream letters{&letter_file};
 
@@ -146,10 +185,12 @@ namespace wf
             if (a_load_biased_words)
             {
                 biased_word_list.clear();
+                biased_words_path = a_file_path;
             }
             else
             {
                 word_list.clear();
+                word_list_path = a_file_path;
             }
             
             QTextStream words{&word_list_file};

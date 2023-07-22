@@ -5,6 +5,7 @@ namespace wf
 {
     enum class DictionaryEditorMode
     {
+        Undefined,
         CreateNew,
         OpenCopy,
         EditExisting,

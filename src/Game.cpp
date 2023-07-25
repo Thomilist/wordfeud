@@ -380,7 +380,7 @@ namespace wf
         return;
     }
     
-    RecordTracker* Game::getRecords()
+    RecordTableModel* Game::getRecords()
     {
         return &record_tracker;
     }
@@ -946,30 +946,17 @@ namespace wf
     
     void Game::saveScores()
     {
-        Player* winning_player = getHighestScoringPlayer();
         Score score;
 
-        for (auto player : all_players)
+        for (auto [player, opponent] :
+        {
+            std::pair{all_players[0], all_players[1]},
+            std::pair{all_players[1], all_players[0]}
+        })
         {
             score.name = player->getDisplayName();
             score.player_type = player->getType();
             score.points = player->getScore();
-            score.timestamp = QDateTime::currentDateTime().toString(RecordTracker::getDateTimeFormat());
-            score.dictionary = settings->getCurrentLanguage()->getName();
-            score.modifier_pattern = settings->getModifierPattern()->getDistributionAsText();
-
-            if (player == winning_player)
-            {
-                score.result = "Win";
-            }
-            else if (winning_player == nullptr)
-            {
-                score.result = "Draw";
-            }
-            else
-            {
-                score.result = "Loss";
-            }
 
             if (player->getType() == PlayerType::AI)
             {
@@ -980,6 +967,27 @@ namespace wf
             {
                 score.difficulty = 0;
             }
+
+            score.opponent_name = opponent->getDisplayName();
+            score.opponent_player_type = opponent->getType();
+            score.opponent_points = opponent->getScore();
+
+            if (opponent->getType() == PlayerType::AI)
+            {
+                PlayerAI* player_ai = dynamic_cast<PlayerAI*>(opponent);
+                score.opponent_difficulty = player_ai->getDifficulty();
+            }
+            else
+            {
+                score.opponent_difficulty = 0;
+            }
+
+            score.dictionary = settings->getCurrentLanguage()->getName();
+            score.modifier_pattern = settings->getModifierPattern()->getDistributionAsText();
+
+            QDateTime datetime = QDateTime::currentDateTime();
+            score.timestamp = datetime.toString(RecordTableModel::getDateTimeFormat());
+            score.datetime = datetime;
 
             record_tracker.insert(score);
         }

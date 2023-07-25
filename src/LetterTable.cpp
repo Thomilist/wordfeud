@@ -5,7 +5,12 @@ namespace wf
 {
     LetterTable::LetterTable(QWidget* a_parent)
         : QTableView(a_parent)
-    { }
+    {
+        setSelectionBehavior(QAbstractItemView::SelectColumns);
+        setEditTriggers(QAbstractItemView::NoEditTriggers);
+        horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+        verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    }
     
     LetterTable::~LetterTable()
     { }

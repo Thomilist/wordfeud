@@ -102,7 +102,7 @@ namespace wf
         {
             case Qt::Orientation::Horizontal:
             {
-                break;;
+                break;
             }
             case Qt::Orientation::Vertical:
             {
@@ -158,14 +158,14 @@ namespace wf
     {
         insertColumn(columnCount());
         language->getLetterList()->back() = a_letter_data;
-        emit dataChanged(createIndex(0, 0), createIndex(2, columnCount() - 1), {Qt::DisplayRole});
+        emit dataChanged(createIndex(0, columnCount() - 1), createIndex(2, columnCount() - 1), {Qt::DisplayRole});
         return;
     }
     
     void LetterTableModel::removeLetter(int a_position)
     {
         removeColumn(a_position);
-        emit dataChanged(createIndex(0, 0), createIndex(2, columnCount() - 1), {Qt::DisplayRole});
+        emit dataChanged(createIndex(0, a_position), createIndex(2, a_position), {Qt::DisplayRole});
         return;
     }
 }

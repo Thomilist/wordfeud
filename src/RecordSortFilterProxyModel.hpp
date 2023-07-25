@@ -1,0 +1,53 @@
+#ifndef __RECORDSORTFILTERPROXYMODEL_H__
+#define __RECORDSORTFILTERPROXYMODEL_H__
+
+#include <QModelIndex>
+#include <QObject>
+#include <QSortFilterProxyModel>
+#include <QVariant>
+
+#include "ForwardDeclarations.hpp"
+
+#include "Score.hpp"
+
+namespace wf
+{
+    class RecordSortFilterProxyModel : public QSortFilterProxyModel
+    {
+        Q_OBJECT
+
+        public:
+            RecordSortFilterProxyModel(QObject* a_parent);
+            ~RecordSortFilterProxyModel();
+        
+        public slots:
+            void enablePointsFilters(
+                bool a_minimum_points_enabled,
+                bool a_maximum_points_enabled,
+                bool a_minimum_opponent_points_enabled,
+                bool a_maximum_opponent_points_enabled);
+            void updatePointsFilterValues(
+                int a_minimum_points,
+                int a_maximum_points,
+                int a_minimum_opponent_points,
+                int a_maximum_opponent_points);
+        
+        protected:
+            bool filterAcceptsRow(int a_source_row, const QModelIndex& a_source_parent) const override;
+        
+        private:
+            bool pointsInRange(int a_source_row, const QModelIndex& a_source_parent) const;
+
+            bool minimum_points_enabled = false;
+            bool maximum_points_enabled = false;
+            bool minimum_opponent_points_enabled = false;
+            bool maximum_opponent_points_enabled = false;
+
+            int minimum_points;
+            int maximum_points;
+            int minimum_opponent_points;
+            int maximum_opponent_points;
+    };
+}
+
+#endif // __RECORDSORTFILTERPROXYMODEL_H__

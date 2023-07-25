@@ -61,7 +61,7 @@ target_link_libraries(
     ModifierPattern
     Player
     ProposalInfo
-    RecordTracker
+    RecordTableModel
     RenderedBoard
     RenderedTile
     Settings
@@ -182,16 +182,33 @@ target_link_libraries(
     Settings
 )
 
+add_library(RecordContainer RecordContainer.cpp)
+target_link_libraries(
+    RecordContainer
+    Qt5::Widgets
+    Score
+)
+
 add_library(RecordDialog RecordDialog.cpp)
 target_link_libraries(
     RecordDialog
     Qt5::Widgets
+    RecordSortFilterProxyModel
 )
 
-add_library(RecordTracker RecordTracker.cpp)
+add_library(RecordSortFilterProxyModel RecordSortFilterProxyModel.cpp)
 target_link_libraries(
-    RecordTracker
+    RecordSortFilterProxyModel
     Qt5::Widgets
+    Score
+)
+
+add_library(RecordTableModel RecordTableModel.cpp)
+target_link_libraries(
+    RecordTableModel
+    Qt5::Widgets
+    RecordContainer
+    Score
 )
 
 add_library(RenderedTile RenderedTile.cpp)
@@ -211,6 +228,12 @@ target_link_libraries(
     RenderedTile
     Settings
     VirtualBoard
+)
+
+add_library(Score Score.cpp)
+target_link_libraries(
+    Score
+    Qt5::Widgets
 )
 
 add_library(Settings Settings.cpp)

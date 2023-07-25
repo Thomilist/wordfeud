@@ -23,8 +23,10 @@ namespace wf
     class PlayerAIWorker;
     class PlayerSettings;
     class ProposalInfo;
+    class RecordContainer;
     class RecordDialog;
-    class RecordTracker;
+    class RecordSortFilterProxyModel;
+    class RecordTableModel;
     class RenderedBoard;
     class RenderedTile;
     class Settings;

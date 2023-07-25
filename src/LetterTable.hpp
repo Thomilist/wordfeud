@@ -1,8 +1,7 @@
 #ifndef __LETTERTABLE_H__
 #define __LETTERTABLE_H__
 
-#include <QDebug>
-
+#include <QHeaderView>
 #include <QScrollBar>
 #include <QTableView>
 #include <QWheelEvent>

@@ -321,6 +321,11 @@ namespace wf
         all_letters.clear();
         swap_letters.clear();
 
+        for (auto player : all_players)
+        {
+            hands.removeWidget(player->getHandCentered());
+        }
+
         deletePlayers();
 
         header.reset();

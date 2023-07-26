@@ -56,6 +56,7 @@ namespace wf
     enum class TileInteractMode;
     enum class UpdateStatus;
 
+    enum RecordColumn : unsigned int;
     enum TileNeighbour : unsigned int;
 }
 

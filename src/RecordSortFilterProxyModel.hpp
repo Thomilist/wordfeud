@@ -1,13 +1,17 @@
 #ifndef __RECORDSORTFILTERPROXYMODEL_H__
 #define __RECORDSORTFILTERPROXYMODEL_H__
 
+#include <set>
+
 #include <QModelIndex>
 #include <QObject>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QVariant>
 
 #include "ForwardDeclarations.hpp"
 
+#include "RecordColumn.hpp"
 #include "Score.hpp"
 
 namespace wf
@@ -19,8 +23,12 @@ namespace wf
         public:
             RecordSortFilterProxyModel(QObject* a_parent);
             ~RecordSortFilterProxyModel();
+
+            QVariant headerData(int a_section, Qt::Orientation a_orientation, int a_role = Qt::DisplayRole) const override;
         
         public slots:
+            void updateDictionaryFilter(std::set<QString> a_dictionaries);
+            void updateModifierFilter(std::set<QString> a_modifiers);
             void enablePointsFilters(
                 bool a_minimum_points_enabled,
                 bool a_maximum_points_enabled,
@@ -36,7 +44,12 @@ namespace wf
             bool filterAcceptsRow(int a_source_row, const QModelIndex& a_source_parent) const override;
         
         private:
+            bool dictionaryValid(int a_source_row, const QModelIndex& a_source_parent) const;
+            bool modifierValid(int a_source_row, const QModelIndex& a_source_parent) const;
             bool pointsInRange(int a_source_row, const QModelIndex& a_source_parent) const;
+
+            std::set<QString> dictionaries;
+            std::set<QString> modifiers;
 
             bool minimum_points_enabled = false;
             bool maximum_points_enabled = false;

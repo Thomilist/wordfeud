@@ -7,7 +7,7 @@ namespace wf
         : QAbstractTableModel(a_parent)
         , scores("Thomilist", "wordfeud-highscores", a_parent)
     {
-        updatePointsLimits();
+        updateFilterData();
     }
     
     RecordTableModel::~RecordTableModel()
@@ -60,7 +60,7 @@ namespace wf
         // vs
         // opponent_name, opponent_player_type/opponent_difficulty, opponent_points
         // [spacer]
-        // timestamp, modifier_pattern, dictionary
+        // dictionary, modifier_pattern, timestamp
         return 3+1+3+1+3;
     }
     
@@ -95,47 +95,47 @@ namespace wf
             {
                 switch (a_index.column())
                 {
-                    case 0:
+                    case RecordColumn::Name:
                     {
                         return scores[a_index.row()].name;
                     }
-                    case 1:
+                    case RecordColumn::Control:
                     {
                         return playerTypeAsText(scores[a_index.row()]);
                     }
-                    case 2:
+                    case RecordColumn::Points:
                     {
                         return scores[a_index.row()].points;
                     }
-                    case 3:
+                    case RecordColumn::Versus:
                     {
                         return "vs.";
                     }
-                    case 4:
+                    case RecordColumn::OpponentPoints:
                     {
                         return scores[a_index.row()].opponent_points;
                     }
-                    case 5:
+                    case RecordColumn::OpponentControl:
                     {
                         return playerTypeAsText(scores[a_index.row()], true);
                     }
-                    case 6:
+                    case RecordColumn::OpponentName:
                     {
                         return scores[a_index.row()].opponent_name;
                     }
-                    case 7:
+                    case RecordColumn::Spacer:
                     {
                         return QVariant();
                     }
-                    case 8:
+                    case RecordColumn::Dictionary:
                     {
                         return scores[a_index.row()].dictionary;
                     }
-                    case 9:
+                    case RecordColumn::Modifiers:
                     {
                         return scores[a_index.row()].modifier_pattern;
                     }
-                    case 10:
+                    case RecordColumn::Timestamp:
                     {
                         return scores[a_index.row()].timestamp;
                     }
@@ -168,49 +168,49 @@ namespace wf
                     {
                         switch (a_section)
                         {
-                            case 0:
+                            case RecordColumn::Name:
                             {
                                 return "Name";
                             }
-                            case 1:
+                            case RecordColumn::Control:
                             {
                                 return "Control";
                             }
-                            case 2:
+                            case RecordColumn::Points:
                             {
                                 return "Points";
                             }
-                            case 3:
+                            case RecordColumn::Versus:
                             {
                                 return QVariant();
                             }
-                            case 4:
+                            case RecordColumn::OpponentPoints:
                             {
                                 return "Opponent\nPoints";
                             }
-                            case 5:
+                            case RecordColumn::OpponentControl:
                             {
                                 return "Opponent\nControl";
                             }
-                            case 6:
+                            case RecordColumn::OpponentName:
                             {
                                 return "Opponent\nName";
                             }
-                            case 7:
+                            case RecordColumn::Spacer:
                             {
                                 return QVariant();
                             }
-                            case 8:
+                            case RecordColumn::Dictionary:
                             {
                                 return "Dictionary";
                             }
-                            case 9:
+                            case RecordColumn::Modifiers:
                             {
                                 return "Modifiers";
                             }
-                            case 10:
+                            case RecordColumn::Timestamp:
                             {
-                                return "Date";
+                                return "End Date";
                             }
                         }
 
@@ -258,7 +258,7 @@ namespace wf
         std::sort(scores.begin(), scores.end(), Score::sortScoreByPoints);
 
         trimRecords();
-        updatePointsLimits();
+        updateFilterData();
         
         emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1), {Qt::DisplayRole});
         return;
@@ -272,6 +272,16 @@ namespace wf
     int RecordTableModel::getMaximumPoints(bool a_opponent)
     {
         return a_opponent ? maximum_opponent_points : maximum_points;
+    }
+    
+    const std::set<QString>& RecordTableModel::getDictionaries() const
+    {
+        return dictionaries;
+    }
+    
+    const std::set<QString>& RecordTableModel::getModifiers() const
+    {
+        return modifiers;
     }
     
     void RecordTableModel::trimRecords()
@@ -292,6 +302,38 @@ namespace wf
                 }
             }
         }
+    }
+    
+    void RecordTableModel::updateFilterData()
+    {
+        updateDictionaries();
+        updateModifiers();
+        updatePointsLimits();
+        return;
+    }
+    
+    void RecordTableModel::updateDictionaries()
+    {
+        dictionaries.clear();
+
+        for (const auto& score : scores)
+        {
+            dictionaries.insert(score.dictionary);
+        }
+
+        return;
+    }
+    
+    void RecordTableModel::updateModifiers()
+    {
+        modifiers.clear();
+
+        for (const auto& score : scores)
+        {
+            modifiers.insert(score.modifier_pattern);
+        }
+
+        return;
     }
     
     void RecordTableModel::updatePointsLimits()

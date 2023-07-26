@@ -2,6 +2,7 @@
 #define __RECORDTABLEMODEL_H__
 
 #include <algorithm>
+#include <set>
 #include <vector>
 
 #include <QAbstractTableModel>
@@ -18,6 +19,7 @@
 #include "Score.hpp"
 
 #include "PlayerType.hpp"
+#include "RecordColumn.hpp"
 
 namespace wf
 {
@@ -42,16 +44,25 @@ namespace wf
             void insert(Score a_score);
             int getMinimumPoints(bool a_opponent = false);
             int getMaximumPoints(bool a_opponent = false);
+            const std::set<QString>& getDictionaries() const;
+            const std::set<QString>& getModifiers() const;
         
         signals:
             void pointsLimitsChanged(int a_minimum_points, int a_maximum_points, int a_opponent_minimum_points, int a_opponent_maximum_points);
         
         private:
             void trimRecords();
+            void updateFilterData();
+            void updateDictionaries();
+            void updateModifiers();
             void updatePointsLimits();
 
             const int maximum_leaderboard_size = 100;
             RecordContainer scores;
+
+            std::set<QString> dictionaries;
+            std::set<QString> modifiers;
+
             int minimum_points;
             int maximum_points;
             int minimum_opponent_points;

@@ -41,6 +41,20 @@ namespace wf
         return QVariant();
     }
     
+    void RecordSortFilterProxyModel::updateControlFilter(std::set<QString, ScoreControlCompare> a_controls)
+    {
+        controls = a_controls;
+        invalidateFilter();
+        return;
+    }
+    
+    void RecordSortFilterProxyModel::updateOpponentControlFilter(std::set<QString, ScoreControlCompare> a_opponent_controls)
+    {
+        opponent_controls = a_opponent_controls;
+        invalidateFilter();
+        return;
+    }
+    
     void RecordSortFilterProxyModel::updateDictionaryFilter(std::set<QString> a_dictionaries)
     {
         dictionaries = a_dictionaries;
@@ -89,13 +103,21 @@ namespace wf
     
     bool RecordSortFilterProxyModel::filterAcceptsRow(int a_source_row, const QModelIndex& a_source_parent) const 
     {
-        bool row_accepted = true;
+        if (!controlValid(a_source_row, a_source_parent)) {return false;}
+        if (!dictionaryValid(a_source_row, a_source_parent)) {return false;}
+        if (!modifierValid(a_source_row, a_source_parent)) {return false;}
+        if (!pointsInRange(a_source_row, a_source_parent)) {return false;}
 
-        row_accepted &= dictionaryValid(a_source_row, a_source_parent);
-        row_accepted &= modifierValid(a_source_row, a_source_parent);
-        row_accepted &= pointsInRange(a_source_row, a_source_parent);
-
-        return row_accepted;
+        return true;
+    }
+    
+    bool RecordSortFilterProxyModel::controlValid(int a_source_row, const QModelIndex& a_source_parent) const
+    {
+        QModelIndex control_index = sourceModel()->index(a_source_row, RecordColumn::Control, a_source_parent);
+        QModelIndex opponent_control_index = sourceModel()->index(a_source_row, RecordColumn::OpponentControl, a_source_parent);
+        QString control = sourceModel()->data(control_index).toString();
+        QString opponent_control = sourceModel()->data(opponent_control_index).toString();
+        return controls.contains(control) && opponent_controls.contains(opponent_control);
     }
     
     bool RecordSortFilterProxyModel::dictionaryValid(int a_source_row, const QModelIndex& a_source_parent) const

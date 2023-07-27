@@ -11,6 +11,7 @@
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
 #include <QList>
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -43,6 +44,8 @@ namespace wf
             void open();
             void setRecordSource(RecordTableModel* a_record_table_model);
             void updateMinimumSize();
+            void updateControlFilter();
+            void updateOpponentControlFilter();
             void updateDictionaryFilter();
             void updateModifierFilter();
             void updatePointsFilterStatus();
@@ -53,6 +56,8 @@ namespace wf
             void updateRecordTableWidth();
         
         signals:
+            void controlFilterChanged(std::set<QString, ScoreControlCompare> a_control_list);
+            void opponentControlFilterChanged(std::set<QString, ScoreControlCompare> a_opponent_control_list);
             void dictionaryFilterChanged(std::set<QString> a_dictionary_list);
             void modifierFilterChanged(std::set<QString> a_modifier_list);
             void pointsFilterStatusChanged(
@@ -68,8 +73,13 @@ namespace wf
         
         private:
             void fitListToContents(QListWidget* a_list);
+            void fitListToContents(QListWidget* a_first_list, QListWidget* a_second_list);
             void fitTableWidthToContents(QTableView* a_table);
             void initialiseRecordTable();
+            void initialiseControlList(int& a_layout_row);
+            void populateControlList();
+            void initialiseOpponentControlList(int& a_layout_row);
+            void populateOpponentControlList();
             void initialiseDictionaryList(int& a_layout_row);
             void populateDictionaryList();
             void initialiseModifierList(int& a_layout_row);
@@ -88,6 +98,26 @@ namespace wf
             QPushButton reset_filters_button{"Reset Filters"};
             QWidget filter_padding;
 
+            // Control filter
+            QGroupBox control_group{"Control"};
+            QGridLayout control_layout;
+            QListWidget control_list;
+
+            // Opponent control filter
+            QGroupBox opponent_control_group{"Opponent Control"};
+            QGridLayout opponent_control_layout;
+            QListWidget opponent_control_list;
+
+            // Name filter
+            QGroupBox name_group{"Name"};
+            QGridLayout name_layout;
+            QLineEdit name_input;
+
+            // Opponent name filter
+            QGroupBox opponent_name_group{"Opponent Name"};
+            QGridLayout opponent_name_layout;
+            QLineEdit opponent_name_input;
+
             // Dictionary filter
             QGroupBox dictionary_group{"Dictionaries"};
             QGridLayout dictionary_layout;
@@ -102,24 +132,20 @@ namespace wf
             QGroupBox points_group{"Points"};
             QGridLayout points_group_layout;
             QCheckBox maximum_points_checkbox;
-            QLabel maximum_points_label{"Maximum:"};
-            QWidget maximum_points_padding;
+            QLabel maximum_points_label{"Max:"};
             QSpinBox maximum_points_input;
             QCheckBox minimum_points_checkbox;
-            QLabel minimum_points_label{"Minimum:"};
-            QWidget minimum_points_padding;
+            QLabel minimum_points_label{"Min:"};
             QSpinBox minimum_points_input;
 
             // Opponent points filter
             QGroupBox opponent_points_group{"Opponent Points"};
             QGridLayout opponent_points_group_layout;
             QCheckBox maximum_opponent_points_checkbox;
-            QLabel maximum_opponent_points_label{"Maximum:"};
-            QWidget maximum_opponent_points_padding;
+            QLabel maximum_opponent_points_label{"Max:"};
             QSpinBox maximum_opponent_points_input;
             QCheckBox minimum_opponent_points_checkbox;
-            QLabel minimum_opponent_points_label{"Minimum:"};
-            QWidget minimum_opponent_points_padding;
+            QLabel minimum_opponent_points_label{"Min:"};
             QSpinBox minimum_opponent_points_input;
     };
 }

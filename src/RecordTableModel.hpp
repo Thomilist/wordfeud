@@ -32,7 +32,6 @@ namespace wf
             ~RecordTableModel();
 
             static QString getDateTimeFormat();
-            static QString playerTypeAsText(Score a_score, bool a_opponent = false);
 
             int rowCount(const QModelIndex& a_parent = QModelIndex()) const override;
             int columnCount(const QModelIndex& a_parent = QModelIndex()) const override;
@@ -44,6 +43,8 @@ namespace wf
             void insert(Score a_score);
             int getMinimumPoints(bool a_opponent = false);
             int getMaximumPoints(bool a_opponent = false);
+            const std::set<QString, ScoreControlCompare>& getControlEntries() const;
+            const std::set<QString, ScoreControlCompare>& getOpponentControlEntries();
             const std::set<QString>& getDictionaries() const;
             const std::set<QString>& getModifiers() const;
         
@@ -53,6 +54,7 @@ namespace wf
         private:
             void trimRecords();
             void updateFilterData();
+            void updateControlEntries();
             void updateDictionaries();
             void updateModifiers();
             void updatePointsLimits();
@@ -60,6 +62,8 @@ namespace wf
             const int maximum_leaderboard_size = 100;
             RecordContainer scores;
 
+            std::set<QString, ScoreControlCompare> control_entries;
+            std::set<QString, ScoreControlCompare> opponent_control_entries;
             std::set<QString> dictionaries;
             std::set<QString> modifiers;
 

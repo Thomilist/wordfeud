@@ -18,37 +18,6 @@ namespace wf
         return "yyyy-MM-dd hh:mm:ss";
     }
     
-    QString RecordTableModel::playerTypeAsText(Score a_score, bool a_opponent)
-    {
-        PlayerType type = PlayerType::Human;
-        int difficulty = 0;
-
-        if (a_opponent)
-        {
-            type = a_score.opponent_player_type;
-            difficulty = a_score.opponent_difficulty;
-        }
-        else
-        {
-            type = a_score.player_type;
-            difficulty = a_score.difficulty;
-        }
-        
-        switch (type)
-        {
-            case PlayerType::AI:
-            {
-                return QString() % "AI " % QString::number(difficulty * 10) % "%";
-            }
-            case PlayerType::Human:
-            {
-                return "Human";
-            }
-        }
-
-        return "Error";
-    }
-    
     int RecordTableModel::rowCount(const QModelIndex&) const 
     {
         return scores.size();
@@ -101,7 +70,7 @@ namespace wf
                     }
                     case RecordColumn::Control:
                     {
-                        return playerTypeAsText(scores[a_index.row()]);
+                        return Score::getControlDescription(scores[a_index.row()].player_type, scores[a_index.row()].difficulty);
                     }
                     case RecordColumn::Points:
                     {
@@ -117,7 +86,7 @@ namespace wf
                     }
                     case RecordColumn::OpponentControl:
                     {
-                        return playerTypeAsText(scores[a_index.row()], true);
+                        return Score::getControlDescription(scores[a_index.row()].opponent_player_type, scores[a_index.row()].opponent_difficulty);
                     }
                     case RecordColumn::OpponentName:
                     {
@@ -274,6 +243,16 @@ namespace wf
         return a_opponent ? maximum_opponent_points : maximum_points;
     }
     
+    const std::set<QString, ScoreControlCompare>& RecordTableModel::getControlEntries() const
+    {
+        return control_entries;
+    }
+    
+    const std::set<QString, ScoreControlCompare>& RecordTableModel::getOpponentControlEntries()
+    {
+        return opponent_control_entries;
+    }
+    
     const std::set<QString>& RecordTableModel::getDictionaries() const
     {
         return dictionaries;
@@ -306,9 +285,24 @@ namespace wf
     
     void RecordTableModel::updateFilterData()
     {
+        updateControlEntries();
         updateDictionaries();
         updateModifiers();
         updatePointsLimits();
+        return;
+    }
+    
+    void RecordTableModel::updateControlEntries()
+    {
+        control_entries.clear();
+        opponent_control_entries.clear();
+
+        for (const auto& score : scores)
+        {
+            control_entries.insert(Score::getControlDescription(score.player_type, score.difficulty));
+            opponent_control_entries.insert(Score::getControlDescription(score.opponent_player_type, score.opponent_difficulty));
+        }
+
         return;
     }
     

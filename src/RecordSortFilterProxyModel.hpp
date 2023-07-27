@@ -27,6 +27,8 @@ namespace wf
             QVariant headerData(int a_section, Qt::Orientation a_orientation, int a_role = Qt::DisplayRole) const override;
         
         public slots:
+            void updateControlFilter(std::set<QString, ScoreControlCompare> a_controls);
+            void updateOpponentControlFilter(std::set<QString, ScoreControlCompare> a_opponent_controls);
             void updateDictionaryFilter(std::set<QString> a_dictionaries);
             void updateModifierFilter(std::set<QString> a_modifiers);
             void enablePointsFilters(
@@ -44,10 +46,13 @@ namespace wf
             bool filterAcceptsRow(int a_source_row, const QModelIndex& a_source_parent) const override;
         
         private:
+            bool controlValid(int a_source_row, const QModelIndex& a_source_parent) const;
             bool dictionaryValid(int a_source_row, const QModelIndex& a_source_parent) const;
             bool modifierValid(int a_source_row, const QModelIndex& a_source_parent) const;
             bool pointsInRange(int a_source_row, const QModelIndex& a_source_parent) const;
 
+            std::set<QString, ScoreControlCompare> controls;
+            std::set<QString, ScoreControlCompare> opponent_controls;
             std::set<QString> dictionaries;
             std::set<QString> modifiers;
 

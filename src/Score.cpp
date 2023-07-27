@@ -7,6 +7,64 @@ namespace wf
     {
         return a_first.points > a_second.points;
     }
+    
+    bool Score::sortControlDescription(const QString& a_first, const QString& a_second)
+    {
+        std::array<QString, 11> values =
+        {
+            "Human",
+            "AI 100%",
+            "AI 90%",
+            "AI 80%",
+            "AI 70%",
+            "AI 60%",
+            "AI 50%",
+            "AI 40%",
+            "AI 30%",
+            "AI 20%",
+            "AI 10%"
+        };
+
+        size_t first_index = values.size();
+        size_t second_index = values.size();
+
+        for (size_t index = 0; index < values.size(); ++index)
+        {
+            if (a_first == values[index])
+            {
+                first_index = index;
+            }
+
+            if (a_second == values[index])
+            {
+                second_index = index;
+            }
+        }
+
+        return first_index < second_index;
+    }
+    
+    QString Score::getControlDescription(PlayerType a_player_type, int a_difficulty)
+    {
+        switch (a_player_type)
+        {
+            case PlayerType::AI:
+            {
+                return QString() % "AI " % QString::number(a_difficulty * 10) % "%";
+            }
+            case PlayerType::Human:
+            {
+                return "Human";
+            }
+        }
+
+        return "Error";
+    }
+    
+    bool ScoreControlCompare::operator()(const QString& a_first, const QString& a_second) const
+    {
+        return Score::sortControlDescription(a_first, a_second);
+    }
 
     bool operator<(const Score& a_first, const Score& a_second)
     {

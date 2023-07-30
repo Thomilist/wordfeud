@@ -5,6 +5,7 @@
 
 #include <QModelIndex>
 #include <QObject>
+#include <QRegularExpression>
 #include <QSortFilterProxyModel>
 #include <QString>
 #include <QVariant>
@@ -29,6 +30,8 @@ namespace wf
         public slots:
             void updateControlFilter(std::set<QString, ScoreControlCompare> a_controls);
             void updateOpponentControlFilter(std::set<QString, ScoreControlCompare> a_opponent_controls);
+            void updateNameFilter(const QString& a_name);
+            void updateOpponentNameFilter(const QString& a_opponent_name);
             void updateDictionaryFilter(std::set<QString> a_dictionaries);
             void updateModifierFilter(std::set<QString> a_modifiers);
             void enablePointsFilters(
@@ -49,8 +52,11 @@ namespace wf
             bool controlValid(int a_source_row, const QModelIndex& a_source_parent) const;
             bool dictionaryValid(int a_source_row, const QModelIndex& a_source_parent) const;
             bool modifierValid(int a_source_row, const QModelIndex& a_source_parent) const;
+            bool nameValid(int a_source_row, const QModelIndex& a_source_parent) const;
             bool pointsInRange(int a_source_row, const QModelIndex& a_source_parent) const;
 
+            QRegularExpression name_pattern;
+            QRegularExpression opponent_name_pattern;
             std::set<QString, ScoreControlCompare> controls;
             std::set<QString, ScoreControlCompare> opponent_controls;
             std::set<QString> dictionaries;

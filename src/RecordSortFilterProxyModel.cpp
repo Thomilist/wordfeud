@@ -5,7 +5,10 @@ namespace wf
 {
     RecordSortFilterProxyModel::RecordSortFilterProxyModel(QObject* a_parent)
         : QSortFilterProxyModel(a_parent)
-    { }
+    {
+        name_pattern.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+        opponent_name_pattern.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+    }
     
     RecordSortFilterProxyModel::~RecordSortFilterProxyModel()
     { }
@@ -51,6 +54,20 @@ namespace wf
     void RecordSortFilterProxyModel::updateOpponentControlFilter(std::set<QString, ScoreControlCompare> a_opponent_controls)
     {
         opponent_controls = a_opponent_controls;
+        invalidateFilter();
+        return;
+    }
+    
+    void RecordSortFilterProxyModel::updateNameFilter(const QString& a_name)
+    {
+        name_pattern.setPattern(a_name);
+        invalidateFilter();
+        return;
+    }
+    
+    void RecordSortFilterProxyModel::updateOpponentNameFilter(const QString& a_opponent_name)
+    {
+        opponent_name_pattern.setPattern(a_opponent_name);
         invalidateFilter();
         return;
     }
@@ -106,6 +123,7 @@ namespace wf
         if (!controlValid(a_source_row, a_source_parent)) {return false;}
         if (!dictionaryValid(a_source_row, a_source_parent)) {return false;}
         if (!modifierValid(a_source_row, a_source_parent)) {return false;}
+        if (!nameValid(a_source_row, a_source_parent)) {return false;}
         if (!pointsInRange(a_source_row, a_source_parent)) {return false;}
 
         return true;
@@ -132,6 +150,15 @@ namespace wf
         QModelIndex modifier_index = sourceModel()->index(a_source_row, RecordColumn::Modifiers, a_source_parent);
         QString modifier = sourceModel()->data(modifier_index).toString();
         return modifiers.contains(modifier);
+    }
+    
+    bool RecordSortFilterProxyModel::nameValid(int a_source_row, const QModelIndex& a_source_parent) const
+    {
+        QModelIndex name_index = sourceModel()->index(a_source_row, RecordColumn::Name, a_source_parent);
+        QModelIndex opponent_name_index = sourceModel()->index(a_source_row, RecordColumn::OpponentName, a_source_parent);
+        QString name = sourceModel()->data(name_index).toString();
+        QString opponent_name = sourceModel()->data(opponent_name_index).toString();
+        return name_pattern.match(name).hasMatch() && opponent_name_pattern.match(opponent_name).hasMatch();
     }
     
     bool RecordSortFilterProxyModel::pointsInRange(int a_source_row, const QModelIndex& a_source_parent) const

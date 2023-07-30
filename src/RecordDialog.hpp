@@ -86,6 +86,8 @@ namespace wf
             void populateDictionaryList();
             void initialiseModifierList(int& a_layout_row);
             void populateModifierList();
+            void initialiseNameField(int& a_layout_row);
+            void initialiseOpponentNameField(int& a_layout_row);
             void initialisePointsLimits(int& a_layout_row);
             
             QGridLayout grid_layout;

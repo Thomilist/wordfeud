@@ -20,6 +20,7 @@ namespace wf
         static bool sortScoreByPoints(const Score& a_first, const Score& a_second);
         static bool sortControlDescription(const QString& a_first, const QString& a_second);
         static QString getControlDescription(PlayerType a_player_type, int a_difficulty);
+        static bool sameGameSetup(const Score& a_first, const Score& a_second);
         
         QString name;
         PlayerType player_type;

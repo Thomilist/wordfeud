@@ -25,15 +25,11 @@ namespace wf
                 QObject* a_parent);
             ~RecordContainer();
 
-            void addToScoreCount(PlayerType a_player_type, int a_count);
-            int getScoreCount(PlayerType a_player_type) const;
+            int getScoreCount(const Score& a_score) const;
         
         private:
             void load();
             void save();
-
-            int ai_scores;
-            int human_scores;
     };
 }
 

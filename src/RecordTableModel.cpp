@@ -220,13 +220,11 @@ namespace wf
     
     void RecordTableModel::insert(Score a_score)
     {
-        scores.addToScoreCount(a_score.player_type, 1);
-        
         insertRow(rowCount());
         scores.back() = a_score;
         std::sort(scores.begin(), scores.end(), Score::sortScoreByPoints);
 
-        trimRecords();
+        trimRecords(a_score);
         updateFilterData();
         
         emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1), {Qt::DisplayRole});
@@ -263,21 +261,16 @@ namespace wf
         return modifiers;
     }
     
-    void RecordTableModel::trimRecords()
+    void RecordTableModel::trimRecords(const Score& a_score)
     {
-        for (const auto& [type, count] : {std::pair{PlayerType::AI, PlayerType::Human}})
+        while (scores.getScoreCount(a_score) > maximum_leaderboard_size)
         {
-            while (scores.getScoreCount(type) > maximum_leaderboard_size)
+            for (int index = scores.size() - 1; index >= 0; --index)
             {
-                for (int index = scores.size() - 1; index >= 0; --index)
+                if (Score::sameGameSetup(a_score, scores[index]))
                 {
-                    if (scores[index].player_type == type)
-                    {
-                        removeRow(index);
-                        scores.addToScoreCount(type, -1);
-
-                        break;
-                    }
+                    removeRow(index);
+                    break;
                 }
             }
         }

@@ -61,6 +61,32 @@ namespace wf
         return "Error";
     }
     
+    bool Score::sameGameSetup(const Score& a_first, const Score& a_second)
+    {
+        return
+            std::tie
+            (
+                a_first.name,
+                a_first.player_type,
+                a_first.difficulty,
+                a_first.opponent_player_type,
+                a_first.opponent_difficulty,
+                a_first.dictionary,
+                a_first.modifier_pattern
+            )
+            ==
+            std::tie
+            (
+                a_second.name,
+                a_second.player_type,
+                a_second.difficulty,
+                a_second.opponent_player_type,
+                a_second.opponent_difficulty,
+                a_second.dictionary,
+                a_second.modifier_pattern
+            );
+    }
+    
     bool ScoreControlCompare::operator()(const QString& a_first, const QString& a_second) const
     {
         return Score::sortControlDescription(a_first, a_second);

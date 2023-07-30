@@ -22,56 +22,23 @@ namespace wf
         save();
     }
     
-    void RecordContainer::addToScoreCount(PlayerType a_player_type, int a_count)
+    int RecordContainer::getScoreCount(const Score& a_score) const
     {
-        int* count = nullptr;
+        int count = 0;
         
-        switch (a_player_type)
+        for (const auto& score : *this)
         {
-            case PlayerType::AI:
+            if (Score::sameGameSetup(a_score, score))
             {
-                count = &ai_scores;
-                break;
-            }
-            case PlayerType::Human:
-            {
-                count = &human_scores;
-                break;
-            }
-        }
-        
-        *count += a_count;
-
-        if (*count < 0)
-        {
-            *count = 0;
-        }
-
-        return;
-    }
-    
-    int RecordContainer::getScoreCount(PlayerType a_player_type) const
-    {
-        switch (a_player_type)
-        {
-            case PlayerType::AI:
-            {
-                return ai_scores;
-            }
-            case PlayerType::Human:
-            {
-                return human_scores;
+                ++count;
             }
         }
 
-        return 0;
+        return count;
     }
     
     void RecordContainer::load()
     {
-        ai_scores = value("meta/ai_scores", "0").toInt();
-        human_scores = value("meta/human_scores", "0").toInt();
-        
         beginGroup("scores");
 
         int size = beginReadArray("array");
@@ -91,9 +58,6 @@ namespace wf
     
     void RecordContainer::save()
     {
-        setValue("meta/ai_scores", ai_scores);
-        setValue("meta/human_scores", human_scores);
-
         beginGroup("scores");
 
         int index = 0;

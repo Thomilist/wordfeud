@@ -52,14 +52,14 @@ namespace wf
             void pointsLimitsChanged(int a_minimum_points, int a_maximum_points, int a_opponent_minimum_points, int a_opponent_maximum_points);
         
         private:
-            void trimRecords();
+            void trimRecords(const Score& a_score);
             void updateFilterData();
             void updateControlEntries();
             void updateDictionaries();
             void updateModifiers();
             void updatePointsLimits();
 
-            const int maximum_leaderboard_size = 100;
+            const int maximum_leaderboard_size = 10;
             RecordContainer scores;
 
             std::set<QString, ScoreControlCompare> control_entries;

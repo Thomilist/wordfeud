@@ -143,7 +143,7 @@ namespace wf
         // Load general settings
         QString dictionary = value("common/dictionary", "English").toString();
         setLanguage(dictionary);
-        QString modifier_distribution = value("common/modifiers", "Default").toString();
+        QString modifier_distribution = value("common/modifiers", "Wordfeud (default)").toString();
         setModifierPattern(modifier_distribution);
         setLetterColouring(value("common/letter_colouring", "Default").toString());
 

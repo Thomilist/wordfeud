@@ -42,7 +42,7 @@ namespace wf
         loadLetters();
         letter_pool.set(getAllLetters());
 
-        placeModifiers(settings->getModifierPattern()->getModifiers());
+        placeModifiers(settings->getModifierPattern()->get());
 
         for (auto& player : all_players)
         {
@@ -347,7 +347,7 @@ namespace wf
         letter_pool.set(getAllLetters());
 
         settings->getModifierPattern()->reset();
-        placeModifiers(settings->getModifierPattern()->getModifiers());
+        placeModifiers(settings->getModifierPattern()->get());
 
         for (auto& player : all_players)
         {

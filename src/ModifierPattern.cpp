@@ -30,35 +30,56 @@ namespace wf
         return;
     }
     
-    const std::vector<Modifier*> ModifierPattern::getModifiers()
+    const std::vector<Modifier*> ModifierPattern::get()
     {
-        std::vector<Modifier*> modifiers;
-        
-        for (auto& modifier : default_pattern)
+        std::vector<Modifier*> pattern;
+        std::vector<Modifier>* base_pattern;
+
+        switch (current_distribution)
         {
-            modifiers.push_back(&modifier);
+            case ModifierDistribution::WordfeudDefault:
+            case ModifierDistribution::WordfeudRandom:
+            {
+                base_pattern = &wordfeud_default_pattern;
+                break;
+            }
+            case ModifierDistribution::ScrabbleDefault:
+            case ModifierDistribution::ScrabbleRandom:
+            {
+                base_pattern = &scrabble_default_pattern;
+                break;
+            }
+            default:
+            {
+                return pattern;
+            }
+        }
+        
+        for (auto& modifier : *base_pattern)
+        {
+            pattern.push_back(&modifier);
         }
 
-        if (current_distribution == ModifierDistribution::Random)
+        if (current_distribution == ModifierDistribution::WordfeudRandom || current_distribution == ModifierDistribution::ScrabbleRandom)
         {
-            std::shuffle(modifiers.begin(), modifiers.end(), rng);
+            std::shuffle(pattern.begin(), pattern.end(), rng);
 
-            int middle_index = modifiers.size() / 2;
+            int middle_index = pattern.size() / 2;
 
-            if (modifiers.at(middle_index)->getType() != ModifierType::Start)
+            if (pattern.at(middle_index)->getType() != ModifierType::Start)
             {
-                for (auto& modifier : modifiers)
+                for (auto& modifier : pattern)
                 {
                     if (modifier->getType() == ModifierType::Start)
                     {
-                        std::swap(modifier, modifiers.at(middle_index));
+                        std::swap(modifier, pattern.at(middle_index));
                         break;
                     }
                 }
             }
         }
         
-        return modifiers;
+        return pattern;
     }
     
     ModifierDistribution ModifierPattern::getDistribution() const
@@ -86,7 +107,7 @@ namespace wf
     
     void ModifierPattern::reset()
     {
-        for (auto& modifier : default_pattern)
+        for (auto& modifier : wordfeud_default_pattern)
         {
             modifier.setUsed(false);
         }

@@ -41,6 +41,8 @@ namespace wf
     {
         beginGroup("scores");
 
+        std::vector<Score>::clear();
+
         int size = beginReadArray("array");
         resize(size);
 

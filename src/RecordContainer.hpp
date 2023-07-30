@@ -26,8 +26,6 @@ namespace wf
             ~RecordContainer();
 
             int getScoreCount(const Score& a_score) const;
-        
-        private:
             void load();
             void save();
     };

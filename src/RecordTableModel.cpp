@@ -226,6 +226,7 @@ namespace wf
 
         trimRecords(a_score);
         updateFilterData();
+        scores.save();
         
         emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1), {Qt::DisplayRole});
         return;

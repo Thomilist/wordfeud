@@ -17,14 +17,14 @@ namespace wf
 
         load();
         std::sort(loaded_languages.begin(), loaded_languages.end());
-        newGameApply();
+        newSessionApply();
         emit incrementLoadingProgress();
         emit updateLoadingText("Initialising game...");
     }
     
     Settings::~Settings()
     {
-        newGameApply();
+        newSessionApply();
         save();
     }
     

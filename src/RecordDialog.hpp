@@ -1,6 +1,7 @@
 #ifndef __RECORDDIALOG_H__
 #define __RECORDDIALOG_H__
 
+#include <array>
 #include <limits>
 #include <set>
 
@@ -50,6 +51,7 @@ namespace wf
             void updateModifierFilter();
             void updatePointsFilterStatus();
             void updatePointsLimits();
+            void updateLastPointsLimits();
             void resetFilters();
             void repopulateFilters();
             void prepareView();
@@ -92,10 +94,12 @@ namespace wf
             RecordTableModel* record_table_model;
             QDialogButtonBox buttons;
             std::pair<int, int> int_limits = std::pair{std::numeric_limits<int>::max(), std::numeric_limits<int>::min()};
+            const int half_filter_width = 200;
+            const int full_filter_width = 420;
 
             // General filter elements
             QGridLayout filter_layout;
-            QPushButton reset_filters_button{"Reset Filters"};
+            QPushButton reset_filters_button{"Reset All Filters"};
             QWidget filter_padding;
 
             // Control filter
@@ -119,7 +123,7 @@ namespace wf
             QLineEdit opponent_name_input;
 
             // Dictionary filter
-            QGroupBox dictionary_group{"Dictionaries"};
+            QGroupBox dictionary_group{"Dictionary"};
             QGridLayout dictionary_layout;
             QListWidget dictionary_list;
 
@@ -137,6 +141,9 @@ namespace wf
             QCheckBox minimum_points_checkbox;
             QLabel minimum_points_label{"Min:"};
             QSpinBox minimum_points_input;
+
+            // Minimum, maximum, minimum opponent, maximum opponent
+            std::array<int, 4> last_points_filter_values{0,0,0,0};
 
             // Opponent points filter
             QGroupBox opponent_points_group{"Opponent Points"};

@@ -16,7 +16,7 @@ namespace wf
         Q_OBJECT
 
         public:
-            StartupProgressDialog();
+            StartupProgressDialog(QWidget* a_parent = nullptr);
             ~StartupProgressDialog();
 
         public slots:

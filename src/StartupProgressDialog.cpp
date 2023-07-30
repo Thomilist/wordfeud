@@ -3,8 +3,8 @@
 
 namespace wf
 {
-    StartupProgressDialog::StartupProgressDialog()
-    : dialog(nullptr, Qt::FramelessWindowHint)
+    StartupProgressDialog::StartupProgressDialog(QWidget* a_parent)
+    : dialog(a_parent, Qt::FramelessWindowHint)
     {
         dialog.setWindowIcon(QIcon{":/icon/icon.ico"});
         dialog.setMinimumWidth(500);

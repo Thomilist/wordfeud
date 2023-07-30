@@ -28,7 +28,7 @@ namespace wf
         int layout_row = 0;
 
         grid_layout.addLayout(&filter_layout, layout_row++, 0, Qt::AlignCenter);
-        grid_layout.addWidget(&reset_filters_button, layout_row++, 0, Qt::AlignCenter);
+        grid_layout.addWidget(&reset_filters_button, layout_row++, 0);
         grid_layout.addWidget(&filter_padding, layout_row, 0, Qt::AlignCenter);
         grid_layout.setRowStretch(layout_row++, 1);
         grid_layout.addWidget(&buttons, layout_row++, 0, 1, 2, Qt::AlignCenter);
@@ -37,6 +37,9 @@ namespace wf
 
         record_table.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
         filter_padding.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
+        reset_filters_button.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+
+        reset_filters_button.setAutoDefault(false);
 
         setLayout(&grid_layout);
         layout()->setSizeConstraint(QLayout::SetFixedSize);
@@ -66,11 +69,8 @@ namespace wf
         // Control filters
         fitListToContents(&control_list, &opponent_control_list);
         
-        // Dictionary filter
-        fitListToContents(&dictionary_list);
-
-        // Modifier filter
-        fitListToContents(&modifier_list);
+        // Dictionary and modifier filters
+        fitListToContents(&dictionary_list, &modifier_list);
 
         // Table
         record_table.setMinimumHeight(750);
@@ -180,18 +180,68 @@ namespace wf
     
     void RecordDialog::updatePointsLimits()
     {
+        int min_value;
+        int max_value;
+        
         for (auto [min_input, max_input, is_opponent] :
         {
             std::tuple{&minimum_points_input, &maximum_points_input, false},
             std::tuple{&minimum_opponent_points_input, &maximum_opponent_points_input, true}
         })
         {
-            min_input->setMinimum(record_table_model->getMinimumPoints(is_opponent));
-            max_input->setMaximum(record_table_model->getMaximumPoints(is_opponent));
+            min_value = record_table_model->getMinimumPoints(is_opponent);
+            max_value = record_table_model->getMaximumPoints(is_opponent);
+            
+            if (min_input->value() < min_value)
+            {
+                min_input->setValue(min_value);
+            }
+            else if (min_input->value() > max_value)
+            {
+                min_input->setValue(max_value);
+            }
 
-            max_input->setMinimum(min_input->value());
-            min_input->setMaximum(max_input->value());
+            if (max_input->value() > max_value)
+            {
+                max_input->setValue(max_value);
+            }
+            else if (max_input->value() < min_value)
+            {
+                max_input->setValue(min_value);
+            }
         }
+
+        if (minimum_points_input.value() != last_points_filter_values[0])
+        {
+            if (maximum_points_input.value() < minimum_points_input.value())
+            {
+                maximum_points_input.setValue(minimum_points_input.value());
+            }
+        }
+        else if (maximum_points_input.value() != last_points_filter_values[1])
+        {
+            if (minimum_points_input.value() > maximum_points_input.value())
+            {
+                minimum_points_input.setValue(maximum_points_input.value());
+            }
+        }
+
+        if (minimum_opponent_points_input.value() != last_points_filter_values[0])
+        {
+            if (maximum_opponent_points_input.value() < minimum_opponent_points_input.value())
+            {
+                maximum_opponent_points_input.setValue(minimum_opponent_points_input.value());
+            }
+        }
+        else if (maximum_opponent_points_input.value() != last_points_filter_values[1])
+        {
+            if (minimum_opponent_points_input.value() > maximum_opponent_points_input.value())
+            {
+                minimum_opponent_points_input.setValue(maximum_opponent_points_input.value());
+            }
+        }
+
+        updateLastPointsLimits();
 
         emit pointsFilterValuesChanged
         (
@@ -200,6 +250,19 @@ namespace wf
             minimum_opponent_points_input.value(),
             maximum_opponent_points_input.value()
         );
+
+        return;
+    }
+    
+    void RecordDialog::updateLastPointsLimits()
+    {
+        last_points_filter_values =
+        {
+            minimum_points_input.value(),
+            maximum_points_input.value(),
+            minimum_opponent_points_input.value(),
+            maximum_opponent_points_input.value()
+        };
 
         return;
     }
@@ -226,10 +289,10 @@ namespace wf
             modifier_list.item(index)->setCheckState(Qt::Checked);
         }
 
-        maximum_points_input.setValue(int_limits.first);
-        minimum_points_input.setValue(int_limits.second);
-        maximum_opponent_points_input.setValue(int_limits.first);
-        minimum_opponent_points_input.setValue(int_limits.second);
+        maximum_points_input.setValue(record_table_model->getMaximumPoints());
+        minimum_points_input.setValue(record_table_model->getMinimumPoints());
+        maximum_opponent_points_input.setValue(record_table_model->getMaximumPoints(true));
+        minimum_opponent_points_input.setValue(record_table_model->getMinimumPoints(true));
 
         maximum_points_checkbox.setCheckState(Qt::Unchecked);
         minimum_points_checkbox.setCheckState(Qt::Unchecked);
@@ -339,8 +402,7 @@ namespace wf
     void RecordDialog::initialiseControlList(int& a_layout_row)
     {
         control_list.setSelectionMode(QAbstractItemView::NoSelection);
-        control_list.setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
-        control_list.setMaximumWidth(150);
+        control_list.setMaximumWidth(half_filter_width);
 
         connect(&control_list, &QListWidget::itemChanged, this, &RecordDialog::updateControlFilter);
         connect(this, &RecordDialog::controlFilterChanged, &record_proxy, &RecordSortFilterProxyModel::updateControlFilter);
@@ -371,8 +433,7 @@ namespace wf
     void RecordDialog::initialiseOpponentControlList(int& a_layout_row)
     {
         opponent_control_list.setSelectionMode(QAbstractItemView::NoSelection);
-        opponent_control_list.setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
-        opponent_control_list.setMaximumWidth(150);
+        opponent_control_list.setMaximumWidth(half_filter_width);
 
         connect(&opponent_control_list, &QListWidget::itemChanged, this, &RecordDialog::updateOpponentControlFilter);
         connect(this, &RecordDialog::opponentControlFilterChanged, &record_proxy, &RecordSortFilterProxyModel::updateOpponentControlFilter);
@@ -403,7 +464,7 @@ namespace wf
     void RecordDialog::initialiseDictionaryList(int& a_layout_row)
     {
         dictionary_list.setSelectionMode(QAbstractItemView::NoSelection);
-        dictionary_list.setFixedWidth(320);
+        dictionary_list.setFixedWidth(half_filter_width);
 
         connect(&dictionary_list, &QListWidget::itemChanged, this, &RecordDialog::updateDictionaryFilter);
         connect(this, &RecordDialog::dictionaryFilterChanged, &record_proxy, &RecordSortFilterProxyModel::updateDictionaryFilter);
@@ -412,7 +473,7 @@ namespace wf
 
         dictionary_layout.addWidget(&dictionary_list, 0, 0);
         dictionary_group.setLayout(&dictionary_layout);
-        filter_layout.addWidget(&dictionary_group, a_layout_row++, 0, 1, 2);
+        filter_layout.addWidget(&dictionary_group, a_layout_row, 0);
 
         return;
     }
@@ -434,7 +495,7 @@ namespace wf
     void RecordDialog::initialiseModifierList(int& a_layout_row)
     {
         modifier_list.setSelectionMode(QAbstractItemView::NoSelection);
-        modifier_list.setFixedWidth(320);
+        modifier_list.setFixedWidth(half_filter_width);
 
         connect(&modifier_list, &QListWidget::itemChanged, this, &RecordDialog::updateModifierFilter);
         connect(this, &RecordDialog::modifierFilterChanged, &record_proxy, &RecordSortFilterProxyModel::updateModifierFilter);
@@ -443,7 +504,7 @@ namespace wf
 
         modifier_layout.addWidget(&modifier_list, 0, 0);
         modifier_group.setLayout(&modifier_layout);
-        filter_layout.addWidget(&modifier_group, a_layout_row++, 0, 1, 2);
+        filter_layout.addWidget(&modifier_group, a_layout_row++, 1);
 
         return;
     }
@@ -466,6 +527,22 @@ namespace wf
     {
         connect(this, &RecordDialog::pointsFilterValuesChanged, &record_proxy, &RecordSortFilterProxyModel::updatePointsFilterValues);
         connect(this, &RecordDialog::pointsFilterStatusChanged, &record_proxy, &RecordSortFilterProxyModel::enablePointsFilters);
+
+        minimum_points_input.setMaximum(int_limits.first);
+        minimum_points_input.setMinimum(int_limits.second);
+        maximum_points_input.setMaximum(int_limits.first);
+        maximum_points_input.setMinimum(int_limits.second);
+
+        minimum_opponent_points_input.setMaximum(int_limits.first);
+        minimum_opponent_points_input.setMinimum(int_limits.second);
+        maximum_opponent_points_input.setMaximum(int_limits.first);
+        maximum_opponent_points_input.setMinimum(int_limits.second);
+
+        minimum_points_input.setValue(int_limits.second);
+        maximum_points_input.setValue(int_limits.first);
+
+        minimum_opponent_points_input.setValue(int_limits.second);
+        maximum_opponent_points_input.setValue(int_limits.first);
 
         updatePointsLimits();
         updatePointsFilterStatus();
@@ -497,6 +574,12 @@ namespace wf
         points_group_layout.addWidget(&minimum_points_label, group_layout_row, 1);
         points_group_layout.addWidget(&minimum_points_input, group_layout_row++, 2);
 
+        maximum_points_input.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+        minimum_points_input.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+
+        maximum_points_input.setAlignment(Qt::AlignRight);
+        minimum_points_input.setAlignment(Qt::AlignRight);
+
         // Opponent points layout
         group_layout_row = 0;
         opponent_points_group.setLayout(&opponent_points_group_layout);
@@ -508,6 +591,12 @@ namespace wf
         opponent_points_group_layout.addWidget(&minimum_opponent_points_checkbox, group_layout_row, 0);
         opponent_points_group_layout.addWidget(&minimum_opponent_points_label, group_layout_row, 1);
         opponent_points_group_layout.addWidget(&minimum_opponent_points_input, group_layout_row++, 2);
+
+        maximum_opponent_points_input.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+        minimum_opponent_points_input.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+
+        maximum_opponent_points_input.setAlignment(Qt::AlignRight);
+        minimum_opponent_points_input.setAlignment(Qt::AlignRight);
 
         // Add to main filter layout
         filter_layout.addWidget(&points_group, a_layout_row, 0);

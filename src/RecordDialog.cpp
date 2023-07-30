@@ -73,7 +73,7 @@ namespace wf
         fitListToContents(&dictionary_list, &modifier_list);
 
         // Table
-        record_table.setMinimumHeight(750);
+        record_table.setFixedHeight(table_height);
         fitTableWidthToContents(&record_table);
 
         adjustSize();
@@ -375,13 +375,14 @@ namespace wf
     
     void RecordDialog::fitTableWidthToContents(QTableView* a_table)
     {
+        a_table->resizeColumnsToContents();
         a_table->setMinimumWidth
         (
             a_table->verticalHeader()->width()
             + a_table->horizontalHeader()->length()
-            + a_table->verticalScrollBar()->width()
+            // Goodbye, horisontal scroll bar. You won't be missed >:(
+            + ((a_table->verticalHeader()->length() + a_table->horizontalHeader()->height()) > table_height ? a_table->verticalScrollBar()->width() : 0)
         );
-
         a_table->adjustSize();
         return;
     }

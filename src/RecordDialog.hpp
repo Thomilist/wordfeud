@@ -96,6 +96,7 @@ namespace wf
             std::pair<int, int> int_limits = std::pair{std::numeric_limits<int>::max(), std::numeric_limits<int>::min()};
             const int half_filter_width = 200;
             const int full_filter_width = 420;
+            const int table_height = 750;
 
             // General filter elements
             QGridLayout filter_layout;

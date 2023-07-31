@@ -246,17 +246,18 @@ namespace wf
 
         if (isGameOver())
         {
-            setState(GameState::Finished);
-            hands.setDisabled(true);
-            finalisePoints();
-            repaint();
-            saveScores();
             Player* winning_player = getHighestScoringPlayer();
 
             if (winning_player != nullptr)
             {
                 winning_player->declareWinner();
             }
+            
+            setState(GameState::Finished);
+            hands.setDisabled(true);
+            finalisePoints();
+            repaint();
+            saveScores();
             
             if (isAIMirror() && settings->isAutoRestartEnabled())
             {

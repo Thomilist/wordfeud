@@ -93,6 +93,7 @@ namespace wf
         last_play_type = PlayType::None;
         last_play_text.clear();
         last_play_player = nullptr;
+        return;
     }
     
     void Header::paintEvent(QPaintEvent*)
@@ -123,7 +124,7 @@ namespace wf
             }
             else
             {
-                left_player_your_turn.setText(" ");
+                left_player_your_turn.setText("");
             }
 
             if (left_player->hasWon())
@@ -172,16 +173,18 @@ namespace wf
             {
                 case PlayType::None:
                 {
-                    last_play = " ";
+                    last_play = "";
                     break;
                 }
                 case PlayType::Play:
                 {
-                    last_play.append(last_play_player->getDisplayName());
-                    last_play.append(" played ");
-                    last_play.append(last_play_word);
-                    last_play.append(" for ");
-                    last_play.append(QString::number(last_play_value));
+                    last_play =
+                        QString()
+                        % last_play_player->getDisplayName()
+                        % " played "
+                        % last_play_word
+                        % " for "
+                        % QString::number(last_play_value);
 
                     if (last_play_value == 1)
                     {
@@ -196,16 +199,20 @@ namespace wf
                 }
                 case PlayType::Pass:
                 {
-                    last_play.append(last_play_player->getDisplayName());
-                    last_play.append(" passed their turn");
+                    last_play =
+                        QString()
+                        % last_play_player->getDisplayName()
+                        % " passed their turn";
                     break;
                 }
                 case PlayType::Swap:
                 {
-                    last_play.append(last_play_player->getDisplayName());
-                    last_play.append(" swapped ");
-                    last_play.append(QString::number(last_play_value));
-                    last_play.append(" tiles");
+                    last_play =
+                        QString()
+                        % last_play_player->getDisplayName()
+                        % " swapped "
+                        % QString::number(last_play_value)
+                        % " tiles";
                     break;
                 }
             }
@@ -218,9 +225,15 @@ namespace wf
                     {
                         if (player->hasWon())
                         {
-                            last_play.append(" - ");
-                            last_play.append(player->getDisplayName());
-                            last_play.append(" wins");
+                            last_play.append
+                            (
+                                QString()
+                                % " - "
+                                % player->getDisplayName()
+                                % " wins"
+                            );
+
+                            break;
                         }
                     }
                 }
@@ -234,7 +247,7 @@ namespace wf
         }
         else
         {
-            last_play_text.setText(" ");
+            last_play_text.setText("");
         }
 
         return;

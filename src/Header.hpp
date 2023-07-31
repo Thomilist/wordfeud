@@ -10,6 +10,8 @@
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QSize>
+#include <QString>
+#include <QStringBuilder>
 #include <QTextOption>
 #include <QWidget>
 

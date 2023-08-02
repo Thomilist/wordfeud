@@ -13,11 +13,18 @@ namespace wf
 
         connect(&buttons, &QDialogButtonBox::rejected, this, &QDialog::accept);
         connect(&reset_filters_button, &QPushButton::clicked, this, &RecordDialog::resetFilters);
+        connect(&record_proxy, &RecordSortFilterProxyModel::rowsInserted, this, &RecordDialog::updateDisplayCountLabel);
+        connect(&record_proxy, &RecordSortFilterProxyModel::rowsRemoved, this, &RecordDialog::updateDisplayCountLabel);
 
         setRecordSource(a_record_table_model);
         initialiseRecordTable();
 
         int filter_layout_row = 0;
+
+        QFont display_count_font;
+        display_count_font.setPixelSize(24);
+        display_count_label.setFont(display_count_font);
+        filter_layout.addWidget(&display_count_label, filter_layout_row++, 0, 1, 2);
 
         initialiseDictionaryList(filter_layout_row);
         initialiseModifierList(filter_layout_row);
@@ -406,6 +413,21 @@ namespace wf
     void RecordDialog::updateRecordTableWidth()
     {
         fitTableWidthToContents(&record_table);
+        return;
+    }
+    
+    void RecordDialog::updateDisplayCountLabel()
+    {
+        display_count_label.setText
+        (
+            QString()
+            % "Showing "
+            % QString::number(record_proxy.rowCount())
+            % " / "
+            % QString::number(record_proxy.sourceModel()->rowCount())
+            % " entries"
+        );
+
         return;
     }
     

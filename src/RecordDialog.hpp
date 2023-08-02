@@ -10,6 +10,7 @@
 #include <QDateTimeEdit>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QFont>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QHeaderView>
@@ -23,6 +24,8 @@
 #include <QScrollBar>
 #include <QSizePolicy>
 #include <QSpinBox>
+#include <QString>
+#include <QStringBuilder>
 #include <QTableView>
 #include <QWidget>
 
@@ -63,6 +66,7 @@ namespace wf
             void repopulateFilters();
             void prepareView();
             void updateRecordTableWidth();
+            void updateDisplayCountLabel();
         
         signals:
             void controlFilterChanged(std::set<QString, ScoreControlCompare> a_control_list);
@@ -115,6 +119,7 @@ namespace wf
 
             // General filter elements
             QGridLayout filter_layout;
+            QLabel display_count_label;
             QPushButton reset_filters_button{"Reset All Filters"};
             QWidget filter_padding;
 

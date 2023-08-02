@@ -15,7 +15,8 @@ namespace wf
         Spacer,
         Dictionary,
         Modifiers,
-        Timestamp
+        Timestamp,
+        DateTime
     };
 }
 

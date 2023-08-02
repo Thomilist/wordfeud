@@ -98,7 +98,6 @@ namespace wf
         maximum_opponent_points_enabled = a_maximum_opponent_points_enabled;
 
         invalidateFilter();
-
         return;
     }
     
@@ -114,7 +113,24 @@ namespace wf
         maximum_opponent_points = a_maximum_opponent_points;
 
         invalidateFilter();
+        return;
+    }
+    
+    void RecordSortFilterProxyModel::enableDateTimeFilters(bool a_after_enabled, bool a_before_enabled)
+    {
+        earliest_datetime_enabled = a_after_enabled;
+        latest_datetime_enabled = a_before_enabled;
 
+        invalidateFilter();
+        return;
+    }
+    
+    void RecordSortFilterProxyModel::updateDateTimeFilterValues(QDateTime a_after, QDateTime a_before)
+    {
+        earliest_datetime = a_after;
+        latest_datetime = a_before;
+
+        invalidateFilter();
         return;
     }
     
@@ -125,6 +141,7 @@ namespace wf
         if (!modifierValid(a_source_row, a_source_parent)) {return false;}
         if (!nameValid(a_source_row, a_source_parent)) {return false;}
         if (!pointsInRange(a_source_row, a_source_parent)) {return false;}
+        if (!dateInRange(a_source_row, a_source_parent)) {return false;}
 
         return true;
     }
@@ -190,5 +207,26 @@ namespace wf
         }
 
         return true;
+    }
+    
+    bool RecordSortFilterProxyModel::dateInRange(int a_source_row, const QModelIndex& a_source_parent) const
+    {
+        QModelIndex datetime_index = sourceModel()->index(a_source_row, RecordColumn::DateTime, a_source_parent);
+        QDateTime datetime = sourceModel()->data(datetime_index).toDateTime();
+
+        bool after_earliest = true;
+        bool before_latest = true;
+
+        if (earliest_datetime_enabled)
+        {
+            after_earliest = datetime >= earliest_datetime;
+        }
+
+        if (latest_datetime_enabled)
+        {
+            before_latest = datetime <= latest_datetime;
+        }
+
+        return after_earliest && before_latest;
     }
 }

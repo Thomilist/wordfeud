@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <QAbstractTableModel>
+#include <QDateTime>
 #include <QModelIndex>
 #include <QSettings>
 #include <QString>
@@ -31,7 +32,7 @@ namespace wf
             RecordTableModel(QWidget* a_parent = nullptr);
             ~RecordTableModel();
 
-            static QString getDateTimeFormat();
+            static const QString getDateTimeFormat();
 
             int rowCount(const QModelIndex& a_parent = QModelIndex()) const override;
             int columnCount(const QModelIndex& a_parent = QModelIndex()) const override;
@@ -47,17 +48,15 @@ namespace wf
             const std::set<QString, ScoreControlCompare>& getOpponentControlEntries();
             const std::set<QString>& getDictionaries() const;
             const std::set<QString>& getModifiers() const;
+            const QDateTime& getEarliestDate() const;
+            const QDateTime& getLatestDate() const;
         
         signals:
-            void pointsLimitsChanged(int a_minimum_points, int a_maximum_points, int a_opponent_minimum_points, int a_opponent_maximum_points);
+            void filterDataUpdated();
         
         private:
             void trimRecords(const Score& a_score);
             void updateFilterData();
-            void updateControlEntries();
-            void updateDictionaries();
-            void updateModifiers();
-            void updatePointsLimits();
 
             const int maximum_leaderboard_size = 10;
             RecordContainer scores;
@@ -66,6 +65,8 @@ namespace wf
             std::set<QString, ScoreControlCompare> opponent_control_entries;
             std::set<QString> dictionaries;
             std::set<QString> modifiers;
+            QDateTime earliest_datetime;
+            QDateTime latest_datetime;
 
             int minimum_points;
             int maximum_points;

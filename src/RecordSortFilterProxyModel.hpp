@@ -3,6 +3,7 @@
 
 #include <set>
 
+#include <QDateTime>
 #include <QModelIndex>
 #include <QObject>
 #include <QRegularExpression>
@@ -44,6 +45,8 @@ namespace wf
                 int a_maximum_points,
                 int a_minimum_opponent_points,
                 int a_maximum_opponent_points);
+            void enableDateTimeFilters(bool a_after_enabled, bool a_before_enabled);
+            void updateDateTimeFilterValues(QDateTime a_after, QDateTime a_before);
         
         protected:
             bool filterAcceptsRow(int a_source_row, const QModelIndex& a_source_parent) const override;
@@ -54,6 +57,7 @@ namespace wf
             bool modifierValid(int a_source_row, const QModelIndex& a_source_parent) const;
             bool nameValid(int a_source_row, const QModelIndex& a_source_parent) const;
             bool pointsInRange(int a_source_row, const QModelIndex& a_source_parent) const;
+            bool dateInRange(int a_source_row, const QModelIndex& a_source_parent) const;
 
             QRegularExpression name_pattern;
             QRegularExpression opponent_name_pattern;
@@ -71,6 +75,12 @@ namespace wf
             int maximum_points;
             int minimum_opponent_points;
             int maximum_opponent_points;
+
+            bool earliest_datetime_enabled = false;
+            bool latest_datetime_enabled = false;
+
+            QDateTime earliest_datetime;
+            QDateTime latest_datetime;
     };
 }
 

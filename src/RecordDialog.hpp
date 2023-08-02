@@ -6,6 +6,8 @@
 #include <set>
 
 #include <QCheckBox>
+#include <QDateTime>
+#include <QDateTimeEdit>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -45,6 +47,7 @@ namespace wf
             void open();
             void setRecordSource(RecordTableModel* a_record_table_model);
             void updateMinimumSize();
+            void updateFilterItems();
             void updateControlFilter();
             void updateOpponentControlFilter();
             void updateDictionaryFilter();
@@ -52,7 +55,11 @@ namespace wf
             void updatePointsFilterStatus();
             void updatePointsLimits();
             void updateLastPointsLimits();
+            void updateDateTimeFilterStatus();
+            void updateDateTimeLimits();
             void resetFilters();
+            void resetEarliestDateTime();
+            void resetLatestDateTime();
             void repopulateFilters();
             void prepareView();
             void updateRecordTableWidth();
@@ -72,23 +79,29 @@ namespace wf
                 int a_maximum_points,
                 int a_minimum_opponent_points,
                 int a_maximum_opponent_points);
+            void dateTimeFilterStatusChanged(bool a_after_enabled, bool a_before_enabled);
+            void dateTimeFilterValuesChanged(QDateTime a_after, QDateTime a_before);
         
         private:
+            template <typename Container>
+            void populateFilterList(
+                QListWidget& a_list,
+                const Container& a_source,
+                Container& a_existing_items,
+                Container& a_checked_items);
+
             void fitListToContents(QListWidget* a_list);
             void fitListToContents(QListWidget* a_first_list, QListWidget* a_second_list);
             void fitTableWidthToContents(QTableView* a_table);
             void initialiseRecordTable();
             void initialiseControlList(int& a_layout_row);
-            void populateControlList();
             void initialiseOpponentControlList(int& a_layout_row);
-            void populateOpponentControlList();
             void initialiseDictionaryList(int& a_layout_row);
-            void populateDictionaryList();
             void initialiseModifierList(int& a_layout_row);
-            void populateModifierList();
             void initialiseNameField(int& a_layout_row);
             void initialiseOpponentNameField(int& a_layout_row);
             void initialisePointsLimits(int& a_layout_row);
+            void initialiseDateTimeLimits(int& a_layout_row);
             
             QGridLayout grid_layout;
             QTableView record_table;
@@ -109,11 +122,15 @@ namespace wf
             QGroupBox control_group{"Control"};
             QGridLayout control_layout;
             QListWidget control_list;
+            std::set<QString, ScoreControlCompare> control_items;
+            std::set<QString, ScoreControlCompare> checked_control_items;
 
             // Opponent control filter
             QGroupBox opponent_control_group{"Opponent Control"};
             QGridLayout opponent_control_layout;
             QListWidget opponent_control_list;
+            std::set<QString, ScoreControlCompare> opponent_control_items;
+            std::set<QString, ScoreControlCompare> checked_opponent_control_items;
 
             // Name filter
             QGroupBox name_group{"Name"};
@@ -129,11 +146,15 @@ namespace wf
             QGroupBox dictionary_group{"Dictionary"};
             QGridLayout dictionary_layout;
             QListWidget dictionary_list;
+            std::set<QString> dictionary_items;
+            std::set<QString> checked_dictionary_items;
 
             // Modifier filter
             QGroupBox modifier_group{"Modifiers"};
             QGridLayout modifier_layout;
             QListWidget modifier_list;
+            std::set<QString> modifier_items;
+            std::set<QString> checked_modifier_items;
 
             // Points filter
             QGroupBox points_group{"Points"};
@@ -157,6 +178,18 @@ namespace wf
             QCheckBox minimum_opponent_points_checkbox;
             QLabel minimum_opponent_points_label{"Min:"};
             QSpinBox minimum_opponent_points_input;
+
+            // Date/time filter
+            QGroupBox datetime_group{"End Date"};
+            QGridLayout datetime_layout;
+            QCheckBox datetime_after_checkbox;
+            QLabel datetime_after_label{"Since:"};
+            QDateTimeEdit datetime_after_input;
+            QPushButton datetime_after_reset_button{"Set To Earliest"};
+            QCheckBox datetime_before_checkbox;
+            QLabel datetime_before_label{"Until:"};
+            QDateTimeEdit datetime_before_input;
+            QPushButton datetime_before_reset_button{"Set To Latest"};
     };
 }
 

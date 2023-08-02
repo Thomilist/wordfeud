@@ -26,6 +26,7 @@ namespace wf
         initialiseControlList(filter_layout_row);
         initialiseOpponentControlList(filter_layout_row);
         initialisePointsLimits(filter_layout_row);
+        initialiseDateTimeLimits(filter_layout_row);
         
         int layout_row = 0;
 
@@ -61,8 +62,7 @@ namespace wf
     {
         record_table_model = a_record_table_model;
         record_proxy.setSourceModel(record_table_model);
-        connect(record_table_model, &QAbstractItemModel::rowsInserted, this, &RecordDialog::prepareView);
-        connect(record_table_model, &RecordTableModel::pointsLimitsChanged, this, &RecordDialog::updatePointsLimits);
+        connect(record_table_model, &RecordTableModel::filterDataUpdated, this, &RecordDialog::prepareView);
         return;
     }
     
@@ -83,22 +83,34 @@ namespace wf
         return;
     }
     
+    void RecordDialog::updateFilterItems()
+    {
+        repopulateFilters();
+        updatePointsLimits();
+        updateDateTimeLimits();
+        return;
+    }
+    
     void RecordDialog::updateControlFilter()
     {
-        std::set<QString, ScoreControlCompare> control_filter_set;
         QListWidgetItem* control_item;
 
         for (int index = 0; index < control_list.count(); ++index)
         {
             control_item = control_list.item(index);
+            auto checkstate = control_item->checkState();
 
-            if (control_item->checkState() == Qt::Checked)
+            if (checkstate == Qt::Checked)
             {
-                control_filter_set.insert(control_item->text());
+                checked_control_items.insert(control_item->text());
+            }
+            else if (checkstate == Qt::Unchecked)
+            {
+                checked_control_items.erase(control_item->text());
             }
         }
 
-        emit controlFilterChanged(control_filter_set);
+        emit controlFilterChanged(checked_control_items);
         return;
     }
     
@@ -269,56 +281,124 @@ namespace wf
         return;
     }
     
+    void RecordDialog::updateDateTimeFilterStatus()
+    {
+        for (auto [checkbox, input] :{
+            std::pair{&datetime_after_checkbox, &datetime_after_input},
+            std::pair{&datetime_before_checkbox, &datetime_before_input},
+        })
+        {
+            input->setEnabled(checkbox->isChecked());
+        }
+        
+        emit dateTimeFilterStatusChanged(
+            datetime_after_checkbox.isChecked(),
+            datetime_before_checkbox.isChecked());
+        
+        return;
+    }
+    
+    void RecordDialog::updateDateTimeLimits()
+    {
+        emit dateTimeFilterValuesChanged(
+            datetime_after_input.dateTime(),
+            datetime_before_input.dateTime()
+        );
+
+        return;
+    }
+    
     void RecordDialog::resetFilters()
     {
+        // Control
         for (int index = 0; index < control_list.count(); ++index)
         {
             control_list.item(index)->setCheckState(Qt::Checked);
         }
 
+        // Opponent control
         for (int index = 0; index < opponent_control_list.count(); ++index)
         {
             opponent_control_list.item(index)->setCheckState(Qt::Checked);
         }
 
+        // Dictionary
         for (int index = 0; index < dictionary_list.count(); ++index)
         {
             dictionary_list.item(index)->setCheckState(Qt::Checked);
         }
 
+        // Modifier
         for (int index = 0; index < modifier_list.count(); ++index)
         {
             modifier_list.item(index)->setCheckState(Qt::Checked);
         }
 
+        // Name, opponent name
         name_input.clear();
         opponent_name_input.clear();
 
+        // Points
+        maximum_points_checkbox.setCheckState(Qt::Unchecked);
+        minimum_points_checkbox.setCheckState(Qt::Unchecked);
         maximum_points_input.setValue(record_table_model->getMaximumPoints());
         minimum_points_input.setValue(record_table_model->getMinimumPoints());
+
+        // Opponent points
+        maximum_opponent_points_checkbox.setCheckState(Qt::Unchecked);
+        minimum_opponent_points_checkbox.setCheckState(Qt::Unchecked);
         maximum_opponent_points_input.setValue(record_table_model->getMaximumPoints(true));
         minimum_opponent_points_input.setValue(record_table_model->getMinimumPoints(true));
 
-        maximum_points_checkbox.setCheckState(Qt::Unchecked);
-        minimum_points_checkbox.setCheckState(Qt::Unchecked);
-        maximum_opponent_points_checkbox.setCheckState(Qt::Unchecked);
-        minimum_opponent_points_checkbox.setCheckState(Qt::Unchecked);
+        // Date/time
+        datetime_after_checkbox.setCheckState(Qt::Unchecked);
+        datetime_before_checkbox.setCheckState(Qt::Unchecked);
+        resetEarliestDateTime();
+        resetLatestDateTime();
 
+        return;
+    }
+    
+    void RecordDialog::resetEarliestDateTime()
+    {
+        datetime_after_input.setDateTime(record_table_model->getEarliestDate());
+        return;
+    }
+    
+    void RecordDialog::resetLatestDateTime()
+    {
+        datetime_before_input.setDateTime(record_table_model->getLatestDate());
         return;
     }
     
     void RecordDialog::repopulateFilters()
     {
-        populateControlList();
-        populateOpponentControlList();
-        populateDictionaryList();
-        populateModifierList();
+        populateFilterList(
+            control_list,
+            record_table_model->getControlEntries(),
+            control_items,
+            checked_control_items);
+        populateFilterList(
+            opponent_control_list,
+            record_table_model->getOpponentControlEntries(),
+            opponent_control_items,
+            checked_opponent_control_items);
+        populateFilterList(
+            dictionary_list,
+            record_table_model->getDictionaries(),
+            dictionary_items,
+            checked_dictionary_items);
+        populateFilterList(
+            modifier_list,
+            record_table_model->getModifiers(),
+            modifier_items,
+            checked_modifier_items);
         return;
     }
     
     void RecordDialog::prepareView()
     {
-        repopulateFilters();
+        updateFilterItems();
         updateMinimumSize();
         return;
     }
@@ -326,6 +406,32 @@ namespace wf
     void RecordDialog::updateRecordTableWidth()
     {
         fitTableWidthToContents(&record_table);
+        return;
+    }
+    
+    template<typename Container>
+    void RecordDialog::populateFilterList(QListWidget& a_list,
+                    const Container& a_source,
+                    Container& a_existing_items,
+                    Container& a_checked_items)
+    {
+        a_list.clear();
+        bool checked = false;
+
+        for (auto entry : a_source)
+        {
+            QListWidgetItem* item = new QListWidgetItem(entry, &a_list);
+            checked = a_checked_items.contains(entry) || !a_existing_items.contains(entry);
+            item->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
+            a_list.addItem(item);
+            a_existing_items.insert(entry);
+
+            if (checked)
+            {
+                a_checked_items.insert(entry);
+            }
+        }
+
         return;
     }
     
@@ -399,6 +505,7 @@ namespace wf
         record_table.setEditTriggers(QAbstractItemView::NoEditTriggers);
         record_table.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
         record_table.verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+        record_table.hideColumn(RecordColumn::DateTime);
 
         connect(record_table.horizontalHeader(), &QHeaderView::geometriesChanged, this, &RecordDialog::updateRecordTableWidth);
         
@@ -413,25 +520,16 @@ namespace wf
         connect(&control_list, &QListWidget::itemChanged, this, &RecordDialog::updateControlFilter);
         connect(this, &RecordDialog::controlFilterChanged, &record_proxy, &RecordSortFilterProxyModel::updateControlFilter);
 
-        populateControlList();
+        checked_control_items = record_table_model->getControlEntries();
+        populateFilterList(
+            control_list,
+            record_table_model->getControlEntries(),
+            control_items,
+            checked_control_items);
 
         control_layout.addWidget(&control_list, 0, 0);
         control_group.setLayout(&control_layout);
         filter_layout.addWidget(&control_group, a_layout_row, 0);
-
-        return;
-    }
-    
-    void RecordDialog::populateControlList()
-    {
-        control_list.clear();
-
-        for (auto control : record_table_model->getControlEntries())
-        {
-            QListWidgetItem* item = new QListWidgetItem(control, &control_list);
-            item->setCheckState(Qt::Checked);
-            control_list.addItem(item);
-        }
 
         return;
     }
@@ -444,25 +542,16 @@ namespace wf
         connect(&opponent_control_list, &QListWidget::itemChanged, this, &RecordDialog::updateOpponentControlFilter);
         connect(this, &RecordDialog::opponentControlFilterChanged, &record_proxy, &RecordSortFilterProxyModel::updateOpponentControlFilter);
 
-        populateOpponentControlList();
+        checked_opponent_control_items = record_table_model->getOpponentControlEntries();
+        populateFilterList(
+            opponent_control_list,
+            record_table_model->getOpponentControlEntries(),
+            opponent_control_items,
+            checked_opponent_control_items);
 
         opponent_control_layout.addWidget(&opponent_control_list, 0, 0);
         opponent_control_group.setLayout(&opponent_control_layout);
         filter_layout.addWidget(&opponent_control_group, a_layout_row++, 1);
-
-        return;
-    }
-    
-    void RecordDialog::populateOpponentControlList()
-    {
-        opponent_control_list.clear();
-
-        for (auto opponent_control : record_table_model->getOpponentControlEntries())
-        {
-            QListWidgetItem* item = new QListWidgetItem(opponent_control, &opponent_control_list);
-            item->setCheckState(Qt::Checked);
-            opponent_control_list.addItem(item);
-        }
 
         return;
     }
@@ -475,25 +564,16 @@ namespace wf
         connect(&dictionary_list, &QListWidget::itemChanged, this, &RecordDialog::updateDictionaryFilter);
         connect(this, &RecordDialog::dictionaryFilterChanged, &record_proxy, &RecordSortFilterProxyModel::updateDictionaryFilter);
 
-        populateDictionaryList();
+        checked_dictionary_items = record_table_model->getDictionaries();
+        populateFilterList(
+            dictionary_list,
+            record_table_model->getDictionaries(),
+            dictionary_items,
+            checked_dictionary_items);
 
         dictionary_layout.addWidget(&dictionary_list, 0, 0);
         dictionary_group.setLayout(&dictionary_layout);
         filter_layout.addWidget(&dictionary_group, a_layout_row, 0);
-
-        return;
-    }
-    
-    void RecordDialog::populateDictionaryList()
-    {
-        dictionary_list.clear();
-
-        for (auto dictionary : record_table_model->getDictionaries())
-        {
-            QListWidgetItem* item = new QListWidgetItem(dictionary, &dictionary_list);
-            item->setCheckState(Qt::Checked);
-            dictionary_list.addItem(item);
-        }
 
         return;
     }
@@ -506,25 +586,16 @@ namespace wf
         connect(&modifier_list, &QListWidget::itemChanged, this, &RecordDialog::updateModifierFilter);
         connect(this, &RecordDialog::modifierFilterChanged, &record_proxy, &RecordSortFilterProxyModel::updateModifierFilter);
 
-        populateModifierList();
+        checked_modifier_items = record_table_model->getModifiers();
+        populateFilterList(
+            modifier_list,
+            record_table_model->getModifiers(),
+            modifier_items,
+            checked_modifier_items);
 
         modifier_layout.addWidget(&modifier_list, 0, 0);
         modifier_group.setLayout(&modifier_layout);
         filter_layout.addWidget(&modifier_group, a_layout_row++, 1);
-
-        return;
-    }
-    
-    void RecordDialog::populateModifierList()
-    {
-        modifier_list.clear();
-
-        for (auto modifier : record_table_model->getModifiers())
-        {
-            QListWidgetItem* item = new QListWidgetItem(modifier, &modifier_list);
-            item->setCheckState(Qt::Checked);
-            modifier_list.addItem(item);
-        }
 
         return;
     }
@@ -538,8 +609,6 @@ namespace wf
         name_layout.addWidget(&name_input, 0, 0);
         name_group.setLayout(&name_layout);
         filter_layout.addWidget(&name_group, a_layout_row, 0);
-
-        name_input.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
         return;
     }
@@ -588,6 +657,8 @@ namespace wf
             connect(input, QOverload<int>::of(&QSpinBox::valueChanged), this, &RecordDialog::updatePointsLimits);
             input->setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
             input->setKeyboardTracking(false);
+
+            // use_upper_limit flips on every iteration
             input->setValue((use_upper_limit = !use_upper_limit) ? int_limits.first : int_limits.second);
         }
 
@@ -635,6 +706,61 @@ namespace wf
         // Add to main filter layout
         filter_layout.addWidget(&points_group, a_layout_row, 0);
         filter_layout.addWidget(&opponent_points_group, a_layout_row++, 1);
+
+        return;
+    }
+    
+    void RecordDialog::initialiseDateTimeLimits(int& a_layout_row)
+    {
+        connect(this, &RecordDialog::dateTimeFilterValuesChanged, &record_proxy, &RecordSortFilterProxyModel::updateDateTimeFilterValues);
+        connect(this, &RecordDialog::dateTimeFilterStatusChanged, &record_proxy, &RecordSortFilterProxyModel::enableDateTimeFilters);
+
+        connect(&datetime_after_reset_button, &QPushButton::clicked, this, &RecordDialog::resetEarliestDateTime);
+        connect(&datetime_before_reset_button, &QPushButton::clicked, this, &RecordDialog::resetLatestDateTime);
+
+        datetime_after_input.setDisplayFormat(RecordTableModel::getDateTimeFormat());
+        datetime_before_input.setDisplayFormat(RecordTableModel::getDateTimeFormat());
+
+        datetime_after_input.setDateTime(record_table_model->getEarliestDate());
+        datetime_before_input.setDateTime(record_table_model->getLatestDate());
+
+        datetime_after_input.setCalendarPopup(true);
+        datetime_before_input.setCalendarPopup(true);
+
+        datetime_after_input.setFixedWidth(full_filter_width);
+        datetime_before_input.setFixedWidth(full_filter_width);
+
+        updateDateTimeLimits();
+        updateDateTimeFilterStatus();
+
+        for (auto input : {&datetime_after_input, &datetime_before_input})
+        {
+            connect(input, &QDateTimeEdit::dateTimeChanged, this, &RecordDialog::updateDateTimeLimits);
+            input->setKeyboardTracking(false);
+        }
+
+        for (auto checkbox : {&datetime_after_checkbox, &datetime_before_checkbox})
+        {
+            connect(checkbox, &QCheckBox::stateChanged, this, &RecordDialog::updateDateTimeFilterStatus);
+        }
+
+        datetime_layout.addWidget(&datetime_after_checkbox, 0, 0);
+        datetime_layout.addWidget(&datetime_after_label, 0, 1);
+        datetime_layout.addWidget(&datetime_after_input, 1, 0, 1, 2);
+        datetime_layout.addWidget(&datetime_after_reset_button, 2, 0, 1, 2);
+
+        datetime_layout.addWidget(&datetime_before_checkbox, 0, 2);
+        datetime_layout.addWidget(&datetime_before_label, 0, 3);
+        datetime_layout.addWidget(&datetime_before_input, 1, 2, 1, 2);
+        datetime_layout.addWidget(&datetime_before_reset_button, 2, 2, 1, 2);
+
+        datetime_layout.setColumnStretch(0, 0);
+        datetime_layout.setColumnStretch(1, 1);
+        datetime_layout.setColumnStretch(2, 0);
+        datetime_layout.setColumnStretch(3, 1);
+
+        datetime_group.setLayout(&datetime_layout);
+        filter_layout.addWidget(&datetime_group, a_layout_row++, 0, 1, 2);
 
         return;
     }

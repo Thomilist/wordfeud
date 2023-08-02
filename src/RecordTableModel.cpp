@@ -13,7 +13,7 @@ namespace wf
     RecordTableModel::~RecordTableModel()
     { }
     
-    QString RecordTableModel::getDateTimeFormat()
+    const QString RecordTableModel::getDateTimeFormat()
     {
         return "yyyy-MM-dd hh:mm:ss";
     }
@@ -30,7 +30,8 @@ namespace wf
         // opponent_name, opponent_player_type/opponent_difficulty, opponent_points
         // [spacer]
         // dictionary, modifier_pattern, timestamp
-        return 3+1+3+1+3;
+        // datetime (hidden)
+        return 3+1+3+1+3 + 1;
     }
     
     bool RecordTableModel::insertRows(int a_row, int a_count, const QModelIndex& a_parent)
@@ -108,6 +109,10 @@ namespace wf
                     {
                         return scores[a_index.row()].timestamp;
                     }
+                    case RecordColumn::DateTime:
+                    {
+                        return scores[a_index.row()].datetime;
+                    }
                 }
 
                 break;
@@ -181,6 +186,10 @@ namespace wf
                             {
                                 return "End Date";
                             }
+                            case RecordColumn::DateTime:
+                            {
+                                return "Datetime";
+                            }
                         }
 
                         break;
@@ -225,10 +234,10 @@ namespace wf
         std::sort(scores.begin(), scores.end(), Score::sortScoreByPoints);
 
         trimRecords(a_score);
-        updateFilterData();
         scores.save();
         
         emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1), {Qt::DisplayRole});
+        updateFilterData();
         return;
     }
     
@@ -262,6 +271,16 @@ namespace wf
         return modifiers;
     }
     
+    const QDateTime& RecordTableModel::getEarliestDate() const
+    {
+        return earliest_datetime;
+    }
+    
+    const QDateTime& RecordTableModel::getLatestDate() const
+    {
+        return latest_datetime;
+    }
+    
     void RecordTableModel::trimRecords(const Score& a_score)
     {
         while (scores.getScoreCount(a_score) > maximum_leaderboard_size)
@@ -279,59 +298,19 @@ namespace wf
     
     void RecordTableModel::updateFilterData()
     {
-        updateControlEntries();
-        updateDictionaries();
-        updateModifiers();
-        updatePointsLimits();
-        return;
-    }
-    
-    void RecordTableModel::updateControlEntries()
-    {
         control_entries.clear();
         opponent_control_entries.clear();
-
-        for (const auto& score : scores)
-        {
-            control_entries.insert(Score::getControlDescription(score.player_type, score.difficulty));
-            opponent_control_entries.insert(Score::getControlDescription(score.opponent_player_type, score.opponent_difficulty));
-        }
-
-        return;
-    }
-    
-    void RecordTableModel::updateDictionaries()
-    {
         dictionaries.clear();
-
-        for (const auto& score : scores)
-        {
-            dictionaries.insert(score.dictionary);
-        }
-
-        return;
-    }
-    
-    void RecordTableModel::updateModifiers()
-    {
         modifiers.clear();
 
-        for (const auto& score : scores)
-        {
-            modifiers.insert(score.modifier_pattern);
-        }
-
-        return;
-    }
-    
-    void RecordTableModel::updatePointsLimits()
-    {
         if (scores.empty())
         {
             minimum_points = 0;
             maximum_points = 0;
             minimum_opponent_points = 0;
             maximum_opponent_points = 0;
+            earliest_datetime = QDateTime::currentDateTime();
+            latest_datetime = earliest_datetime;
         }
         else
         {
@@ -342,10 +321,19 @@ namespace wf
             maximum_points = starting_value;
             minimum_opponent_points = opponent_starting_value;
             maximum_opponent_points = opponent_starting_value;
+
+            QDateTime starting_datetime = scores[0].datetime;
+            earliest_datetime = starting_datetime;
+            latest_datetime = starting_datetime;
         }
-        
+
         for (const auto& score : scores)
         {
+            control_entries.insert(Score::getControlDescription(score.player_type, score.difficulty));
+            opponent_control_entries.insert(Score::getControlDescription(score.opponent_player_type, score.opponent_difficulty));
+            dictionaries.insert(score.dictionary);
+            modifiers.insert(score.modifier_pattern);
+
             if (score.points < minimum_points)
             {
                 minimum_points = score.points;
@@ -363,9 +351,18 @@ namespace wf
             {
                 maximum_opponent_points = score.opponent_points;
             }
+
+            if (score.datetime < earliest_datetime)
+            {
+                earliest_datetime = score.datetime;
+            }
+            else if (score.datetime > latest_datetime)
+            {
+                latest_datetime = score.datetime;
+            }
         }
 
-        emit pointsLimitsChanged(minimum_points, maximum_points, minimum_opponent_points, maximum_opponent_points);
+        emit filterDataUpdated();
 
         return;
     }

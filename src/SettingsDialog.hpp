@@ -97,8 +97,9 @@ namespace wf
             QGridLayout general_settings_layout;
             QLabel language_label{"Dictionary:"};
             QComboBox language_dropdown;
-            QLabel modifier_distribution_label{"Modifier distribution:"};
+            QLabel modifier_distribution_label{"Board:"};
             QComboBox modifier_distribution_dropdown;
+            QCheckBox shuffle_modifiers_checkbox{"Shuffle modifiers"};
             QLabel letter_colouring_label{"Letter colouring:"};
             QComboBox letter_colouring_dropdown;
 

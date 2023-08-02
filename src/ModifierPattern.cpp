@@ -10,6 +10,17 @@ namespace wf
     ModifierPattern::~ModifierPattern()
     { }
     
+    void ModifierPattern::setModifierShuffling(bool a_enabled)
+    {
+        shuffle_modifiers = a_enabled;
+        return;
+    }
+    
+    bool ModifierPattern::getModifierShuffling() const
+    {
+        return shuffle_modifiers;
+    }
+    
     void ModifierPattern::setDistribution(ModifierDistribution a_distribution)
     {
         current_distribution = a_distribution;
@@ -37,14 +48,12 @@ namespace wf
 
         switch (current_distribution)
         {
-            case ModifierDistribution::WordfeudDefault:
-            case ModifierDistribution::WordfeudRandom:
+            case ModifierDistribution::Wordfeud:
             {
                 base_pattern = &wordfeud_default_pattern;
                 break;
             }
-            case ModifierDistribution::ScrabbleDefault:
-            case ModifierDistribution::ScrabbleRandom:
+            case ModifierDistribution::Scrabble:
             {
                 base_pattern = &scrabble_default_pattern;
                 break;
@@ -60,7 +69,7 @@ namespace wf
             pattern.push_back(&modifier);
         }
 
-        if (current_distribution == ModifierDistribution::WordfeudRandom || current_distribution == ModifierDistribution::ScrabbleRandom)
+        if (shuffle_modifiers)
         {
             std::shuffle(pattern.begin(), pattern.end(), rng);
 
@@ -98,6 +107,11 @@ namespace wf
         }
         
         return "";
+    }
+    
+    const QString ModifierPattern::getDistributionDisplayName() const
+    {
+        return getDistributionAsText() % (shuffle_modifiers ? " (shuffled)" : "");
     }
     
     const std::vector<std::pair<ModifierDistribution, QString>> ModifierPattern::getAllDistributions() const

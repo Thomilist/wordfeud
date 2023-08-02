@@ -989,7 +989,7 @@ namespace wf
             }
 
             score.dictionary = settings->getCurrentLanguage()->getName();
-            score.modifier_pattern = settings->getModifierPattern()->getDistributionAsText();
+            score.modifier_pattern = settings->getModifierPattern()->getDistributionDisplayName();
 
             QDateTime datetime = QDateTime::currentDateTime();
             score.timestamp = datetime.toString(RecordTableModel::getDateTimeFormat());

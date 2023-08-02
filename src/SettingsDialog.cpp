@@ -65,6 +65,7 @@ namespace wf
         // General
         settings->setLanguage(language_dropdown.currentText());
         settings->setModifierPattern(modifier_distribution_dropdown.currentText());
+        settings->setModifierShuffling(shuffle_modifiers_checkbox.isChecked());
         settings->setLetterColouring(letter_colouring_dropdown.currentText());
 
         // Startup
@@ -185,11 +186,18 @@ namespace wf
 
         createLanguageDropdown(subrow++);
         createModifierDistributionDropdown(subrow++);
+
+        shuffle_modifiers_checkbox.setCheckState(settings->getModifierShuffling() ? Qt::Checked : Qt::Unchecked);
+        general_settings_layout.addWidget(&shuffle_modifiers_checkbox, subrow++, 1);
+
         createLetterColouringDropdown(subrow++);
 
         general_settings.setLayout(&general_settings_layout);
         general_settings.setMinimumWidth(minimum_group_box_width);
         a_grid_layout->addWidget(&general_settings, a_row, 0);
+
+        general_settings_layout.setColumnStretch(0, 0);
+        general_settings_layout.setColumnStretch(1, 1);
 
         return;
     }

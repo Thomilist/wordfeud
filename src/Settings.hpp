@@ -69,6 +69,9 @@ namespace wf
             ModifierPattern* getModifierPattern();
             const QString getTempModifierPattern() const;
             void setModifierPattern(QString a_pattern);
+            bool getModifierShuffling() const;
+            bool getTempModifierShuffling() const;
+            void setModifierShuffling(bool a_enabled);
             PlayerSettings* getLeftPlayer();
             PlayerSettings* getRightPlayer();
             PlayerSettings* getPlayer(int a_index);
@@ -135,6 +138,7 @@ namespace wf
             // Temporary user-facing settings
             Language* current_language_temp;
             QString modifier_pattern_temp;
+            bool shuffle_modifiers_temp;
             QString letter_colouring_temp;
 
             int minimum_ai_turn_time_temp;

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <QString>
+#include <QStringBuilder>
 
 #include "ForwardDeclarations.hpp"
 
@@ -22,22 +23,24 @@ namespace wf
             ModifierPattern();
             ~ModifierPattern();
 
+            void setModifierShuffling(bool a_enabled);
+            bool getModifierShuffling() const;
             void setDistribution(ModifierDistribution a_distribution);
             void setDistribution(QString a_distribution);
             const std::vector<Modifier*> get();
             ModifierDistribution getDistribution() const;
             const QString getDistributionAsText() const;
+            const QString getDistributionDisplayName() const;
             const std::vector<std::pair<ModifierDistribution, QString>> getAllDistributions() const;
             void reset();
 
         private:
-            ModifierDistribution current_distribution = ModifierDistribution::WordfeudDefault;
+            ModifierDistribution current_distribution = ModifierDistribution::Wordfeud;
+            bool shuffle_modifiers = false;
             std::vector<std::pair<ModifierDistribution, QString>> all_distributions =
             {
-                {ModifierDistribution::WordfeudDefault, "Wordfeud (default)"},
-                {ModifierDistribution::WordfeudRandom, "Wordfeud (random)"},
-                {ModifierDistribution::ScrabbleDefault, "Scrabble (default)"},
-                {ModifierDistribution::ScrabbleRandom, "Scrabble (random)"}
+                {ModifierDistribution::Wordfeud, "Wordfeud"},
+                {ModifierDistribution::Scrabble, "Scrabble"},
             };
             std::vector<Modifier> wordfeud_default_pattern =
             {

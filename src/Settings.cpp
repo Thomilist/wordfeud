@@ -47,6 +47,7 @@ namespace wf
         }
         
         setValue("common/modifiers", getModifierPattern()->getDistributionAsText());
+        setValue("common/shuffle_modifiers", getModifierPattern()->getModifierShuffling());
         setValue("common/letter_colouring", getLetterColouring());
 
         // Save left player settings
@@ -141,33 +142,24 @@ namespace wf
         }
 
         // Load general settings
-        QString dictionary = value("common/dictionary", "English").toString();
-        setLanguage(dictionary);
-        QString modifier_distribution = value("common/modifiers", "Wordfeud (default)").toString();
-        setModifierPattern(modifier_distribution);
+        setLanguage(value("common/dictionary", "English").toString());
+        setModifierPattern(value("common/modifiers", "Wordfeud").toString());
+        setModifierShuffling(value("common/shuffle_modifiers", "false").toBool());
         setLetterColouring(value("common/letter_colouring", "Default").toString());
 
         // Load left player settings
-        QString left_player_name = value("player_left/name", "Player 1").toString();
-        QString left_player_type = value("player_left/type", "Human").toString();
-        bool left_player_uses_random_name = value("player_left/random_name", "false").toBool();
-        int left_player_ai_difficulty = value("player_left/ai_difficulty", "3").toInt();
-        getLeftPlayer()->setName(left_player_name);
-        getLeftPlayer()->setTypeWithString(left_player_type);
-        getLeftPlayer()->setRandomNameUse(left_player_uses_random_name);
+        getLeftPlayer()->setName(value("player_left/name", "Player 1").toString());
+        getLeftPlayer()->setTypeWithString(value("player_left/type", "Human").toString());
+        getLeftPlayer()->setRandomNameUse(value("player_left/random_name", "false").toBool());
         getLeftPlayer()->setRandomNames(random_names);
-        getLeftPlayer()->setAIDifficulty(left_player_ai_difficulty);
+        getLeftPlayer()->setAIDifficulty(value("player_left/ai_difficulty", "3").toInt());
 
         // Load right player settings
-        QString right_player_name = value("player_right/name", "Player 2").toString();
-        QString right_player_type = value("player_right/type", "AI").toString();
-        bool right_player_uses_random_name = value("player_right/random_name", "true").toBool();
-        int right_player_ai_difficulty = value("player_right/ai_difficulty", "3").toInt();
-        getRightPlayer()->setName(right_player_name);
-        getRightPlayer()->setTypeWithString(right_player_type);
-        getRightPlayer()->setRandomNameUse(right_player_uses_random_name);
+        getRightPlayer()->setName(value("player_right/name", "Player 2").toString());
+        getRightPlayer()->setTypeWithString(value("player_right/type", "AI").toString());
+        getRightPlayer()->setRandomNameUse(value("player_right/random_name", "true").toBool());
         getRightPlayer()->setRandomNames(random_names);
-        getRightPlayer()->setAIDifficulty(right_player_ai_difficulty);
+        getRightPlayer()->setAIDifficulty(value("player_right/ai_difficulty", "3").toInt());
 
         // Load AI settings
         setMinimumAITurnTime(value("ai/minimum_turn_time", "2").toInt());
@@ -191,6 +183,7 @@ namespace wf
     void Settings::newGameApply()
     {
         getModifierPattern()->setDistribution(modifier_pattern_temp);
+        getModifierPattern()->setModifierShuffling(shuffle_modifiers_temp);
         current_language = current_language_temp;
 
         getLeftPlayer()->apply();
@@ -437,6 +430,22 @@ namespace wf
     void Settings::setModifierPattern(QString a_pattern)
     {
         modifier_pattern_temp = a_pattern;
+        return;
+    }
+    
+    bool Settings::getModifierShuffling() const
+    {
+        return modifier_pattern.getModifierShuffling();
+    }
+    
+    bool Settings::getTempModifierShuffling() const
+    {
+        return shuffle_modifiers_temp;
+    }
+    
+    void Settings::setModifierShuffling(bool a_enabled)
+    {
+        shuffle_modifiers_temp = a_enabled;
         return;
     }
     

@@ -5,10 +5,8 @@ namespace wf
 {
     enum class ModifierDistribution
     {
-        WordfeudDefault,
-        WordfeudRandom,
-        ScrabbleDefault,
-        ScrabbleRandom
+        Wordfeud,
+        Scrabble
     };
 }
 

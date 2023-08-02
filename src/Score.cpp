@@ -63,10 +63,9 @@ namespace wf
     
     bool Score::sameGameSetup(const Score& a_first, const Score& a_second)
     {
-        return
+        bool always_checked =
             std::tie
             (
-                a_first.name,
                 a_first.player_type,
                 a_first.difficulty,
                 a_first.opponent_player_type,
@@ -77,7 +76,6 @@ namespace wf
             ==
             std::tie
             (
-                a_second.name,
                 a_second.player_type,
                 a_second.difficulty,
                 a_second.opponent_player_type,
@@ -85,6 +83,26 @@ namespace wf
                 a_second.dictionary,
                 a_second.modifier_pattern
             );
+
+        if (always_checked == false)
+        {
+            return false;
+        }
+
+        bool name_check = true;
+        bool opponent_name_check = true;
+
+        if (a_first.player_type == PlayerType::Human && a_second.player_type == PlayerType::Human)
+        {
+            name_check = (a_first.name == a_second.name);
+        }
+
+        if (a_first.opponent_player_type == PlayerType::Human && a_second.opponent_player_type == PlayerType::Human)
+        {
+            opponent_name_check = (a_first.opponent_name == a_second.opponent_name);
+        }
+        
+        return name_check && opponent_name_check;
     }
     
     bool ScoreControlCompare::operator()(const QString& a_first, const QString& a_second) const

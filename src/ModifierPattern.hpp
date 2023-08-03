@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <random>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -12,8 +13,6 @@
 #include "ForwardDeclarations.hpp"
 
 #include "Modifier.hpp"
-
-#include "ModifierDistribution.hpp"
 
 namespace wf
 {
@@ -25,22 +24,20 @@ namespace wf
 
             void setModifierShuffling(bool a_enabled);
             bool getModifierShuffling() const;
-            void setDistribution(ModifierDistribution a_distribution);
             void setDistribution(QString a_distribution);
             const std::vector<Modifier*> get();
-            ModifierDistribution getDistribution() const;
             const QString getDistributionAsText() const;
             const QString getDistributionDisplayName() const;
-            const std::vector<std::pair<ModifierDistribution, QString>> getAllDistributions() const;
+            const std::set<QString> getAllDistributions() const;
             void reset();
 
         private:
-            ModifierDistribution current_distribution = ModifierDistribution::Wordfeud;
+            QString current_distribution;
             bool shuffle_modifiers = false;
-            std::vector<std::pair<ModifierDistribution, QString>> all_distributions =
+            std::set<QString> all_distributions =
             {
-                {ModifierDistribution::Wordfeud, "Wordfeud"},
-                {ModifierDistribution::Scrabble, "Scrabble"},
+                "Wordfeud",
+                "Scrabble"
             };
             std::vector<Modifier> wordfeud_default_pattern =
             {

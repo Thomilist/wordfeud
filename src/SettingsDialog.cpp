@@ -241,9 +241,9 @@ namespace wf
 
         for (auto modifier_distribution : settings->getModifierPattern()->getAllDistributions())
         {
-            modifier_distribution_dropdown.addItem(modifier_distribution.second);
+            modifier_distribution_dropdown.addItem(modifier_distribution);
 
-            if (modifier_distribution.second == settings->getTempModifierPattern())
+            if (modifier_distribution == settings->getTempModifierPattern())
             {
                 modifier_distribution_dropdown.setCurrentIndex(index);
             }

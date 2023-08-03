@@ -21,23 +21,9 @@ namespace wf
         return shuffle_modifiers;
     }
     
-    void ModifierPattern::setDistribution(ModifierDistribution a_distribution)
-    {
-        current_distribution = a_distribution;
-        return;
-    }
-    
     void ModifierPattern::setDistribution(QString a_distribution)
     {
-        for (auto distribution : all_distributions)
-        {
-            if (distribution.second == a_distribution)
-            {
-                current_distribution = distribution.first;
-                return;
-            }
-        }
-        
+        current_distribution = a_distribution;
         return;
     }
     
@@ -46,22 +32,17 @@ namespace wf
         std::vector<Modifier*> pattern;
         std::vector<Modifier>* base_pattern;
 
-        switch (current_distribution)
+        if (current_distribution == "Wordfeud")
         {
-            case ModifierDistribution::Wordfeud:
-            {
-                base_pattern = &wordfeud_default_pattern;
-                break;
-            }
-            case ModifierDistribution::Scrabble:
-            {
-                base_pattern = &scrabble_default_pattern;
-                break;
-            }
-            default:
-            {
-                return pattern;
-            }
+            base_pattern = &wordfeud_default_pattern;
+        }
+        else if (current_distribution == "Scrabble")
+        {
+            base_pattern = &scrabble_default_pattern;
+        }
+        else
+        {
+            return pattern;
         }
         
         for (auto& modifier : *base_pattern)
@@ -91,22 +72,9 @@ namespace wf
         return pattern;
     }
     
-    ModifierDistribution ModifierPattern::getDistribution() const
-    {
-        return current_distribution;
-    }
-    
     const QString ModifierPattern::getDistributionAsText() const
     {
-        for (auto distribution : all_distributions)
-        {
-            if (distribution.first == current_distribution)
-            {
-                return distribution.second;
-            }
-        }
-        
-        return "";
+        return current_distribution;
     }
     
     const QString ModifierPattern::getDistributionDisplayName() const
@@ -114,7 +82,7 @@ namespace wf
         return getDistributionAsText() % (shuffle_modifiers ? " (shuffled)" : "");
     }
     
-    const std::vector<std::pair<ModifierDistribution, QString>> ModifierPattern::getAllDistributions() const
+    const std::set<QString> ModifierPattern::getAllDistributions() const
     {
         return all_distributions;
     }

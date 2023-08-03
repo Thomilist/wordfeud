@@ -49,7 +49,6 @@ namespace wf
     enum class GameState;
     enum class LetterStatus;
     enum class LetterType;
-    enum class ModifierDistribution;
     enum class ModifierType;
     enum class PlayerType;
     enum class PlayType;

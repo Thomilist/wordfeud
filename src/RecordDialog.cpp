@@ -100,81 +100,29 @@ namespace wf
     
     void RecordDialog::updateControlFilter()
     {
-        QListWidgetItem* control_item;
-
-        for (int index = 0; index < control_list.count(); ++index)
-        {
-            control_item = control_list.item(index);
-            auto checkstate = control_item->checkState();
-
-            if (checkstate == Qt::Checked)
-            {
-                checked_control_items.insert(control_item->text());
-            }
-            else if (checkstate == Qt::Unchecked)
-            {
-                checked_control_items.erase(control_item->text());
-            }
-        }
-
+        updateFilterList(control_list, checked_control_items);
         emit controlFilterChanged(checked_control_items);
         return;
     }
     
     void RecordDialog::updateOpponentControlFilter()
     {
-        std::set<QString, ScoreControlCompare> opponent_control_filter_set;
-        QListWidgetItem* opponent_control_item;
-
-        for (int index = 0; index < opponent_control_list.count(); ++index)
-        {
-            opponent_control_item = opponent_control_list.item(index);
-
-            if (opponent_control_item->checkState() == Qt::Checked)
-            {
-                opponent_control_filter_set.insert(opponent_control_item->text());
-            }
-        }
-
-        emit opponentControlFilterChanged(opponent_control_filter_set);
+        updateFilterList(opponent_control_list, checked_opponent_control_items);
+        emit opponentControlFilterChanged(checked_opponent_control_items);
         return;
     }
     
     void RecordDialog::updateDictionaryFilter()
     {
-        std::set<QString> dictionary_filter_set;
-        QListWidgetItem* dictionary_item;
-
-        for (int index = 0; index < dictionary_list.count(); ++index)
-        {
-            dictionary_item = dictionary_list.item(index);
-
-            if (dictionary_item->checkState() == Qt::Checked)
-            {
-                dictionary_filter_set.insert(dictionary_item->text());
-            }
-        }
-
-        emit dictionaryFilterChanged(dictionary_filter_set);
+        updateFilterList(dictionary_list, checked_dictionary_items);
+        emit dictionaryFilterChanged(checked_dictionary_items);
         return;
     }
     
     void RecordDialog::updateModifierFilter()
     {
-        std::set<QString> modifier_filter_set;
-        QListWidgetItem* modifier_item;
-
-        for (int index = 0; index < modifier_list.count(); ++index)
-        {
-            modifier_item = modifier_list.item(index);
-
-            if (modifier_item->checkState() == Qt::Checked)
-            {
-                modifier_filter_set.insert(modifier_item->text());
-            }
-        }
-
-        emit modifierFilterChanged(modifier_filter_set);
+        updateFilterList(modifier_list, checked_modifier_items);
+        emit modifierFilterChanged(checked_modifier_items);
         return;
     }
     
@@ -451,6 +399,29 @@ namespace wf
             if (checked)
             {
                 a_checked_items.insert(entry);
+            }
+        }
+
+        return;
+    }
+    
+    template<typename Container>
+    void RecordDialog::updateFilterList(QListWidget& a_list, Container& a_checked_items)
+    {
+        QListWidgetItem* item;
+
+        for (int index = 0; index < a_list.count(); ++index)
+        {
+            item = a_list.item(index);
+            auto checkstate = item->checkState();
+
+            if (checkstate == Qt::Checked)
+            {
+                a_checked_items.insert(item->text());
+            }
+            else if (checkstate == Qt::Unchecked)
+            {
+                a_checked_items.erase(item->text());
             }
         }
 

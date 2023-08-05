@@ -93,6 +93,9 @@ namespace wf
                 const Container& a_source,
                 Container& a_existing_items,
                 Container& a_checked_items);
+            
+            template <typename Container>
+            void updateFilterList(QListWidget& a_list, Container& a_checked_items);
 
             void fitListToContents(QListWidget* a_list);
             void fitListToContents(QListWidget* a_first_list, QListWidget* a_second_list);

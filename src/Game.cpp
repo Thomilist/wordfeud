@@ -246,6 +246,7 @@ namespace wf
 
         if (isGameOver())
         {
+            finalisePoints();
             Player* winning_player = getHighestScoringPlayer();
 
             if (winning_player != nullptr)
@@ -255,7 +256,6 @@ namespace wf
             
             setState(GameState::Finished);
             hands.setDisabled(true);
-            finalisePoints();
             repaint();
             saveScores();
             
@@ -281,8 +281,6 @@ namespace wf
                 game_over.setWindowTitle(" ");
                 game_over.exec();
             }
-
-            return;
         }
         else
         {
@@ -302,7 +300,7 @@ namespace wf
         showCorrectButtons();
         repaint();
 
-        if (all_players[current_player_index]->getType() == PlayerType::AI)
+        if (getState() != GameState::Finished || all_players[current_player_index]->getType() == PlayerType::AI)
         {
             emit playAI();
         }

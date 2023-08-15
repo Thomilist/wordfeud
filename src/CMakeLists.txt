@@ -15,6 +15,13 @@ add_dependencies(
     AlwaysRebuildAboutDialog
 )
 
+add_library(AbstractEditor AbstractEditor.cpp)
+target_link_libraries(
+    AbstractEditor
+    Qt5::Widgets
+    Settings
+)
+
 add_library(ButtonPanel ButtonPanel.cpp)
 target_link_libraries(
     ButtonPanel
@@ -26,6 +33,7 @@ add_library(DictionaryEditor DictionaryEditor.cpp)
 target_link_libraries(
     DictionaryEditor
     Qt5::Widgets
+    AbstractEditor
     LetterEditorWidget
     LetterTable
     LetterTableModel

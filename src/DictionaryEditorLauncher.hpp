@@ -27,7 +27,7 @@
 #include "Language.hpp"
 #include "Settings.hpp"
 
-#include "DictionaryEditorMode.hpp"
+#include "EditorMode.hpp"
 
 namespace wf
 {
@@ -46,7 +46,7 @@ namespace wf
             void updateInteractState();
 
         signals:
-            void launchDictionaryEditor(DictionaryEditorMode a_mode, QString a_language);
+            void launchDictionaryEditor(EditorMode a_mode, QString a_language);
             void viewEditorHelp();
         
         private:

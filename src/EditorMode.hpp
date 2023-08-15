@@ -1,9 +1,9 @@
-#ifndef __DICTIONARYEDITORMODE_H__
-#define __DICTIONARYEDITORMODE_H__
+#ifndef __EDITORMODE_H__
+#define __EDITORMODE_H__
 
 namespace wf
 {
-    enum class DictionaryEditorMode
+    enum class EditorMode
     {
         Undefined,
         CreateNew,
@@ -14,4 +14,4 @@ namespace wf
     };
 }
 
-#endif // __DICTIONARYEDITORMODE_H__
+#endif // __EDITORMODE_H__

@@ -58,15 +58,15 @@ namespace wf
     void DictionaryEditorLauncher::launch()
     {
         QString language_name = dictionary_dropdown.currentText();
-        DictionaryEditorMode editor_mode = DictionaryEditorMode::Undefined;
+        EditorMode editor_mode = EditorMode::Undefined;
         
         for (auto [button, mode] :
         {
-            std::pair{&create_new_button, DictionaryEditorMode::CreateNew},
-            std::pair{&open_copy_button, DictionaryEditorMode::OpenCopy},
-            std::pair{&edit_existing_button, DictionaryEditorMode::EditExisting},
-            std::pair{&export_existing_button, DictionaryEditorMode::ExportExisting},
-            std::pair{&delete_existing_button, DictionaryEditorMode::DeleteExisting}
+            std::pair{&create_new_button, EditorMode::CreateNew},
+            std::pair{&open_copy_button, EditorMode::OpenCopy},
+            std::pair{&edit_existing_button, EditorMode::EditExisting},
+            std::pair{&export_existing_button, EditorMode::ExportExisting},
+            std::pair{&delete_existing_button, EditorMode::DeleteExisting}
         })
         {
             if (button->isChecked())
@@ -78,15 +78,15 @@ namespace wf
 
         switch (editor_mode)
         {
-            case DictionaryEditorMode::CreateNew:
-            case DictionaryEditorMode::OpenCopy:
-            case DictionaryEditorMode::EditExisting:
+            case EditorMode::CreateNew:
+            case EditorMode::OpenCopy:
+            case EditorMode::EditExisting:
             {
                 QDialog::accept();
                 emit launchDictionaryEditor(editor_mode, language_name);
                 break;
             }
-            case DictionaryEditorMode::ExportExisting:
+            case EditorMode::ExportExisting:
             {
                 if (exportDictionary(language_name))
                 {
@@ -95,7 +95,7 @@ namespace wf
 
                 break;
             }
-            case DictionaryEditorMode::DeleteExisting:
+            case EditorMode::DeleteExisting:
             {
                 QMessageBox::StandardButton response = QMessageBox::Yes;
 

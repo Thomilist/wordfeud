@@ -8,7 +8,7 @@ build/*
 valgrind/*
 
 # Releases
-releases/*
+releases/wordfeud*
 
 # Sourcetrail project files
 *.srctrl*

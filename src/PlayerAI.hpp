@@ -11,7 +11,6 @@
 #include <QDateTime>
 #include <QPoint>
 #include <QString>
-#include <QtConcurrent>
 #include <QThread>
 
 #include "ForwardDeclarations.hpp"

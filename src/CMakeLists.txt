@@ -22,6 +22,13 @@ target_link_libraries(
     Settings
 )
 
+add_library(AbstractEditorLauncher AbstractEditorLauncher.cpp)
+target_link_libraries(
+    AbstractEditorLauncher
+    Qt5::Widgets
+    Settings
+)
+
 add_library(ButtonPanel ButtonPanel.cpp)
 target_link_libraries(
     ButtonPanel
@@ -44,7 +51,7 @@ add_library(DictionaryEditorLauncher DictionaryEditorLauncher.cpp)
 target_link_libraries(
     DictionaryEditorLauncher
     Qt5::Widgets
-    DictionaryEditor
+    AbstractEditorLauncher
     Language
     Settings
 )

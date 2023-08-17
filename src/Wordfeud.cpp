@@ -17,8 +17,12 @@ namespace wf
         , dictionary_lookup("Dictionary lookup", &tools_menu)
         , dictionary_lookup_dialog(&settings, &main_window)
         , open_dictionary_editor("Dictionary editor", &tools_menu)
-        , dictionary_editor_launcher(&settings, &main_window)
         , dictionary_editor(&settings, &main_window)
+        , dictionary_editor_launcher(
+            &dictionary_editor,
+            "Dictionary",
+            &settings,
+            &main_window)
         , help_menu("Help", &main_window)
         , view_help("View help", &help_menu)
         , view_about("About", &help_menu)
@@ -107,8 +111,6 @@ namespace wf
 
         connect(&dictionary_lookup, &QAction::triggered, &dictionary_lookup_dialog, &DictionaryLookupDialog::open);
         connect(&open_dictionary_editor, &QAction::triggered, &dictionary_editor_launcher, &DictionaryEditorLauncher::open);
-        connect(&dictionary_editor_launcher, &DictionaryEditorLauncher::launchDictionaryEditor, &dictionary_editor, &DictionaryEditor::launch);
-        connect(&dictionary_editor_launcher, &DictionaryEditorLauncher::viewEditorHelp, &dictionary_editor, &DictionaryEditor::viewEditorHelp);
         return;
     }
     

@@ -154,6 +154,12 @@ namespace wf
         return;
     }
     
+    void LetterTableModel::clear()
+    {
+        removeColumns(0, columnCount());
+        return;
+    }
+    
     void LetterTableModel::addLetter(LetterData a_letter_data)
     {
         insertColumn(columnCount());

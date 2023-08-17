@@ -30,6 +30,7 @@ namespace wf
             QVariant data(const QModelIndex& a_index, int a_role = Qt::DisplayRole) const override;
             QVariant headerData(int a_section, Qt::Orientation a_orientation, int a_role = Qt::DisplayRole) const override;
             void setLetterList(std::vector<LetterData>* a_letter_list);
+            void clear();
 
         public slots:
             void addLetter(LetterData a_letter_data);

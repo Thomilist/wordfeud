@@ -160,6 +160,7 @@ namespace wf
     {
         word_source_edit.clear();
         biased_word_source_edit.clear();
+        letter_table_model.clear();
 
         if (mode == EditorMode::OpenCopy || mode == EditorMode::EditExisting)
         {
@@ -273,7 +274,6 @@ namespace wf
 
         Language source_letters;
         source_letters.loadLettersFromFile(Language::getLetterListPath(original_item));
-
         letter_table_model.setLetterList(source_letters.getLetterList());
 
         return;

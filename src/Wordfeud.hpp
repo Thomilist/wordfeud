@@ -16,6 +16,8 @@
 #include "ForwardDeclarations.hpp"
 
 #include "AboutDialog.hpp"
+#include "BoardEditor.hpp"
+#include "BoardEditorLauncher.hpp"
 #include "DictionaryEditor.hpp"
 #include "DictionaryEditorLauncher.hpp"
 #include "DictionaryLookupDialog.hpp"
@@ -69,6 +71,9 @@ namespace wf
             QAction open_dictionary_editor;
             DictionaryEditor dictionary_editor;
             DictionaryEditorLauncher dictionary_editor_launcher;
+            QAction open_board_editor;
+            BoardEditor board_editor;
+            BoardEditorLauncher board_editor_launcher;
 
             QMenu help_menu;
             QAction view_help;

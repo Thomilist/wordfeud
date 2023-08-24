@@ -5,12 +5,11 @@ namespace wf
 {
     DictionaryEditorLauncher::DictionaryEditorLauncher(
         AbstractEditor* a_editor,
-        const QString& a_editor_subject,
         Settings* a_settings,
         QWidget* a_parent)
         : AbstractEditorLauncher(
             a_editor,
-            a_editor_subject,
+            "Dictionary",
             a_settings,
             a_parent)
     { }

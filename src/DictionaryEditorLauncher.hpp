@@ -29,7 +29,6 @@ namespace wf
         public:
             DictionaryEditorLauncher(
                 AbstractEditor* a_editor,
-                const QString& a_editor_subject,
                 Settings* a_settings,
                 QWidget* a_parent = nullptr);
             ~DictionaryEditorLauncher();

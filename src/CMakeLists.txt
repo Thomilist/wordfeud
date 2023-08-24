@@ -29,6 +29,21 @@ target_link_libraries(
     Settings
 )
 
+add_library(BoardEditor BoardEditor.cpp)
+target_link_libraries(
+    BoardEditor
+    Qt5::Widgets
+    AbstractEditor
+    Settings
+)
+
+add_library(BoardEditorLauncher BoardEditorLauncher.cpp)
+target_link_libraries(
+    BoardEditorLauncher
+    Qt5::Widgets
+    AbstractEditorLauncher
+)
+
 add_library(ButtonPanel ButtonPanel.cpp)
 target_link_libraries(
     ButtonPanel
@@ -319,6 +334,8 @@ target_link_libraries(
     Wordfeud
     Qt5::Widgets
     AboutDialog
+    BoardEditor
+    BoardEditorLauncher
     DictionaryEditor
     DictionaryEditorLauncher
     DictionaryLookupDialog

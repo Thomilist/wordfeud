@@ -6,6 +6,8 @@ namespace wf
     class AboutDialog;
     class AbstractEditor;
     class AbstractEditorLauncher;
+    class BoardEditor;
+    class BoardEditorLauncher;
     class ButtonPanel;
     class DictionaryEditor;
     class DictionaryEditorLauncher;

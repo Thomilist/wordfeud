@@ -20,7 +20,12 @@ namespace wf
         , dictionary_editor(&settings, &main_window)
         , dictionary_editor_launcher(
             &dictionary_editor,
-            "Dictionary",
+            &settings,
+            &main_window)
+        , open_board_editor("Board editor", &tools_menu)
+        , board_editor(&settings, &main_window)
+        , board_editor_launcher(
+            &board_editor,
             &settings,
             &main_window)
         , help_menu("Help", &main_window)
@@ -108,9 +113,11 @@ namespace wf
         main_window.menuBar()->addMenu(&tools_menu);
         tools_menu.addAction(&dictionary_lookup);
         tools_menu.addAction(&open_dictionary_editor);
+        tools_menu.addAction(&open_board_editor);
 
         connect(&dictionary_lookup, &QAction::triggered, &dictionary_lookup_dialog, &DictionaryLookupDialog::open);
         connect(&open_dictionary_editor, &QAction::triggered, &dictionary_editor_launcher, &DictionaryEditorLauncher::open);
+        connect(&open_board_editor, &QAction::triggered, &board_editor_launcher, &BoardEditorLauncher::open);
         return;
     }
     

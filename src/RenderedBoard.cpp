@@ -4,13 +4,15 @@ namespace wf
 {
     RenderedBoard::RenderedBoard(
         BoardType a_board_type,
-        Settings* a_settings, 
+        Settings* a_settings,
         RenderedTile* a_selection,
+        LetterPool* a_letter_pool,
         QWidget* a_parent)
         : QWidget(a_parent)
         , VirtualBoard(a_settings)
         , settings(a_settings)
         , selection(a_selection)
+        , letter_pool(a_letter_pool)
         , type(a_board_type)
     {
         setMouseTracking(true);
@@ -32,7 +34,7 @@ namespace wf
         {
             for (int column = 0; column < grid_dimensions.width(); ++column)
             {
-                RenderedTile* tile = new RenderedTile(settings, selection, type, this);
+                RenderedTile* tile = new RenderedTile(settings, selection, letter_pool, type, this);
                 tile->setGridPosition(column, row);
                 grid.addWidget(tile, row, column);
             }

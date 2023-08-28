@@ -5,9 +5,9 @@ namespace wf
         : QWidget(a_parent)
         , settings(a_settings)
         , game_layout(this)
-        , selection(a_settings, &selection, BoardType::Selection, this, true)
+        , selection(a_settings, &selection, &letter_pool, BoardType::Selection, this, true)
         , header(a_settings, this)
-        , board(BoardType::Board, a_settings, &selection, this)
+        , board(BoardType::Board, a_settings, &selection, &letter_pool, this)
         , proposal_info(a_settings, this)
         , hands(this)
         , buttons(a_settings, this)
@@ -67,245 +67,6 @@ namespace wf
         player_AI_thread.quit();
         player_AI_thread.wait();
         deletePlayers();
-    }
-    
-    void Game::loadLetters()
-    {
-        all_letters.clear();
-
-        if (settings->getCurrentLanguage() == nullptr)
-        {
-            return;
-        }
-
-        for (const auto& letter_data : *settings->getCurrentLanguage()->getLetterList())
-        {
-            for (int n = 0; n < letter_data.count; ++n)
-            {
-                Letter letter{letter_data.letter, letter_data.points};
-                all_letters.push_back(letter);
-            }
-        }
-
-        return;
-    }
-    
-    void Game::placeLetter(int a_column, int a_row, Letter* a_letter)
-    {
-        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
-
-        if (tile == nullptr)
-        {
-            return;
-        }
-
-        tile->placeLetter(a_letter);
-
-        return;
-    }
-    
-    Letter* Game::removeLetter(int a_column, int a_row)
-    {
-        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
-
-        if (tile == nullptr)
-        {
-            return nullptr;
-        }
-
-        return tile->removeLetter();
-    }
-    
-    void Game::placeModifier(int a_column, int a_row, Modifier* a_modifier, bool a_overwrite)
-    {
-        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
-
-        if (tile == nullptr)
-        {
-            return;
-        }
-
-        Modifier* current_modifier = tile->getModifier();
-
-        if (!a_overwrite && current_modifier != nullptr && current_modifier->getType() != ModifierType::None)
-        {
-            return;
-        }
-
-        if (current_modifier != nullptr && current_modifier->getType() == ModifierType::Start)
-        {
-            return;
-        }
-
-        tile->setModifier(a_modifier);
-
-        return;
-    }
-    
-    void Game::placeModifiers(std::vector<Modifier*> a_modifiers)
-    {
-        QSize grid_dimensions = board.getGridDimensions();
-        long unsigned int modifier_index = 0;
-
-        for (int row = 0; row < grid_dimensions.height(); ++row)
-        {
-            for (int column = 0; column < grid_dimensions.width(); ++column)
-            {
-                RenderedTile* tile = board.getTileAtPosition(column, row);
-
-                if (tile == nullptr)
-                {
-                    continue;
-                }
-
-                if (modifier_index < a_modifiers.size())
-                {
-                    tile->setModifier(a_modifiers[modifier_index]);
-                    ++modifier_index;
-                }
-            }
-        }
-
-        return;
-    }
-    
-    void Game::createPlayer(QString a_display_name, PlayerType a_type, QColor a_color, int a_index)
-    {
-        Player* player = nullptr;
-        
-        switch (a_type)
-        {
-            case PlayerType::AI:
-            {
-                player = new PlayerAI
-                (
-                    a_display_name,
-                    a_color,
-                    settings,
-                    &selection,
-                    &board,
-                    &letter_pool,
-                    a_index
-                );
-
-                player->moveToThread(&player_AI_thread);
-
-                break;
-            }
-            case PlayerType::Human:
-            {
-                player = new Player
-                (
-                    a_display_name,
-                    a_type,
-                    a_color,
-                    settings,
-                    &selection,
-                    a_index
-                );
-                
-                break;
-            }
-        }
-
-        hands.addWidget(player->getHandCentered());
-        all_players.push_back(player);
-        return;
-    }
-    
-    void Game::createPlayers()
-    {
-        PlayerSettings* left_player = settings->getLeftPlayer();
-        PlayerSettings* right_player = settings->getRightPlayer();
-        
-        createPlayer(left_player->getName(), left_player->getType(), QColor{128, 0, 0}, 0);
-        createPlayer(right_player->getName(), right_player->getType(), QColor{0, 0, 128}, 1);
-        return;
-    }
-    
-    void Game::deletePlayers()
-    {
-        for (auto player : all_players)
-        {
-            delete player;
-        }
-
-        all_players.clear();
-        return;
-    }
-    
-    void Game::nextPlayer()
-    {
-        if (all_players.empty())
-        {
-            return;
-        }
-
-        all_players[current_player_index]->setTurn(false);
-        displayProposedPlayValue();
-
-        if (isGameOver())
-        {
-            finalisePoints();
-            Player* winning_player = getHighestScoringPlayer();
-
-            if (winning_player != nullptr)
-            {
-                winning_player->declareWinner();
-            }
-            
-            setState(GameState::Finished);
-            hands.setDisabled(true);
-            repaint();
-            saveScores();
-            
-            if (isAIMirror() && settings->isAutoRestartEnabled())
-            {
-                settings->nextTurnApply();
-                scheduleAutoRestart();
-            }
-            else
-            {
-                QMessageBox game_over;
-
-                if (winning_player != nullptr)
-                {
-                    game_over.setText(winning_player->getDisplayName() + " wins!");
-                }
-                else
-                {
-                    game_over.setText("Draw.");
-                }
-                
-                game_over.setIcon(QMessageBox::Icon::Information);
-                game_over.setWindowTitle(" ");
-                game_over.exec();
-            }
-        }
-        else
-        {
-            if (++current_player_index >= all_players.size())
-            {
-                current_player_index = 0;
-            }
-
-            all_players[current_player_index]->fillHand(&letter_pool);
-            all_players[current_player_index]->setTurn(true);
-
-            hands.setCurrentIndex(current_player_index);
-        }
-        
-        settings->nextTurnApply();
-        setCorrectButtonState();
-        showCorrectButtons();
-        repaint();
-
-        if (getState() != GameState::Finished || all_players[current_player_index]->getType() == PlayerType::AI)
-        {
-            emit playAI();
-        }
-
-        return;
     }
     
     void Game::reset()
@@ -635,136 +396,9 @@ namespace wf
         return;
     }
     
-    void Game::initialiseConnections()
-    {
-        connect(&letter_pool, &LetterPool::remainingCountChanged, &buttons, &ButtonPanel::setTileCount);
-        connect(buttons.getPlayButton(), &QPushButton::clicked, this, &Game::playButton);
-        connect(buttons.getPassButton(), &QPushButton::clicked, this, &Game::passButton);
-        connect(buttons.getClearButton(), &QPushButton::clicked, this, &Game::clearButton);
-        connect(buttons.getShuffleButton(), &QPushButton::clicked, this, &Game::shuffleButton);
-        connect(buttons.getSwapButton(), &QPushButton::clicked, this, &Game::swapButton);
-        connect(buttons.getConfirmButton(), &QPushButton::clicked, this, &Game::confirmButton);
-        connect(buttons.getCancelButton(), &QPushButton::clicked, this, &Game::cancelButton);
-        connect(&selection, &RenderedTile::letterAddedRemoved, this, &Game::setCorrectButtonState);
-
-        // Board
-        for (int column = 0; column < board.getGridDimensions().width(); ++column)
-        {
-            for (int row = 0; row < board.getGridDimensions().height(); ++row)
-            {
-                RenderedTile* tile = board.getTileAtPosition(column, row);
-
-                connect(tile, &RenderedTile::proposeLetter, this, &Game::proposeLetter);
-                connect(tile, &RenderedTile::unproposeLetter, this, &Game::unproposeLetter);
-                connect(tile, &RenderedTile::wildcardPlacedOnBoard, this, &Game::assignWildcardLetter);
-            }
-        }
-
-        initialisePlayerConnections();
-
-        return;
-    }
-    
-    void Game::initialisePlayerConnections()
-    {
-        for (auto player : all_players)
-        {
-            // Hands
-            for (int column = 0; column < settings->getHandDimensions().width(); ++column)
-            {
-                for (int row = 0; row < settings->getHandDimensions().height(); ++row)
-                {
-                    RenderedTile* tile = player->getHand()->getTileAtPosition(column, row);
-
-                    connect(tile, &RenderedTile::markForSwap, this, &Game::addToSwapLetters);
-                    connect(tile, &RenderedTile::unmarkForSwap, this, &Game::removeFromSwapLetters);
-                }
-            }
-
-            // Player AI threading
-            if (player->getType() == PlayerType::AI)
-            {
-                PlayerAI* player_ai = dynamic_cast<PlayerAI*>(player);
-
-                connect(this, &Game::playAI, player_ai, &PlayerAI::playIfTurn);
-                connect(this, &Game::cancelAI, player_ai, &PlayerAI::cancelTurn);
-                connect(player_ai, &PlayerAI::playComplete, this, &Game::playButton);
-                connect(player_ai, &PlayerAI::letterPlaced, this, &Game::repaintHandAndBoard);
-                connect(player_ai, &PlayerAI::startSwap, this, &Game::swapButton);
-                connect(player_ai, &PlayerAI::letterMarkedForSwap, this, &Game::repaintHandAndBoard);
-                connect(player_ai, &PlayerAI::swapComplete, this, &Game::confirmButton);
-                connect(player_ai, &PlayerAI::passTurn, this, &Game::passButton);
-            }
-        }
-
-        return;
-    }
-    
-    void Game::mouseMoveEvent(QMouseEvent* a_event)
-    {
-        selection.move(a_event->pos() + QPoint{1, 1});
-        return;
-    }
-    
-    void Game::showCorrectButtons()
-    {
-        if (board.getProposedLetterCount() != 0)
-        {
-            buttons.showPlayClearSwapButtons();
-        }
-        else if (getState() == GameState::Play)
-        {
-            buttons.showPassShuffleSwapButtons();
-        }
-        else if (getState() == GameState::Swap)
-        {
-            buttons.showConfirmCancelButtons();
-        }
-
-        return;
-    }
-    
-    void Game::displayProposedPlayValue()
-    {
-        board.evaluateProposedPlay();
-        proposal_info.setProposedPlay(board.isProposedPlayValid(), board.getProposedPlayPoints());
-        return;
-    }
-    
-    void Game::setState(GameState a_state)
-    {
-        state = a_state;
-
-        switch (state)
-        {
-            case GameState::Play:
-            {
-                board.setDimmedAndDisabled(false);
-                all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Move);
-                break;
-            }
-            case GameState::Swap:
-            {
-                board.setDimmedAndDisabled(true);
-                all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Swap);
-                break;
-            }
-            case GameState::Finished:
-            {
-                board.setDimmedAndDisabled(false);
-                all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Move);
-                break;
-            }
-        }
-
-        header.updateGameState(a_state);
-
-        return;
-    }
-    
     void Game::assignWildcardLetter(RenderedTile* a_tile)
     {
-        if (a_tile->getLetter()->getWildcardText().length() > 0)
+        if (!a_tile->getLetter()->getWildcardText().isEmpty())
         {
             return;
         }
@@ -776,7 +410,7 @@ namespace wf
             this,
             "Wordfeud",
             "Choose letter:",
-            letter_pool.getNonWildcardLetters(),
+            QStringList{letter_pool.getNonWildcardLetters().begin(), letter_pool.getNonWildcardLetters().end()},
             0,
             false,
             &dialog_ok
@@ -847,6 +481,413 @@ namespace wf
         }
 
         repaint();
+
+        return;
+    }
+    
+    void Game::displayProposedPlayValue()
+    {
+        board.evaluateProposedPlay(true);
+        proposal_info.setProposedPlay(board.isProposedPlayValid(), board.getProposedPlayPoints());
+        return;
+    }
+    
+    void Game::mouseMoveEvent(QMouseEvent* a_event)
+    {
+        selection.move(a_event->pos() + QPoint{1, 1});
+        return;
+    }
+    
+    void Game::wheelEvent(QWheelEvent* a_event)
+    {
+        if (selection.getLetter() != nullptr
+        &&  selection.getLetter()->getType() == LetterType::Wildcard)
+        {
+            int delta = a_event->angleDelta().y();
+            Letter* letter = selection.getLetter();
+            QString new_letter;
+
+            // Forward scroll, away from user
+            if (delta > 0)
+            {
+                new_letter = letter_pool.getNonWildcardLetterBefore(letter->getWildcardText());
+            }
+            // Backwards scroll, towards user
+            else if (delta < 0)
+            {
+                new_letter = letter_pool.getNonWildcardLetterAfter(letter->getWildcardText());
+            }
+
+            letter->setWildcardText(new_letter);
+            displayProposedPlayValue();
+            repaint();
+        }
+
+        return;
+    }
+    
+    void Game::loadLetters()
+    {
+        all_letters.clear();
+
+        if (settings->getCurrentLanguage() == nullptr)
+        {
+            return;
+        }
+
+        for (const auto& letter_data : *settings->getCurrentLanguage()->getLetterList())
+        {
+            for (int n = 0; n < letter_data.count; ++n)
+            {
+                Letter letter{letter_data.letter, letter_data.points};
+                all_letters.push_back(letter);
+            }
+        }
+
+        return;
+    }
+    
+    void Game::placeLetter(int a_column, int a_row, Letter* a_letter)
+    {
+        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
+
+        if (tile == nullptr)
+        {
+            return;
+        }
+
+        tile->placeLetter(a_letter);
+
+        return;
+    }
+    
+    Letter* Game::removeLetter(int a_column, int a_row)
+    {
+        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
+
+        if (tile == nullptr)
+        {
+            return nullptr;
+        }
+
+        return tile->removeLetter();
+    }
+    
+    void Game::placeModifier(int a_column, int a_row, Modifier* a_modifier, bool a_overwrite)
+    {
+        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
+
+        if (tile == nullptr)
+        {
+            return;
+        }
+
+        Modifier* current_modifier = tile->getModifier();
+
+        if (!a_overwrite && current_modifier != nullptr && current_modifier->getType() != ModifierType::None)
+        {
+            return;
+        }
+
+        if (current_modifier != nullptr && current_modifier->getType() == ModifierType::Start)
+        {
+            return;
+        }
+
+        tile->setModifier(a_modifier);
+
+        return;
+    }
+    
+    void Game::placeModifiers(std::vector<Modifier*> a_modifiers)
+    {
+        QSize grid_dimensions = board.getGridDimensions();
+        long unsigned int modifier_index = 0;
+
+        for (int row = 0; row < grid_dimensions.height(); ++row)
+        {
+            for (int column = 0; column < grid_dimensions.width(); ++column)
+            {
+                RenderedTile* tile = board.getTileAtPosition(column, row);
+
+                if (tile == nullptr)
+                {
+                    continue;
+                }
+
+                if (modifier_index < a_modifiers.size())
+                {
+                    tile->setModifier(a_modifiers[modifier_index]);
+                    ++modifier_index;
+                }
+            }
+        }
+
+        return;
+    }
+    
+    void Game::createPlayer(QString a_display_name, PlayerType a_type, QColor a_color, int a_index)
+    {
+        Player* player = nullptr;
+        
+        switch (a_type)
+        {
+            case PlayerType::AI:
+            {
+                player = new PlayerAI
+                (
+                    a_display_name,
+                    a_color,
+                    settings,
+                    &selection,
+                    &board,
+                    &letter_pool,
+                    a_index
+                );
+
+                player->moveToThread(&player_AI_thread);
+
+                break;
+            }
+            case PlayerType::Human:
+            {
+                player = new Player
+                (
+                    a_display_name,
+                    a_type,
+                    a_color,
+                    settings,
+                    &selection,
+                    a_index
+                );
+                
+                break;
+            }
+        }
+
+        hands.addWidget(player->getHandCentered());
+        all_players.push_back(player);
+        return;
+    }
+    
+    void Game::createPlayers()
+    {
+        PlayerSettings* left_player = settings->getLeftPlayer();
+        PlayerSettings* right_player = settings->getRightPlayer();
+        
+        createPlayer(left_player->getName(), left_player->getType(), QColor{128, 0, 0}, 0);
+        createPlayer(right_player->getName(), right_player->getType(), QColor{0, 0, 128}, 1);
+        return;
+    }
+    
+    void Game::deletePlayers()
+    {
+        for (auto player : all_players)
+        {
+            delete player;
+        }
+
+        all_players.clear();
+        return;
+    }
+    
+    void Game::nextPlayer()
+    {
+        if (all_players.empty())
+        {
+            return;
+        }
+
+        all_players[current_player_index]->setTurn(false);
+        displayProposedPlayValue();
+
+        if (isGameOver())
+        {
+            finalisePoints();
+            Player* winning_player = getHighestScoringPlayer();
+
+            if (winning_player != nullptr)
+            {
+                winning_player->declareWinner();
+            }
+            
+            setState(GameState::Finished);
+            hands.setDisabled(true);
+            repaint();
+            saveScores();
+            
+            if (isAIMirror() && settings->isAutoRestartEnabled())
+            {
+                settings->nextTurnApply();
+                scheduleAutoRestart();
+            }
+            else
+            {
+                QMessageBox game_over;
+
+                if (winning_player != nullptr)
+                {
+                    game_over.setText(winning_player->getDisplayName() + " wins!");
+                }
+                else
+                {
+                    game_over.setText("Draw.");
+                }
+                
+                game_over.setIcon(QMessageBox::Icon::Information);
+                game_over.setWindowTitle(" ");
+                game_over.exec();
+            }
+        }
+        else
+        {
+            if (++current_player_index >= all_players.size())
+            {
+                current_player_index = 0;
+            }
+
+            all_players[current_player_index]->fillHand(&letter_pool);
+            all_players[current_player_index]->setTurn(true);
+
+            hands.setCurrentIndex(current_player_index);
+        }
+        
+        settings->nextTurnApply();
+        setCorrectButtonState();
+        showCorrectButtons();
+        repaint();
+
+        if (getState() != GameState::Finished || all_players[current_player_index]->getType() == PlayerType::AI)
+        {
+            emit playAI();
+        }
+
+        return;
+    }
+    
+    void Game::initialiseConnections()
+    {
+        connect(&letter_pool, &LetterPool::remainingCountChanged, &buttons, &ButtonPanel::setTileCount);
+        connect(buttons.getPlayButton(), &QPushButton::clicked, this, &Game::playButton);
+        connect(buttons.getPassButton(), &QPushButton::clicked, this, &Game::passButton);
+        connect(buttons.getClearButton(), &QPushButton::clicked, this, &Game::clearButton);
+        connect(buttons.getShuffleButton(), &QPushButton::clicked, this, &Game::shuffleButton);
+        connect(buttons.getSwapButton(), &QPushButton::clicked, this, &Game::swapButton);
+        connect(buttons.getConfirmButton(), &QPushButton::clicked, this, &Game::confirmButton);
+        connect(buttons.getCancelButton(), &QPushButton::clicked, this, &Game::cancelButton);
+        connect(&selection, &RenderedTile::letterAddedRemoved, this, &Game::setCorrectButtonState);
+
+        // Board
+        for (int column = 0; column < board.getGridDimensions().width(); ++column)
+        {
+            for (int row = 0; row < board.getGridDimensions().height(); ++row)
+            {
+                RenderedTile* tile = board.getTileAtPosition(column, row);
+
+                connect(tile, &RenderedTile::proposeLetter, this, &Game::proposeLetter);
+                connect(tile, &RenderedTile::unproposeLetter, this, &Game::unproposeLetter);
+                connect(tile, &RenderedTile::wildcardPlacedOnBoard, this, &Game::assignWildcardLetter);
+                connect(tile, &RenderedTile::wildcardScrolled, this, &Game::displayProposedPlayValue);
+            }
+        }
+
+        initialisePlayerConnections();
+
+        return;
+    }
+    
+    void Game::initialisePlayerConnections()
+    {
+        for (auto player : all_players)
+        {
+            // Hands
+            for (int column = 0; column < settings->getHandDimensions().width(); ++column)
+            {
+                for (int row = 0; row < settings->getHandDimensions().height(); ++row)
+                {
+                    RenderedTile* tile = player->getHand()->getTileAtPosition(column, row);
+
+                    connect(tile, &RenderedTile::markForSwap, this, &Game::addToSwapLetters);
+                    connect(tile, &RenderedTile::unmarkForSwap, this, &Game::removeFromSwapLetters);
+                }
+            }
+
+            // Player AI threading
+            if (player->getType() == PlayerType::AI)
+            {
+                PlayerAI* player_ai = dynamic_cast<PlayerAI*>(player);
+
+                connect(this, &Game::playAI, player_ai, &PlayerAI::playIfTurn);
+                connect(this, &Game::cancelAI, player_ai, &PlayerAI::cancelTurn);
+                connect(player_ai, &PlayerAI::playComplete, this, &Game::playButton);
+                connect(player_ai, &PlayerAI::letterPlaced, this, &Game::repaintHandAndBoard);
+                connect(player_ai, &PlayerAI::startSwap, this, &Game::swapButton);
+                connect(player_ai, &PlayerAI::letterMarkedForSwap, this, &Game::repaintHandAndBoard);
+                connect(player_ai, &PlayerAI::swapComplete, this, &Game::confirmButton);
+                connect(player_ai, &PlayerAI::passTurn, this, &Game::passButton);
+            }
+        }
+
+        return;
+    }
+
+    std::vector<Letter*> Game::getAllLetters()
+    {
+        std::vector<Letter*> letter_pointers;
+
+        for (auto& letter : all_letters)
+        {
+            letter_pointers.push_back(&letter);
+        }
+
+        return letter_pointers;
+    }
+    
+    void Game::showCorrectButtons()
+    {
+        if (board.getProposedLetterCount() != 0)
+        {
+            buttons.showPlayClearSwapButtons();
+        }
+        else if (getState() == GameState::Play)
+        {
+            buttons.showPassShuffleSwapButtons();
+        }
+        else if (getState() == GameState::Swap)
+        {
+            buttons.showConfirmCancelButtons();
+        }
+
+        return;
+    }
+    
+    void Game::setState(GameState a_state)
+    {
+        state = a_state;
+
+        switch (state)
+        {
+            case GameState::Play:
+            {
+                board.setDimmedAndDisabled(false);
+                all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Move);
+                break;
+            }
+            case GameState::Swap:
+            {
+                board.setDimmedAndDisabled(true);
+                all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Swap);
+                break;
+            }
+            case GameState::Finished:
+            {
+                board.setDimmedAndDisabled(false);
+                all_players[current_player_index]->getHand()->setTileInteractMode(TileInteractMode::Move);
+                break;
+            }
+        }
+
+        header.updateGameState(a_state);
 
         return;
     }
@@ -1014,17 +1055,5 @@ namespace wf
     {
         QTimer::singleShot(settings->getAutoRestartDelay() * 1000, this, &Game::triggerAutoRestart);
         return;
-    }
-
-    std::vector<Letter*> Game::getAllLetters()
-    {
-        std::vector<Letter*> letter_pointers;
-
-        for (auto& letter : all_letters)
-        {
-            letter_pointers.push_back(&letter);
-        }
-
-        return letter_pointers;
     }
 }

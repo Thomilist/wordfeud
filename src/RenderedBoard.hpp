@@ -13,6 +13,7 @@
 
 #include "ForwardDeclarations.hpp"
 
+#include "LetterPool.hpp"
 #include "RenderedTile.hpp"
 #include "Settings.hpp"
 #include "VirtualBoard.hpp"
@@ -29,6 +30,7 @@ namespace wf
                 BoardType a_board_type,
                 Settings* a_settings,
                 RenderedTile* a_selection,
+                LetterPool* a_letter_pool,
                 QWidget* a_parent = nullptr);
             ~RenderedBoard();
 
@@ -44,10 +46,12 @@ namespace wf
             void updateBoardSize();
 
             Settings* settings;
+            RenderedTile* selection;
+            LetterPool* letter_pool;
+
             QGridLayout grid;
             QSize tile_size;
             QSize board_size;
-            RenderedTile* selection;
             BoardType type;
             bool dimmed_and_disabled = false;
 

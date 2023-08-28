@@ -13,7 +13,7 @@ namespace wf
         , display_name(a_display_name)
         , type(a_type)
         , name_color(a_color)
-        , hand(BoardType::Hand, a_settings, a_selection)
+        , hand(BoardType::Hand, a_settings, a_selection, nullptr)
         , player_index(a_index)
     {
         hand_size = settings->getHandDimensions();

@@ -245,6 +245,7 @@ target_link_libraries(
     RenderedTile
     Qt5::Widgets
     Letter
+    LetterPool
     Modifier
     Settings
     VirtualTile
@@ -254,6 +255,7 @@ add_library(RenderedBoard RenderedBoard.cpp)
 target_link_libraries(
     RenderedBoard
     Qt5::Widgets
+    LetterPool
     RenderedTile
     Settings
     VirtualBoard

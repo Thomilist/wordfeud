@@ -15,9 +15,9 @@ namespace wf
 
         for (const auto letter : pool)
         {
-            if (letter->getText().length() > 0 && !non_wildcard_letters.contains(letter->getText()))
+            if (!letter->getText().isEmpty() && !non_wildcard_letters.contains(letter->getText()))
             {
-                non_wildcard_letters.append(letter->getText());
+                non_wildcard_letters.insert(letter->getText());
             }
         }
 
@@ -74,9 +74,55 @@ namespace wf
         return count;
     }
     
-    QStringList LetterPool::getNonWildcardLetters() const
+    const std::set<QString>& LetterPool::getNonWildcardLetters() const
     {
         return non_wildcard_letters;
+    }
+    
+    QString LetterPool::getNonWildcardLetterBefore(const QString& a_letter) const
+    {
+        auto position = non_wildcard_letters.find(a_letter);
+
+        // Not found, return empty string
+        if (position == non_wildcard_letters.end())
+        {
+            return "";
+        }
+
+        // Found at first position, return same
+        if (position == non_wildcard_letters.begin())
+        {
+            return a_letter;
+        }
+
+        // Found elsewhere, return previous
+        return *std::prev(position);
+    }
+    
+    QString LetterPool::getNonWildcardLetterAfter(const QString& a_letter) const
+    {
+        // If empty, return first
+        if (a_letter.isEmpty())
+        {
+            return *non_wildcard_letters.begin();
+        }
+        
+        auto position = non_wildcard_letters.find(a_letter);
+
+        // Not found, return empty string
+        if (position == non_wildcard_letters.end())
+        {
+            return "";
+        }
+
+        // Found at last position, return same
+        if (std::next(position) == non_wildcard_letters.end())
+        {
+            return a_letter;
+        }
+
+        // Found elsewhere, return next
+        return *std::next(position);
     }
     
     void LetterPool::insertLetter(Letter* a_letter)

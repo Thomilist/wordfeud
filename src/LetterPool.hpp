@@ -3,10 +3,10 @@
 
 #include <map>
 #include <random>
+#include <set>
 #include <vector>
 
 #include <QObject>
-#include <QStringList>
 
 #include "ForwardDeclarations.hpp"
 
@@ -27,7 +27,9 @@ namespace wf
             [[nodiscard]] Letter* getRandomLetter();
             int getRemainingCount() const;
             int getRemainingWildcardCount() const;
-            QStringList getNonWildcardLetters() const;
+            const std::set<QString>& getNonWildcardLetters() const;
+            QString getNonWildcardLetterBefore(const QString& a_letter) const;
+            QString getNonWildcardLetterAfter(const QString& a_letter) const;
             void insertLetter(Letter* a_letter);
             std::vector<Letter*> getWildcardSubstitutes(Letter* a_letter);
         
@@ -38,7 +40,7 @@ namespace wf
             std::vector<Letter> createWildcardSubstitutes();
 
             std::vector<Letter*> pool;
-            QStringList non_wildcard_letters;
+            std::set<QString> non_wildcard_letters;
             std::map<Letter*, std::vector<Letter>> wildcard_substitutes;
     };
 }

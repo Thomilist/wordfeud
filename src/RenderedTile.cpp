@@ -8,14 +8,16 @@ namespace wf
     RenderedTile::RenderedTile(
         Settings* a_settings,
         RenderedTile* a_selection,
+        LetterPool* a_letter_pool,
         BoardType a_board_type,
         QWidget* a_parent,
         bool a_follows_mouse)
         : QWidget(a_parent)
         , settings(a_settings)
         , selection(a_selection)
-        , follows_mouse(a_follows_mouse)
+        , letter_pool(a_letter_pool)
         , board_type(a_board_type)
+        , follows_mouse(a_follows_mouse)
     {
         switch (board_type)
         {
@@ -70,6 +72,7 @@ namespace wf
 
                 if (letter->getType() == LetterType::Wildcard && letter->getWildcardText().isEmpty())
                 {
+                    repaint();
                     emit wildcardPlacedOnBoard(this);
                 }
 
@@ -412,6 +415,36 @@ namespace wf
         }
 
         repaint();
+        return;
+    }
+    
+    void RenderedTile::wheelEvent(QWheelEvent* a_event)
+    {
+        if (board_type == BoardType::Board
+        &&  getLetter() != nullptr
+        &&  getLetter()->getType() == LetterType::Wildcard
+        &&  selection->getLetter() == nullptr)
+        {
+            int delta = a_event->angleDelta().y();
+            Letter* letter = getLetter();
+            QString new_letter;
+
+            // Forward scroll, away from user
+            if (delta > 0)
+            {
+                new_letter = letter_pool->getNonWildcardLetterBefore(letter->getWildcardText());
+            }
+            // Backwards scroll, towards user
+            else if (delta < 0)
+            {
+                new_letter = letter_pool->getNonWildcardLetterAfter(letter->getWildcardText());
+            }
+
+            letter->setWildcardText(new_letter);
+            emit wildcardScrolled();
+            repaint();
+        }
+
         return;
     }
 }

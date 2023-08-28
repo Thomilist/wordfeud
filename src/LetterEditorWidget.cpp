@@ -6,7 +6,7 @@ namespace wf
     LetterEditorWidget::LetterEditorWidget(Settings* a_settings, QWidget* a_parent)
         : QWidget(a_parent)
         , settings(a_settings)
-        , letter_display(settings, nullptr, BoardType::Display, this)
+        , letter_display(settings, nullptr, nullptr, BoardType::Display, this)
     {
         letter_display.setDisabled(true);
         letter_display.overwriteLetter(&letter);

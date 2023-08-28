@@ -3,6 +3,8 @@
 
 #include <array>
 
+#include <QDebug>
+
 #include <QColor>
 #include <QFont>
 #include <QMouseEvent>
@@ -11,11 +13,13 @@
 #include <QPoint>
 #include <QRect>
 #include <QSize>
+#include <QWheelEvent>
 #include <QWidget>
 
 #include "ForwardDeclarations.hpp"
 
 #include "Letter.hpp"
+#include "LetterPool.hpp"
 #include "Modifier.hpp"
 #include "Settings.hpp"
 #include "VirtualTile.hpp"
@@ -36,6 +40,7 @@ namespace wf
             RenderedTile(
                 Settings* a_settings,
                 RenderedTile* a_selection,
+                LetterPool* a_letter_pool,
                 BoardType a_board_type,
                 QWidget* a_parent = nullptr,
                 bool a_follows_mouse = false);
@@ -57,16 +62,20 @@ namespace wf
             void wildcardPlacedOnBoard(RenderedTile* a_tile);
             void markForSwap(RenderedTile* a_tile);
             void unmarkForSwap(RenderedTile* a_tile);
+            void wildcardScrolled();
 
         private:
             void paintEvent(QPaintEvent* a_event);
             void mousePressEvent(QMouseEvent* a_event);
+            void wheelEvent (QWheelEvent* a_event);
             
             Settings* settings;
-            QSize tile_size;
             RenderedTile* selection;
-            bool follows_mouse;
+            LetterPool* letter_pool;
+
             BoardType board_type;
+            QSize tile_size;
+            bool follows_mouse;
             bool dimmed = false;
             TileInteractMode interact_mode = TileInteractMode::Move;
             bool swap_marking = false;

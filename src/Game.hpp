@@ -21,6 +21,7 @@
 #include <QString>
 #include <QThread>
 #include <QTimer>
+#include <QWheelEvent>
 #include <QWidget>
 
 #include "ForwardDeclarations.hpp"
@@ -82,6 +83,7 @@ namespace wf
             void repaintHandAndBoard();
             void triggerAutoRestart();
             void applySettings();
+            void displayProposedPlayValue();
         
         signals:
             void playAI();
@@ -89,6 +91,9 @@ namespace wf
             void autoRestart();
 
         private:
+            void mouseMoveEvent(QMouseEvent* a_event);
+            void wheelEvent (QWheelEvent* a_event);
+
             void loadLetters();
             void placeLetter(int a_column, int a_row, Letter* a_letter);
             [[nodiscard]] Letter* removeLetter(int a_column, int a_row);
@@ -101,9 +106,7 @@ namespace wf
             void initialiseConnections();
             void initialisePlayerConnections();
             std::vector<Letter*> getAllLetters();
-            void mouseMoveEvent(QMouseEvent* a_event);
             void showCorrectButtons();
-            void displayProposedPlayValue();
             void setState(GameState a_state);
             int swapLetters();
             void clearSwapList();

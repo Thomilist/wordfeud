@@ -1,10 +1,13 @@
 #ifndef __BOARDEDITOR_H__
 #define __BOARDEDITOR_H__
 
+#include <vector>
+
 #include <QCheckBox>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QMouseEvent>
+#include <QPoint>
 #include <QPushButton>
 #include <QWidget>
 
@@ -19,6 +22,7 @@
 #include "VirtualBoard.hpp"
 
 #include "BoardType.hpp"
+#include "Direction.hpp"
 #include "ModifierType.hpp"
 
 namespace wf
@@ -33,6 +37,8 @@ namespace wf
         
         private slots:
             void loadBoard();
+            void highlightTiles(const QPoint& a_position);
+            void unhighlightTiles(const QPoint& a_position);
         
         private:
             void prepare() override;

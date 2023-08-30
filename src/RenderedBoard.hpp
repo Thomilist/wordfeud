@@ -1,6 +1,8 @@
 #ifndef __RENDEREDBOARD_H__
 #define __RENDEREDBOARD_H__
 
+#include <vector>
+
 #include <QWidget>
 #include <QGridLayout>
 #include <QSize>
@@ -14,6 +16,7 @@
 #include "ForwardDeclarations.hpp"
 
 #include "LetterPool.hpp"
+#include "Modifier.hpp"
 #include "RenderedTile.hpp"
 #include "Settings.hpp"
 #include "VirtualBoard.hpp"
@@ -25,6 +28,8 @@ namespace wf
 {
     class RenderedBoard : public QWidget, public VirtualBoard
     {
+        Q_OBJECT
+        
         public:
             RenderedBoard(
                 BoardType a_board_type,
@@ -35,11 +40,18 @@ namespace wf
             ~RenderedBoard();
 
             RenderedTile* getTileAtPosition(int a_column, int a_row);
-            RenderedTile* getTileAtPosition(QPoint a_position);
+            RenderedTile* getTileAtPosition(const QPoint& a_position);
             BoardType getType() const;
             void setDimmedAndDisabled(bool a_state);
             void setTileInteractMode(TileInteractMode a_mode);
+            void clearTileHighlights();
+            const std::vector<RenderedTile*> getHighlightedTiles();
+            void editHighlightedTiles(Qt::MouseButton a_button);
             void reset();
+        
+        signals:
+            void tileEntered(const QPoint& a_position);
+            void tileLeft(const QPoint& a_position);
 
         private:
             void createEmptyGrid();

@@ -464,6 +464,16 @@ namespace wf
         return;
     }
     
+    const QPoint VirtualBoard::mirrorTilePosition(const QPoint& a_position, Direction a_direction)
+    {
+        int mirror_index = (a_direction == Direction::Horisontal ? a_position.x() : a_position.y());
+        int other_index = (a_direction == Direction::Horisontal ? a_position.y() : a_position.x());
+
+        mirror_index = getGridDimensionInDirection(a_direction) - 1 - mirror_index;
+
+        return a_direction == Direction::Horisontal ? QPoint{mirror_index, other_index} : QPoint{other_index, mirror_index};
+    }
+    
     bool VirtualBoard::isPlacementConnectedToStart(VirtualTile* a_tile)
     {
         checked_tiles.push_back(a_tile);

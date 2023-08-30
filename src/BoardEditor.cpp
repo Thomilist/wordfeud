@@ -30,6 +30,8 @@ namespace wf
         createMirroringGroup();
 
         connect(&reset_board_button, &QPushButton::clicked, this, &BoardEditor::loadBoard);
+        connect(&board, &RenderedBoard::tileEntered, this, &BoardEditor::highlightTiles);
+        connect(&board, &RenderedBoard::tileLeft, this, &BoardEditor::unhighlightTiles);
 
         vertical_spacer.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -77,6 +79,66 @@ namespace wf
         }
 
         board.repaint();
+
+        return;
+    }
+    
+    void BoardEditor::highlightTiles(const QPoint& a_position)
+    {
+        std::vector<QPoint> all_mirrored_positions;
+        std::vector<QPoint> vertically_mirrored_positions;
+
+        // First position (original)
+        vertically_mirrored_positions.push_back(a_position);
+
+        // Second position (vertically mirrored)
+        if (mirror_vertical.isChecked())
+        {
+            vertically_mirrored_positions.push_back(board.mirrorTilePosition(a_position, Direction::Vertical));
+        }
+
+        all_mirrored_positions = vertically_mirrored_positions;
+
+        // Third and fourth positions (horisontally mirrored)
+        if (mirror_horisontal.isChecked())
+        {
+            for (const auto& position : vertically_mirrored_positions)
+            {
+                all_mirrored_positions.push_back(board.mirrorTilePosition(position, Direction::Horisontal));
+            }
+        }
+
+        for (const auto& position : all_mirrored_positions)
+        {
+            board.getTileAtPosition(position)->setHighlight(true);
+        }
+
+        return;
+    }
+    
+    void BoardEditor::unhighlightTiles(const QPoint& a_position)
+    {
+        std::vector<QPoint> all_mirrored_positions;
+        std::vector<QPoint> vertically_mirrored_positions;
+
+        // First position (original)
+        vertically_mirrored_positions.push_back(a_position);
+
+        // Second position (vertically mirrored)
+        vertically_mirrored_positions.push_back(board.mirrorTilePosition(a_position, Direction::Vertical));
+
+        all_mirrored_positions = vertically_mirrored_positions;
+
+        // Third and fourth positions (horisontally mirrored)
+        for (const auto position : vertically_mirrored_positions)
+        {
+            all_mirrored_positions.push_back(board.mirrorTilePosition(position, Direction::Horisontal));
+        }
+
+        for (const auto position : all_mirrored_positions)
+        {
+            board.getTileAtPosition(position)->setHighlight(false);
+        }
 
         return;
     }

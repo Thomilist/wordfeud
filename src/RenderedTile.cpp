@@ -161,9 +161,21 @@ namespace wf
         return;
     }
     
-    bool RenderedTile::getSwapMarking()
+    bool RenderedTile::getSwapMarking() const
     {
         return swap_marking;
+    }
+    
+    void RenderedTile::setHighlight(bool a_state)
+    {
+        highlighted = a_state;
+        repaint();
+        return;
+    }
+    
+    bool RenderedTile::getHighlight() const
+    {
+        return highlighted;
     }
     
     void RenderedTile::reset()
@@ -321,6 +333,11 @@ namespace wf
             QRect tile_area{QPoint{0,0}, size()};
             painter.fillRect(tile_area, QColor{0, 0, 0, 100});
         }
+        else if (highlighted && board_type == BoardType::EditableBoard)
+        {
+            QRect tile_area{QPoint{0,0}, size()};
+            painter.fillRect(tile_area, QColor{88, 211, 255, 100});
+        }
 
         return;
     }
@@ -336,6 +353,9 @@ namespace wf
         {
             case BoardType::EditableBoard:
             {
+                emit editableTileClicked(a_event->button());
+                break;
+                
                 switch (a_event->button())
                 {
                     case Qt::LeftButton:
@@ -467,5 +487,16 @@ namespace wf
         }
 
         return;
+    }
+    
+    void RenderedTile::enterEvent(QEvent*)
+    {
+        emit tileEntered(getGridPosition());
+        return;
+    }
+    
+    void RenderedTile::leaveEvent(QEvent*)
+    {
+        emit tileLeft(getGridPosition());
     }
 }

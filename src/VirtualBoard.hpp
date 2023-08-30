@@ -62,6 +62,7 @@ namespace wf
             std::vector<Letter*> clearProposed();
             void discardProposed();
             void invalidateEvaluation();
+            const QPoint mirrorTilePosition(const QPoint& a_position, Direction a_direction);
         
         protected:
             void assignNeighbours();

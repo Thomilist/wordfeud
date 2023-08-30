@@ -31,7 +31,7 @@ namespace wf
             VirtualTile* getNeighbour(TileNeighbour a_index) const;
             void setNeighbour(VirtualTile* a_tile, TileNeighbour a_index);
             void setGridPosition(int a_collumn, int a_row);
-            QPoint getGridPosition() const;
+            const QPoint& getGridPosition() const;
         
         protected:
             Modifier* modifier = nullptr;

@@ -37,6 +37,13 @@ namespace wf
                 RenderedTile* tile = new RenderedTile(settings, selection, letter_pool, type, this);
                 tile->setGridPosition(column, row);
                 grid.addWidget(tile, row, column);
+
+                if (type == BoardType::EditableBoard)
+                {
+                    connect(tile, &RenderedTile::tileEntered, this, &RenderedBoard::tileEntered);
+                    connect(tile, &RenderedTile::tileLeft, this, &RenderedBoard::tileLeft);
+                    connect(tile, &RenderedTile::editableTileClicked, this, &RenderedBoard::editHighlightedTiles);
+                }
             }
         }
     }
@@ -120,7 +127,7 @@ namespace wf
         return tile;
     }
     
-    RenderedTile* RenderedBoard::getTileAtPosition(QPoint a_position)
+    RenderedTile* RenderedBoard::getTileAtPosition(const QPoint& a_position)
     {
         return getTileAtPosition(a_position.x(), a_position.y());
     }
@@ -160,6 +167,76 @@ namespace wf
         return;
     }
     
+    void RenderedBoard::clearTileHighlights()
+    {
+        for (int column = 0; column < getGridDimensions().width(); ++column)
+        {
+            for (int row = 0; row < getGridDimensions().height(); ++row)
+            {
+                getTileAtPosition(column, row)->setHighlight(false);;
+            }
+        }
+
+        return;
+    }
+    
+    void RenderedBoard::editHighlightedTiles(Qt::MouseButton a_button)
+    {
+        Modifier* modifier;
+
+        switch (a_button)
+        {
+            case Qt::LeftButton:
+            {
+                modifier = selection->getModifier();
+                break;
+            }
+            case Qt::RightButton:
+            {
+                modifier = nullptr;
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+
+        for (const auto tile : getHighlightedTiles())
+        {
+            tile->setModifier(modifier);
+            tile->repaint();
+        }
+
+        return;
+    }
+
+    const std::vector<RenderedTile*> RenderedBoard::getHighlightedTiles()
+    {
+        std::vector<RenderedTile*> highlighted_tiles;
+        RenderedTile* tile;
+        
+        for (int column = 0; column < getGridDimensions().width(); ++column)
+        {
+            for (int row = 0; row < getGridDimensions().height(); ++row)
+            {
+                tile = getTileAtPosition(column, row);
+
+                if (tile == nullptr)
+                {
+                    continue;
+                }
+
+                if (tile->getHighlight())
+                {
+                    highlighted_tiles.push_back(tile);
+                }
+            }
+        }
+
+        return highlighted_tiles;
+    }
+    
     void RenderedBoard::reset()
     {
         clearProposed();
@@ -173,5 +250,6 @@ namespace wf
         }
 
         setDimmedAndDisabled(false);
+        return;
     }
 }

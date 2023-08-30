@@ -85,7 +85,7 @@ namespace wf
         return;
     }
     
-    QPoint VirtualTile::getGridPosition() const
+    const QPoint& VirtualTile::getGridPosition() const
     {
         return grid_position;
     }

@@ -4,6 +4,7 @@
 #include <array>
 
 #include <QColor>
+#include <QEvent>
 #include <QFont>
 #include <QMouseEvent>
 #include <QPainter>
@@ -50,7 +51,9 @@ namespace wf
             void setDimmed(bool a_state);
             void setInteractMode(TileInteractMode a_mode);
             void setSwapMarking(bool a_state);
-            bool getSwapMarking();
+            bool getSwapMarking() const;
+            void setHighlight(bool a_state);
+            bool getHighlight() const;
             void reset();
         
         signals:
@@ -61,11 +64,16 @@ namespace wf
             void markForSwap(RenderedTile* a_tile);
             void unmarkForSwap(RenderedTile* a_tile);
             void wildcardScrolled();
+            void tileEntered(const QPoint& a_position);
+            void tileLeft(const QPoint& a_position);
+            void editableTileClicked(Qt::MouseButton a_button);
 
         private:
             void paintEvent(QPaintEvent* a_event);
             void mousePressEvent(QMouseEvent* a_event);
-            void wheelEvent (QWheelEvent* a_event);
+            void wheelEvent(QWheelEvent* a_event);
+            void enterEvent(QEvent* a_event);
+            void leaveEvent(QEvent* a_event);
             
             Settings* settings;
             RenderedTile* selection;
@@ -77,6 +85,7 @@ namespace wf
             bool dimmed = false;
             TileInteractMode interact_mode = TileInteractMode::Move;
             bool swap_marking = false;
+            bool highlighted = false;
             
             // Dimensions, percentage of tile size
             int margin = 5; 

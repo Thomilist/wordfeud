@@ -246,6 +246,17 @@ target_link_libraries(
     Score
 )
 
+add_library(RenderedBoard RenderedBoard.cpp)
+target_link_libraries(
+    RenderedBoard
+    Qt5::Widgets
+    LetterPool
+    Modifier
+    RenderedTile
+    Settings
+    VirtualBoard
+)
+
 add_library(RenderedTile RenderedTile.cpp)
 target_link_libraries(
     RenderedTile
@@ -255,16 +266,6 @@ target_link_libraries(
     Modifier
     Settings
     VirtualTile
-)
-
-add_library(RenderedBoard RenderedBoard.cpp)
-target_link_libraries(
-    RenderedBoard
-    Qt5::Widgets
-    LetterPool
-    RenderedTile
-    Settings
-    VirtualBoard
 )
 
 add_library(Score Score.cpp)

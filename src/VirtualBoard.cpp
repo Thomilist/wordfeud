@@ -41,6 +41,41 @@ namespace wf
         return;
     }
     
+    void VirtualBoard::placeModifiers(ModifierPattern* a_modifier_pattern, bool a_shuffle)
+    {
+        if (getGridDimensions() != a_modifier_pattern->getBoardDimensions())
+        {
+            return;
+        }
+        
+        modifiers = a_modifier_pattern->get(a_shuffle);
+        int index = 0;
+
+        for (int row = 0; row < getGridDimensions().height(); ++row)
+        {
+            for (int column = 0; column < getGridDimensions().width(); ++column)
+            {
+                VirtualTile* tile = getTileAtPosition(column, row);
+
+                if (tile == nullptr)
+                {
+                    continue;
+                }
+
+                if (modifiers[index].getType() == ModifierType::None)
+                {
+                    tile->setModifier(nullptr);
+                }
+                else
+                {
+                    tile->setModifier(&modifiers[index]);
+                }
+
+                ++index;
+            }
+        }
+    }
+    
     void VirtualBoard::importProposedLetters(std::vector<VirtualTile*> a_tiles)
     {
         discardProposed();
@@ -292,7 +327,10 @@ namespace wf
     {
         for (const auto tile : proposed_letters)
         {
-            tile->getModifier()->setUsed(true);
+            if (tile->getModifier() != nullptr)
+            {
+                tile->getModifier()->setUsed(true);
+            }
         }
 
         lockRecentlyLockedLetters();
@@ -310,8 +348,10 @@ namespace wf
             letter->setStatus(LetterStatus::LockedRecently);
             locked_letters.push_back(letter);
 
-            Modifier* modifier = tile->getModifier();
-            modifier->setUsed(true);
+            if (tile->getModifier() != nullptr)
+            {
+                tile->getModifier()->setUsed(true);
+            }
         }
 
         proposed_letters.clear();
@@ -428,7 +468,7 @@ namespace wf
     {
         checked_tiles.push_back(a_tile);
         
-        if (a_tile->getModifier()->getType() == ModifierType::Start)
+        if (a_tile->getModifier() != nullptr && a_tile->getModifier()->getType() == ModifierType::Start)
         {
             return true;
         }
@@ -532,6 +572,7 @@ namespace wf
         }
         // Single-letter words are allowed only as an opener
         else if (   proposed_letters.size() == 1
+                &&  proposed_letters[0]->getModifier() != nullptr
                 &&  proposed_letters[0]->getModifier()->getType() == ModifierType::Start)
         {
             Word word;

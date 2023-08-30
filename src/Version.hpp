@@ -13,6 +13,8 @@
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
 
+#include "ForwardDeclarations.hpp"
+
 #include "UpdateStatus.hpp"
 
 namespace wf

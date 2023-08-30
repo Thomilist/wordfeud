@@ -54,6 +54,11 @@ namespace wf
         grid_layout.addLayout(&body_layout, layout_row++, 0);
         grid_layout.addWidget(&name_group, layout_row++, 0);
         grid_layout.addWidget(&button_box, layout_row++, 0, Qt::AlignCenter);
+
+        setMouseTracking(true);
+        header.setMouseTracking(true);
+        button_box.setMouseTracking(true);
+        name_edit.setMouseTracking(true);
     }
     
     QGridLayout* AbstractEditor::getBodyLayout()
@@ -227,9 +232,12 @@ namespace wf
     
     void AbstractEditor::saveAndClose()
     {
-        promptOverwrite();
-        save();
-        QDialog::accept();
+        if (promptOverwrite() == QMessageBox::Yes)
+        {
+            save();
+            QDialog::accept();
+        }
+        
         return;
     }
     

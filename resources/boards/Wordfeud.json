@@ -1,0 +1,2513 @@
+{
+  "dimensions": {
+    "height": 15,
+    "width": 15
+  },
+  "modifiers": [
+    [
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          32,
+          32,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          32,
+          32,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          192,
+          32,
+          32,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          32,
+          32,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TW",
+        "type": "Word"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          100,
+          100,
+          100,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "Start"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          192,
+          32,
+          32,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          32,
+          32,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TW",
+        "type": "Word"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          128,
+          32,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      }
+    ],
+    [
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          32,
+          32,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          64,
+          192,
+          16,
+          255
+        ],
+        "multiplier": 2,
+        "text": "DL",
+        "type": "Letter"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          192,
+          32,
+          32,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TW",
+        "type": "Word"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "multiplier": 1,
+        "text": "",
+        "type": "None"
+      },
+      {
+        "color": [
+          24,
+          48,
+          255,
+          255
+        ],
+        "multiplier": 3,
+        "text": "TL",
+        "type": "Letter"
+      }
+    ]
+  ]
+}

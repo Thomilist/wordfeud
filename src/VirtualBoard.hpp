@@ -12,6 +12,8 @@
 #include "ForwardDeclarations.hpp"
 
 #include "Letter.hpp"
+#include "Modifier.hpp"
+#include "ModifierPattern.hpp"
 #include "Settings.hpp"
 #include "VirtualTile.hpp"
 #include "Word.hpp"
@@ -29,6 +31,7 @@ namespace wf
             ~VirtualBoard();
 
             void setWithBoard(VirtualBoard* a_board);
+            void placeModifiers(ModifierPattern* a_modifier_pattern, bool a_shuffle = false);
             void importProposedLetters(std::vector<VirtualTile*> a_tiles);
             std::vector<VirtualTile*> getProposedLetters();
             virtual VirtualTile* getTileAtPosition(int a_column, int a_row);
@@ -79,6 +82,7 @@ namespace wf
             void calculateProposedPoints(bool a_use_bias);
 
             Settings* settings;
+            std::vector<Modifier> modifiers;
             std::vector<VirtualTile*> proposed_letters;
             std::vector<Letter*> locked_letters;
             std::vector<VirtualTile*> checked_tiles;

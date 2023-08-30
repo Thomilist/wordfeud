@@ -42,7 +42,7 @@ namespace wf
         loadLetters();
         letter_pool.set(getAllLetters());
 
-        placeModifiers(settings->getModifierPattern()->get());
+        loadModifiers();
 
         for (auto& player : all_players)
         {
@@ -106,8 +106,7 @@ namespace wf
         loadLetters();
         letter_pool.set(getAllLetters());
 
-        settings->getModifierPattern()->reset();
-        placeModifiers(settings->getModifierPattern()->get());
+        loadModifiers();
 
         for (auto& player : all_players)
         {
@@ -573,56 +572,9 @@ namespace wf
         return tile->removeLetter();
     }
     
-    void Game::placeModifier(int a_column, int a_row, Modifier* a_modifier, bool a_overwrite)
+    void Game::loadModifiers()
     {
-        RenderedTile* tile = board.getTileAtPosition(a_column, a_row);
-
-        if (tile == nullptr)
-        {
-            return;
-        }
-
-        Modifier* current_modifier = tile->getModifier();
-
-        if (!a_overwrite && current_modifier != nullptr && current_modifier->getType() != ModifierType::None)
-        {
-            return;
-        }
-
-        if (current_modifier != nullptr && current_modifier->getType() == ModifierType::Start)
-        {
-            return;
-        }
-
-        tile->setModifier(a_modifier);
-
-        return;
-    }
-    
-    void Game::placeModifiers(std::vector<Modifier*> a_modifiers)
-    {
-        QSize grid_dimensions = board.getGridDimensions();
-        long unsigned int modifier_index = 0;
-
-        for (int row = 0; row < grid_dimensions.height(); ++row)
-        {
-            for (int column = 0; column < grid_dimensions.width(); ++column)
-            {
-                RenderedTile* tile = board.getTileAtPosition(column, row);
-
-                if (tile == nullptr)
-                {
-                    continue;
-                }
-
-                if (modifier_index < a_modifiers.size())
-                {
-                    tile->setModifier(a_modifiers[modifier_index]);
-                    ++modifier_index;
-                }
-            }
-        }
-
+        board.placeModifiers(settings->getCurrentModifierPattern());
         return;
     }
     
@@ -1028,7 +980,7 @@ namespace wf
             }
 
             score.dictionary = settings->getCurrentLanguage()->getName();
-            score.modifier_pattern = settings->getModifierPattern()->getDistributionDisplayName();
+            score.modifier_pattern = settings->getCurrentModifierPattern()->getName(settings->getModifierShuffling());
 
             QDateTime datetime = QDateTime::currentDateTime();
             score.timestamp = datetime.toString(RecordTableModel::getDateTimeFormat());

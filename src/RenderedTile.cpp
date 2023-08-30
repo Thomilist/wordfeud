@@ -22,6 +22,8 @@ namespace wf
         switch (board_type)
         {
             case BoardType::Board:
+            case BoardType::EditableBoard:
+            case BoardType::Source:
             {
                 tile_size = settings->getBoardTileSize();
                 break;
@@ -41,11 +43,15 @@ namespace wf
                 tile_size = settings->getDisplayTileSize();
                 break;
             }
+            case BoardType::EditorSelection:
+            {
+                tile_size = settings->getEditorSelectionTileSize();
+                break;
+            }
         }
         
         setMouseTracking(true);
-        setMinimumSize(tile_size);
-        setMaximumSize(tile_size);
+        setFixedSize(tile_size);
         repaint();
     }
     
@@ -87,11 +93,7 @@ namespace wf
 
                 break;
             }
-            case BoardType::Selection:
-            {
-                break;
-            }
-            case BoardType::Display:
+            default:
             {
                 break;
             }
@@ -177,6 +179,7 @@ namespace wf
     void RenderedTile::paintEvent(QPaintEvent*)
     {
         Letter* current_letter = letter;
+        Modifier* current_modifier = modifier;
         
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing, true);
@@ -198,42 +201,10 @@ namespace wf
         // Prepare to fill with no outline
         painter.setPen(Qt::PenStyle::NoPen);
 
-        if (modifier != nullptr && modifier->getType() != ModifierType::None)
+        if (current_modifier != nullptr && current_modifier->getType() != ModifierType::None)
         {
             // Draw background color according to modifier type
-            switch (modifier->getType())
-            {
-                case ModifierType::Start:
-                {
-                    painter.setBrush(QColor{100, 100, 100});
-                    break;
-                }
-                case ModifierType::DoubleLetter:
-                {
-                    painter.setBrush(QColor{64, 192, 16});
-                    break;
-                }
-                case ModifierType::DoubleWord:
-                {
-                    painter.setBrush(QColor{192, 128, 32});
-                    break;
-                }
-                case ModifierType::TripleLetter:
-                {
-                    painter.setBrush(QColor{24, 48, 255});
-                    break;
-                }
-                case ModifierType::TripleWord:
-                {
-                    painter.setBrush(QColor{192, 32, 32});
-                    break;
-                }
-                default:
-                {
-                    return;
-                }
-            }
-
+            painter.setBrush(current_modifier->getColor());
             painter.drawRoundedRect(tile_shape, radius, radius, Qt::RelativeSize);
 
             // Draw text in white
@@ -242,7 +213,7 @@ namespace wf
 
             painter.setPen(QColor{255, 255, 255});
             painter.setFont(monospace_font);
-            painter.drawText(tile_shape, Qt::AlignCenter, modifier->getText());
+            painter.drawText(tile_shape, Qt::AlignCenter, current_modifier->getText());
         }
 
         if (current_letter != nullptr)
@@ -250,12 +221,10 @@ namespace wf
             int alpha = 255;
             
             // Letters on modifiers have transparent backgrounds
-            if (modifier != nullptr)
+            if (current_modifier != nullptr)
             {
-                if (    modifier->getType() == ModifierType::DoubleLetter
-                    ||  modifier->getType() == ModifierType::DoubleWord
-                    ||  modifier->getType() == ModifierType::TripleLetter
-                    ||  modifier->getType() == ModifierType::TripleWord)
+                if (    current_modifier->getType() == ModifierType::Letter
+                    ||  current_modifier->getType() == ModifierType::Word)
                 {
                     alpha = 200;
                 }
@@ -340,7 +309,7 @@ namespace wf
             return;
         }
 
-        if (current_letter == nullptr && (modifier == nullptr || modifier->getType() == ModifierType::None))
+        if (current_letter == nullptr && (current_modifier == nullptr || current_modifier->getType() == ModifierType::None))
         {
             // Draw dark gray background
             painter.setBrush(QColor{50, 50, 50});
@@ -356,61 +325,113 @@ namespace wf
         return;
     }
     
-    void RenderedTile::mousePressEvent(QMouseEvent*)
+    void RenderedTile::mousePressEvent(QMouseEvent* a_event)
     {
         if (follows_mouse)
         {
             return;
         }
 
-        switch (interact_mode)
+        switch (board_type)
         {
-            case TileInteractMode::Move:
+            case BoardType::EditableBoard:
             {
-                if (    letter != nullptr
-                    && (letter->getStatus() == LetterStatus::Locked 
-                    ||  letter->getStatus() == LetterStatus::LockedRecently))
+                switch (a_event->button())
                 {
-                    return;
-                }
-                
-                if (selection->getLetter() == nullptr && letter != nullptr)
-                {
-                    selection->placeLetter(removeLetter());
-                }
-                else if (selection->getLetter() != nullptr && letter == nullptr)
-                {
-                    placeLetter(selection->removeLetter());
-                }
-                else if (selection->getLetter() != nullptr && letter != nullptr)
-                {
-                    Letter* letter_from_tile = removeLetter();
-                    Letter* letter_from_selection = selection->removeLetter();
-
-                    placeLetter(letter_from_selection);
-                    selection->placeLetter(letter_from_tile);
-                }
-                else
-                {
-                    return;
+                    case Qt::LeftButton:
+                    {
+                        setModifier(selection->getModifier());
+                        break;
+                    }
+                    case Qt::RightButton:
+                    {
+                        setModifier(nullptr);
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
                 }
 
                 break;
             }
-            case TileInteractMode::Swap:
+            case BoardType::Source:
             {
-                setSwapMarking(!swap_marking);
-
-                if (swap_marking)
+                switch (a_event->button())
                 {
-                    emit markForSwap(this);
-                }
-                else
-                {
-                    emit unmarkForSwap(this);
+                    case Qt::LeftButton:
+                    {
+                        selection->setModifier(getModifier());
+                        selection->repaint();
+                        break;
+                    }
+                    case Qt::RightButton:
+                    {
+                        selection->setModifier(nullptr);
+                        selection->repaint();
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
                 }
 
                 break;
+            }
+            default:
+            {
+                switch (interact_mode)
+                {
+                    case TileInteractMode::Move:
+                    {
+                        if (    letter != nullptr
+                            && (letter->getStatus() == LetterStatus::Locked 
+                            ||  letter->getStatus() == LetterStatus::LockedRecently))
+                        {
+                            return;
+                        }
+                        
+                        if (selection->getLetter() == nullptr && letter != nullptr)
+                        {
+                            selection->placeLetter(removeLetter());
+                        }
+                        else if (selection->getLetter() != nullptr && letter == nullptr)
+                        {
+                            placeLetter(selection->removeLetter());
+                        }
+                        else if (selection->getLetter() != nullptr && letter != nullptr)
+                        {
+                            Letter* letter_from_tile = removeLetter();
+                            Letter* letter_from_selection = selection->removeLetter();
+
+                            placeLetter(letter_from_selection);
+                            selection->placeLetter(letter_from_tile);
+                        }
+                        else
+                        {
+                            return;
+                        }
+
+                        break;
+                    }
+                    case TileInteractMode::Swap:
+                    {
+                        setSwapMarking(!swap_marking);
+
+                        if (swap_marking)
+                        {
+                            emit markForSwap(this);
+                        }
+                        else
+                        {
+                            emit unmarkForSwap(this);
+                        }
+
+                        break;
+                    }
+                }
             }
         }
 

@@ -34,6 +34,8 @@ target_link_libraries(
     BoardEditor
     Qt5::Widgets
     AbstractEditor
+    RenderedBoard
+    RenderedTile
     Settings
 )
 
@@ -153,13 +155,17 @@ add_library(Modifier Modifier.cpp)
 target_link_libraries(
     Modifier
     Qt5::Widgets
+    nlohmann_json::nlohmann_json
 )
 
 add_library(ModifierPattern ModifierPattern.cpp)
 target_link_libraries(
     ModifierPattern
     Qt5::Widgets
+    nlohmann_json::nlohmann_json
     Modifier
+    VirtualBoard
+    VirtualTile
 )
 
 add_library(Player Player.cpp)
@@ -310,6 +316,7 @@ target_link_libraries(
     VirtualBoard
     Qt5::Widgets
     Letter
+    Modifier
     Settings
     VirtualTile
     Word

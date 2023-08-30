@@ -45,33 +45,45 @@ namespace wf
             void newGameApply();
             void nextTurnApply();
             void immediateApply();
-            void setGridDimensions(int a_rows, int a_collumns);
-            void setTileSize(int a_size);
-            void setLanguage(QString a_language);
+
+            void setLanguage(const QString& a_language);
             Language* getCurrentLanguage();
             Language* getTempLanguage();
-            Language* getLanguage(QString a_language);
+            Language* getLanguage(const QString& a_language);
             std::vector<Language>& getLoadedLanguages();
-            const std::set<QString> getLoadedLanguagesAsString() const;
+            const std::set<QString> getLoadedLanguagesAsStrings() const;
             const std::set<QString> getAvailableLanguagesAsStrings();
             const std::set<QString> getLanguagesToLoadAsStrings();
-            void setLanguagesToLoad(std::set<QString> a_language_names);
+            void setLanguagesToLoad(const std::set<QString>& a_language_names);
             void detectLanguages();
             void createDefaultLanguages();
             void loadLanguages();
+
+            void setModifierPattern(const QString& a_pattern);
+            ModifierPattern* getCurrentModifierPattern();
+            ModifierPattern* getTempModifierPattern();
+            ModifierPattern* getModifierPattern(const QString& a_pattern);
+            const std::vector<ModifierPattern>& getLoadedModifierPatterns();
+            const std::set<QString> getLoadedModifierPatternsAsStrings() const;
+            const std::set<QString> getAvailableModifierPatternsAsStrings();
+            void detectModifierPatterns();
+            void createDefaultModifierPatterns();
+            void loadModifierPatterns();
+            bool getModifierShuffling() const;
+            bool getTempModifierShuffling() const;
+            void setModifierShuffling(bool a_enabled);
+
+            void setGridDimensions(int a_rows, int a_collumns);
+            void setTileSize(int a_size);
             const QSize& getBoardDimensions() const;
             const QSize& getBoardTileSize() const;
             const QSize& getHandDimensions() const;
             const QSize& getHandTileSize() const;
             const QSize& getSelectionTileSize() const;
+            const QSize& getEditorSelectionTileSize() const;
             const QSize& getDisplayTileSize() const;
+            const QSize& getSourceDimensions() const;
             QFont getMonospaceFont() const;
-            ModifierPattern* getModifierPattern();
-            const QString getTempModifierPattern() const;
-            void setModifierPattern(QString a_pattern);
-            bool getModifierShuffling() const;
-            bool getTempModifierShuffling() const;
-            void setModifierShuffling(bool a_enabled);
             PlayerSettings* getLeftPlayer();
             PlayerSettings* getRightPlayer();
             PlayerSettings* getPlayer(int a_index);
@@ -108,12 +120,18 @@ namespace wf
             std::vector<Language> loaded_languages;
             std::set<QString> loaded_languages_names;
             std::set<QString> available_languages_names;
+            QStringList default_modifier_patterns{"Scrabble", "Wordfeud"};
+            std::vector<ModifierPattern> loaded_modifier_patterns;
+            std::set<QString> loaded_modifier_patterns_names;
+            std::set<QString> available_modifier_patterns_names;
             QSize board_dimensions{15,15};
             QSize board_tile_size{42,42};
             QSize hand_dimensions{7,1};
             QSize hand_tile_size{90,90};
             QSize selection_tile_size{64,64};
+            QSize editor_selection_tile_size{30,30};
             QSize display_tile_size{200,200};
+            QSize source_dimensions{5,5};
             QFont monospace_font;
             std::set<QString> random_names;
             const int minimum_ai_difficulty = 1;
@@ -122,7 +140,8 @@ namespace wf
 
             // User-facing settings
             Language* current_language = nullptr;
-            ModifierPattern modifier_pattern;
+            ModifierPattern* current_modifier_pattern = nullptr;
+            bool shuffle_modifiers;
             QString letter_colouring;
 
             PlayerSettings left_player;
@@ -136,8 +155,8 @@ namespace wf
             std::set<QString> languages_to_load;
 
             // Temporary user-facing settings
-            Language* current_language_temp;
-            QString modifier_pattern_temp;
+            Language* current_language_temp = nullptr;
+            ModifierPattern* current_modifier_pattern_temp = nullptr;
             bool shuffle_modifiers_temp;
             QString letter_colouring_temp;
 

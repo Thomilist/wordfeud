@@ -7,10 +7,8 @@ namespace wf
     {
         None,
         Start,
-        DoubleLetter,
-        TripleLetter,
-        DoubleWord,
-        TripleWord
+        Letter,
+        Word
     };
 }
 

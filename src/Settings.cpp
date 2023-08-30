@@ -46,8 +46,8 @@ namespace wf
             setValue("common/dictionary", getCurrentLanguage()->getName());
         }
         
-        setValue("common/modifiers", getModifierPattern()->getDistributionAsText());
-        setValue("common/shuffle_modifiers", getModifierPattern()->getModifierShuffling());
+        setValue("common/modifiers", getCurrentModifierPattern()->getName());
+        setValue("common/shuffle_modifiers", getModifierShuffling());
         setValue("common/letter_colouring", getLetterColouring());
 
         // Save left player settings
@@ -127,6 +127,18 @@ namespace wf
             loadLanguages();
         }
 
+        // Load modifier patterns
+        detectModifierPatterns();
+
+        if (available_modifier_patterns_names.empty())
+        {
+            createDefaultModifierPatterns();
+        }
+        else
+        {
+            loadModifierPatterns();
+        }
+
         // Load random names
         loadRandomNames();
 
@@ -182,9 +194,9 @@ namespace wf
     
     void Settings::newGameApply()
     {
-        getModifierPattern()->setDistribution(modifier_pattern_temp);
-        getModifierPattern()->setModifierShuffling(shuffle_modifiers_temp);
         current_language = current_language_temp;
+        current_modifier_pattern = current_modifier_pattern_temp;
+        shuffle_modifiers = shuffle_modifiers_temp;
 
         getLeftPlayer()->apply();
         getRightPlayer()->apply();
@@ -212,23 +224,7 @@ namespace wf
         return;
     }
     
-    void Settings::setGridDimensions(int a_rows, int a_collumns)
-    {
-        board_dimensions.setHeight(a_rows);
-        board_dimensions.setWidth(a_collumns);
-
-        return;
-    }
-    
-    void Settings::setTileSize(int size)
-    {
-        board_tile_size.setHeight(size);
-        board_tile_size.setWidth(size);
-
-        return;
-    }
-    
-    void Settings::setLanguage(QString a_language)
+    void Settings::setLanguage(const QString& a_language)
     {
         for (auto& language : loaded_languages)
         {
@@ -257,7 +253,7 @@ namespace wf
         return current_language_temp;
     }
     
-    Language* Settings::getLanguage(QString a_language)
+    Language* Settings::getLanguage(const QString& a_language)
     {
         for (auto& language : loaded_languages)
         {
@@ -275,7 +271,7 @@ namespace wf
         return loaded_languages;
     }
     
-    const std::set<QString> Settings::getLoadedLanguagesAsString() const
+    const std::set<QString> Settings::getLoadedLanguagesAsStrings() const
     {
         return loaded_languages_names;
     }
@@ -291,7 +287,7 @@ namespace wf
         return languages_to_load;
     }
     
-    void Settings::setLanguagesToLoad(std::set<QString> a_language_names)
+    void Settings::setLanguagesToLoad(const std::set<QString>& a_language_names)
     {
         languages_to_load = a_language_names;
         return;
@@ -376,8 +372,169 @@ namespace wf
                 loaded_languages.push_back(Language(language_name));
                 loaded_languages_names.insert(language_name);
             }
+
             emit incrementLoadingProgress();
         }
+
+        return;
+    }
+    
+    void Settings::setModifierPattern(const QString& a_pattern)
+    {
+        for (auto& modifier_pattern : loaded_modifier_patterns)
+        {
+            if (modifier_pattern.getName() == a_pattern)
+            {
+                current_modifier_pattern_temp = &modifier_pattern;
+                return;
+            }
+        }
+
+        if (!loaded_modifier_patterns.empty())
+        {
+            current_modifier_pattern_temp = &loaded_modifier_patterns.at(0);
+        }
+
+        return;
+    }
+    
+    ModifierPattern* Settings::getCurrentModifierPattern()
+    {
+        return current_modifier_pattern;
+    }
+    
+    ModifierPattern* Settings::getTempModifierPattern()
+    {
+        return current_modifier_pattern_temp;
+    }
+    
+    ModifierPattern* Settings::getModifierPattern(const QString& a_pattern)
+    {
+        for (auto& modifier_pattern : loaded_modifier_patterns)
+        {
+            if (modifier_pattern.getName() == a_pattern)
+            {
+                return &modifier_pattern;
+            }
+        }
+
+        return nullptr;
+    }
+    
+    const std::vector<ModifierPattern>& Settings::getLoadedModifierPatterns()
+    {
+        return loaded_modifier_patterns;
+    }
+    
+    const std::set<QString> Settings::getLoadedModifierPatternsAsStrings() const
+    {
+        return loaded_modifier_patterns_names;
+    }
+    
+    const std::set<QString> Settings::getAvailableModifierPatternsAsStrings()
+    {
+        detectModifierPatterns();
+        return available_modifier_patterns_names;
+    }
+    
+    void Settings::detectModifierPatterns()
+    {
+        available_modifier_patterns_names.clear();
+        
+        QDir directory{"resources/boards/"};
+
+        if (!directory.exists())
+        {
+            QDir().mkpath(directory.absolutePath());
+        }
+
+        QDirIterator modifier_pattern_directory{directory};
+        QString modifier_pattern_path;
+        QString modifier_pattern_name;
+
+        while (modifier_pattern_directory.hasNext())
+        {
+            modifier_pattern_path = modifier_pattern_directory.next();
+            QFileInfo file_info{modifier_pattern_path};
+
+            if (!file_info.isFile())
+            {
+                continue;
+            }
+
+            modifier_pattern_name = file_info.baseName();
+
+            if (!QFile::exists(modifier_pattern_path))
+            {
+                continue;
+            }
+
+            available_modifier_patterns_names.insert(modifier_pattern_name);
+        }
+
+        return;
+    }
+    
+    void Settings::createDefaultModifierPatterns()
+    {
+        emit updateLoadingText(QString() % "Loading boards...");
+        
+        for (QString modifier_pattern_name : default_modifier_patterns)
+        {
+            ModifierPattern modifier_pattern;
+            modifier_pattern.loadFromJSON(":/boards/" % modifier_pattern_name % ".json");
+            modifier_pattern.setName(modifier_pattern_name);
+            loaded_modifier_patterns.push_back(modifier_pattern);
+        }
+
+        emit incrementLoadingProgress();
+
+        return;
+    }
+    
+    void Settings::loadModifierPatterns()
+    {
+        emit updateLoadingText(QString() % "Loading boards...");
+        
+        for (auto modifier_pattern_name : available_modifier_patterns_names)
+        {
+            loaded_modifier_patterns.push_back(ModifierPattern(modifier_pattern_name));
+            loaded_modifier_patterns_names.insert(modifier_pattern_name);
+        }
+
+        emit incrementLoadingProgress();
+
+        return;
+    }
+    
+    bool Settings::getModifierShuffling() const
+    {
+        return shuffle_modifiers;
+    }
+    
+    bool Settings::getTempModifierShuffling() const
+    {
+        return shuffle_modifiers_temp;
+    }
+    
+    void Settings::setModifierShuffling(bool a_enabled)
+    {
+        shuffle_modifiers_temp = a_enabled;
+        return;
+    }
+    
+    void Settings::setGridDimensions(int a_rows, int a_collumns)
+    {
+        board_dimensions.setHeight(a_rows);
+        board_dimensions.setWidth(a_collumns);
+
+        return;
+    }
+    
+    void Settings::setTileSize(int size)
+    {
+        board_tile_size.setHeight(size);
+        board_tile_size.setWidth(size);
 
         return;
     }
@@ -407,46 +564,24 @@ namespace wf
         return selection_tile_size;
     }
     
+    const QSize& Settings::getEditorSelectionTileSize() const
+    {
+        return editor_selection_tile_size;
+    }
+    
     const QSize& Settings::getDisplayTileSize() const
     {
         return display_tile_size;
     }
     
+    const QSize& Settings::getSourceDimensions() const
+    {
+        return source_dimensions;
+    }
+    
     QFont Settings::getMonospaceFont() const
     {
         return monospace_font;
-    }
-    
-    ModifierPattern* Settings::getModifierPattern()
-    {
-        return &modifier_pattern;
-    }
-    
-    const QString Settings::getTempModifierPattern() const
-    {
-        return modifier_pattern_temp;
-    }
-    
-    void Settings::setModifierPattern(QString a_pattern)
-    {
-        modifier_pattern_temp = a_pattern;
-        return;
-    }
-    
-    bool Settings::getModifierShuffling() const
-    {
-        return modifier_pattern.getModifierShuffling();
-    }
-    
-    bool Settings::getTempModifierShuffling() const
-    {
-        return shuffle_modifiers_temp;
-    }
-    
-    void Settings::setModifierShuffling(bool a_enabled)
-    {
-        shuffle_modifiers_temp = a_enabled;
-        return;
     }
     
     PlayerSettings* Settings::getLeftPlayer()

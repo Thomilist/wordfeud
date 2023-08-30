@@ -218,7 +218,6 @@ namespace wf
 
         for (auto language : settings->getLoadedLanguages())
         {
-            
             language_dropdown.addItem(language.getName());
 
             if (language.getName() == settings->getTempLanguage()->getName())
@@ -239,11 +238,11 @@ namespace wf
 
         int index = 0;
 
-        for (auto modifier_distribution : settings->getModifierPattern()->getAllDistributions())
+        for (auto modifier_distribution : settings->getLoadedModifierPatterns())
         {
-            modifier_distribution_dropdown.addItem(modifier_distribution);
+            modifier_distribution_dropdown.addItem(modifier_distribution.getName());
 
-            if (modifier_distribution == settings->getTempModifierPattern())
+            if (modifier_distribution.getName() == settings->getTempModifierPattern()->getName())
             {
                 modifier_distribution_dropdown.setCurrentIndex(index);
             }
@@ -531,7 +530,7 @@ namespace wf
 
         for (int index = 0; index < modifier_distribution_dropdown.count(); ++index)
         {
-            if (modifier_distribution_dropdown.itemText(index) == settings->getTempModifierPattern())
+            if (modifier_distribution_dropdown.itemText(index) == settings->getTempModifierPattern()->getName())
             {
                 modifier_distribution_dropdown.setCurrentIndex(index);
                 break;

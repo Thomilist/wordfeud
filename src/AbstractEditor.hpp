@@ -31,6 +31,8 @@ namespace wf
 {
     class AbstractEditor : public QDialog
     {
+        Q_OBJECT
+        
         public:
             virtual ~AbstractEditor() = default;
         

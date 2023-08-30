@@ -41,7 +41,7 @@ namespace wf
 
     void StartupProgressDialog::updateMaximum()
     {
-        dialog.setMaximum(language_count + name_count + other_settings_count + the_rest_count);
+        dialog.setMaximum(language_count + modifier_pattern_count + name_count + other_settings_count + the_rest_count);
         return;
     }
 }

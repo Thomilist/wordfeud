@@ -46,6 +46,7 @@ namespace wf
         switch (type)
         {
             case BoardType::Board:
+            case BoardType::EditableBoard:
             {
                 grid_dimensions = settings->getBoardDimensions();
                 tile_size = settings->getBoardTileSize();
@@ -59,17 +60,29 @@ namespace wf
             }
             case BoardType::Selection:
             {
-                grid_dimensions.setHeight(0);
-                grid_dimensions.setWidth(0);
+                grid_dimensions.setHeight(1);
+                grid_dimensions.setWidth(1);
                 tile_size = settings->getSelectionTileSize();
                 break;
             }
             case BoardType::Display:
             {
-                grid_dimensions.setHeight(0);
-                grid_dimensions.setWidth(0);
+                grid_dimensions.setHeight(1);
+                grid_dimensions.setWidth(1);
                 tile_size = settings->getDisplayTileSize();
                 break;
+            }
+            case BoardType::Source:
+            {
+                grid_dimensions = settings->getSourceDimensions();
+                tile_size = settings->getBoardTileSize();
+                break;
+            }
+            case BoardType::EditorSelection:
+            {
+                grid_dimensions.setHeight(1);
+                grid_dimensions.setWidth(1);
+                tile_size = settings->getEditorSelectionTileSize();
             }
         }
         

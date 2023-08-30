@@ -1,6 +1,8 @@
 #ifndef __BOARDEDITORLAUNCHER_H__
 #define __BOARDEDITORLAUNCHER_H__
 
+#include <QDir>
+#include <QFile>
 #include <QString>
 #include <QWidget>
 
@@ -25,6 +27,8 @@ namespace wf
             void deleteSelected() override;
             void updateButtonState() override;
             void repopulateDropdown() override;
+
+            bool using_internal_modifier_patterns = false;
     };
 }
 

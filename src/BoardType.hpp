@@ -8,7 +8,10 @@ namespace wf
         Board,
         Hand,
         Selection,
-        Display
+        Display,
+        Source,
+        EditableBoard,
+        EditorSelection
     };
 }
 

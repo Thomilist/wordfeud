@@ -31,6 +31,7 @@ namespace wf
             
             int progress = 0;
             int language_count;
+            int modifier_pattern_count = 1;
             int name_count = 1;
             int other_settings_count = 1;
             int the_rest_count = 1;

@@ -26,20 +26,20 @@ namespace wf
     {
         public:
             Language();
-            Language(QString a_language);
+            Language(const QString& a_language);
             ~Language();
             friend bool operator<(Language& a_first, Language& a_second);
 
-            static QString getPath(QString a_language);
-            static QString getWordListPath(QString a_language);
-            static QString getBiasedWordListPath(QString a_language);
-            static QString getLetterListPath(QString a_language);
+            static const QString getPath(const QString& a_language);
+            static const QString getWordListPath(const QString& a_language);
+            static const QString getBiasedWordListPath(const QString& a_language);
+            static const QString getLetterListPath(const QString& a_language);
 
             const QString getPath() const;
             const QString getWordListPath() const;
             const QString getBiasedWordListPath() const;
             const QString getLetterListPath() const;
-            bool isInternal();
+            bool isInternal() const;
             void setInternal(bool a_state);
             void setLetterList(std::vector<LetterData>* a_letter_list);
             std::vector<LetterData>* getLetterList();
@@ -48,15 +48,15 @@ namespace wf
             bool isInBiasedWordList(QString a_word);
             bool hasBiasedWords();
             const QString& getName() const;
-            void setName(QString a_name);
-            void loadLanguage(QString a_language);
-            void loadLettersFromFile(QString a_file_path);
-            void loadWordListFromFilePlain(QString a_file_path, bool a_load_biased_words = false);
-            void loadWordListFromFileCOR(QString a_file_path);
+            void setName(const QString& a_name);
+            void loadLanguage(const QString& a_language);
+            void loadLettersFromFile(const QString& a_file_path);
+            void loadWordListFromFilePlain(const QString& a_file_path, bool a_load_biased_words = false);
+            void loadWordListFromFileCOR(const QString& a_file_path);
             void exportWordList(bool a_export_biased_words = false);
-            void exportWordList(QString a_file_path, bool a_export_biased_words = false);
+            void exportWordList(const QString& a_file_path, bool a_export_biased_words = false);
             void exportLetterList();
-            void exportLetterList(QString a_file_path);
+            void exportLetterList(const QString& a_file_path);
             void addLetter(LetterData a_letter_data);
             bool removeLetter(size_t a_index);
             void removeAllLetters();

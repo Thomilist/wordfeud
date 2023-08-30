@@ -313,7 +313,7 @@ namespace wf
                 tile = live_board->getTileAtPosition(column, row);
 
                 // A column or row is relevant if it is the start tile or a letter is on or adjacent to it
-                if (tile->getModifier()->getType() == ModifierType::Start)
+                if (tile->getModifier() != nullptr && tile->getModifier()->getType() == ModifierType::Start)
                 {
                     relevant_collumns.insert(column);
                     relevant_rows.insert(row);
@@ -417,7 +417,7 @@ namespace wf
             return 0;
         }
 
-        if (a_tile->getModifier()->getType() == ModifierType::Start)
+        if (a_tile->getModifier() != nullptr && a_tile->getModifier()->getType() == ModifierType::Start)
         {
             return 1;
         }

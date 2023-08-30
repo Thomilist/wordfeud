@@ -4,7 +4,7 @@ namespace wf
     Language::Language()
     { }
     
-    Language::Language(QString a_language)
+    Language::Language(const QString& a_language)
     {
         setName(a_language);
         loadLanguage(a_language);
@@ -13,22 +13,22 @@ namespace wf
     Language::~Language()
     { }
     
-    QString Language::getPath(QString a_language)
+    const QString Language::getPath(const QString& a_language)
     {
         return QString() % "resources/dictionaries/" % a_language % "/";
     }
     
-    QString Language::getWordListPath(QString a_language)
+    const QString Language::getWordListPath(const QString& a_language)
     {
         return QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-words.txt";
     }
     
-    QString Language::getBiasedWordListPath(QString a_language)
+    const QString Language::getBiasedWordListPath(const QString& a_language)
     {
         return QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-biased-words.txt";
     }
     
-    QString Language::getLetterListPath(QString a_language)
+    const QString Language::getLetterListPath(const QString& a_language)
     {
         return QString() % "resources/dictionaries/" % a_language % "/" % a_language % "-letters.csv";
     }
@@ -60,7 +60,7 @@ namespace wf
         return letter_list_path;
     }
     
-    bool Language::isInternal()
+    bool Language::isInternal() const
     {
         return internal;
     }
@@ -113,13 +113,13 @@ namespace wf
         return language_name;
     }
     
-    void Language::setName(QString a_name)
+    void Language::setName(const QString& a_name)
     {
         language_name = a_name;
         return;
     }
     
-    void Language::loadLanguage(QString a_language)
+    void Language::loadLanguage(const QString& a_language)
     {
         QString letters_path{getLetterListPath(a_language)};
         QString words_path{getWordListPath(a_language)};
@@ -141,7 +141,7 @@ namespace wf
         return;
     }
     
-    void Language::loadLettersFromFile(QString a_file_path)
+    void Language::loadLettersFromFile(const QString& a_file_path)
     {
         QFile letter_file{a_file_path};
 
@@ -179,7 +179,7 @@ namespace wf
         return;
     }
     
-    void Language::loadWordListFromFilePlain(QString a_file_path, bool a_load_biased_words)
+    void Language::loadWordListFromFilePlain(const QString& a_file_path, bool a_load_biased_words)
     {
         QFile word_list_file{a_file_path};
 
@@ -215,7 +215,7 @@ namespace wf
         return;
     }
     
-    void Language::loadWordListFromFileCOR(QString a_file_path)
+    void Language::loadWordListFromFileCOR(const QString& a_file_path)
     {
         QFile word_list_file{a_file_path};
 
@@ -250,17 +250,17 @@ namespace wf
     {
         if (a_export_biased_words)
         {
-            exportWordList("resources/export/" + language_name + "_biased_words_export.txt", true);
+            exportWordList(QString() % "resources/export/dictionaries/" % language_name % "/" % language_name % "_biased_words_export.txt", true);
         }
         else
         {
-            exportWordList("resources/export/" + language_name + "_words_export.txt");
+            exportWordList(QString() % "resources/export/dictionaries/" % language_name % "/" % language_name % "_words_export.txt");
         }
         
         return;
     }
     
-    void Language::exportWordList(QString a_file_path, bool a_export_biased_words)
+    void Language::exportWordList(const QString& a_file_path, bool a_export_biased_words)
     {
         QFile export_file{a_file_path};
         QFileInfo export_file_info{export_file};
@@ -289,11 +289,11 @@ namespace wf
     
     void Language::exportLetterList()
     {
-        exportLetterList("resources/export/" + language_name + "_letters_export.txt");
+        exportLetterList(QString() % "resources/export/dictionaries/" % language_name % "/" % language_name % "_letters_export.txt");
         return;
     }
     
-    void Language::exportLetterList(QString a_file_path)
+    void Language::exportLetterList(const QString& a_file_path)
     {
         QFile export_file{a_file_path};
         QFileInfo export_file_info{export_file};

@@ -31,6 +31,8 @@ namespace wf
 {
     class DictionaryEditor : public AbstractEditor
     {
+        Q_OBJECT
+        
         public:
             DictionaryEditor(Settings* a_settings, QWidget* a_parent = nullptr);
             ~DictionaryEditor();

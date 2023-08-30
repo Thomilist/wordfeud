@@ -3,8 +3,6 @@
 
 #include <array>
 
-#include <QDebug>
-
 #include <QColor>
 #include <QFont>
 #include <QMouseEvent>

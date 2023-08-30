@@ -37,25 +37,9 @@ namespace wf
             Modifier* modifier = tile->getModifier();
             int letter_value = letter->getPoints();
 
-            if (!modifier->isUsed())
+            if (modifier != nullptr && !modifier->isUsed() && (modifier->getType() == ModifierType::Letter))
             {
-                switch (modifier->getType())
-                {
-                    case ModifierType::DoubleLetter:
-                    {
-                        letter_value *= 2;
-                        break;
-                    }
-                    case ModifierType::TripleLetter:
-                    {
-                        letter_value *= 3;
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
+                letter_value *= modifier->getMultiplier();
             }
 
             points += letter_value;
@@ -66,25 +50,9 @@ namespace wf
         {
             Modifier* modifier = tile->getModifier();
 
-            if (!modifier->isUsed())
+            if (modifier != nullptr && !modifier->isUsed() && (modifier->getType() == ModifierType::Word))
             {
-                switch (modifier->getType())
-                {
-                    case ModifierType::DoubleWord:
-                    {
-                        points *= 2;
-                        break;
-                    }
-                    case ModifierType::TripleWord:
-                    {
-                        points *= 3;
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
+                points *= modifier->getMultiplier();
             }
         }
 

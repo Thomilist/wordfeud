@@ -97,8 +97,7 @@ namespace wf
             void loadLetters();
             void placeLetter(int a_column, int a_row, Letter* a_letter);
             [[nodiscard]] Letter* removeLetter(int a_column, int a_row);
-            void placeModifier(int a_column, int a_row, Modifier* a_modifier, bool a_overwrite = false);
-            void placeModifiers(std::vector<Modifier*> a_modifiers);
+            void loadModifiers();
             void createPlayer(QString a_display_name, PlayerType a_type, QColor a_color, int a_index);
             void createPlayers();
             void deletePlayers();
@@ -117,12 +116,6 @@ namespace wf
             bool isAIMirror();
             void scheduleAutoRestart();
 
-            GameState state = GameState::Play;
-            LetterPool letter_pool;
-            std::vector<Letter> all_letters;
-            std::vector<Player*> all_players;
-            std::vector<RenderedTile*> swap_letters;
-            long unsigned int current_player_index = 0;
             Settings* settings;
             QGridLayout game_layout;
             RenderedTile selection;
@@ -132,6 +125,12 @@ namespace wf
             QStackedWidget hands;
             ButtonPanel buttons;
             std::default_random_engine rng;
+            GameState state = GameState::Play;
+            LetterPool letter_pool;
+            std::vector<Letter> all_letters;
+            std::vector<RenderedTile*> swap_letters;
+            std::vector<Player*> all_players;
+            long unsigned int current_player_index = 0;
             int consecutive_passes = 0;
             QThread player_AI_thread;
             RecordTableModel record_tracker;

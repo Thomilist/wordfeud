@@ -4,6 +4,8 @@
     <file>dictionaries/Danish/Danish-words.txt</file>
     <file>dictionaries/English/English-letters.csv</file>
     <file>dictionaries/English/English-words.txt</file>
+    <file>boards/Scrabble.json</file>
+    <file>boards/Wordfeud.json</file>
     <file>fonts/NotoSansMono-Regular.ttf</file>
     <file>icon/icon.ico</file>
 </qresource>

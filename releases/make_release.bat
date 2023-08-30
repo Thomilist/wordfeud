@@ -55,6 +55,9 @@ xcopy %project_dir%\resources\names\ %release_dir%\resources\names\ /S /E
 echo Copying dictionaries...
 xcopy %project_dir%\resources\dictionaries\ %release_dir%\resources\dictionaries\ /S /E
 
+echo Copying boards...
+xcopy %project_dir%\resources\boards\ %release_dir%\resources\boards\ /S /E
+
 echo Compressing release...
 %rar% a -ep1 -afzip %release_dir%\..\%version_name%.zip %release_dir%
 move %release_dir%\..\%version_name%.zip %release_dir%

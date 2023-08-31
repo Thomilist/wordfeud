@@ -13,7 +13,6 @@ namespace wf
             a_parent)
     {
         qRegisterMetaType<Score>("Score");
-        qRegisterMetaTypeStreamOperators<Score>("Score");
         load();
     }
     

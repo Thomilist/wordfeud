@@ -355,26 +355,6 @@ namespace wf
             {
                 emit editableTileClicked(a_event->button());
                 break;
-                
-                switch (a_event->button())
-                {
-                    case Qt::LeftButton:
-                    {
-                        setModifier(selection->getModifier());
-                        break;
-                    }
-                    case Qt::RightButton:
-                    {
-                        setModifier(nullptr);
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-
-                break;
             }
             case BoardType::Source:
             {
@@ -489,7 +469,7 @@ namespace wf
         return;
     }
     
-    void RenderedTile::enterEvent(QEvent*)
+    void RenderedTile::enterEvent(QEnterEvent*)
     {
         emit tileEntered(getGridPosition());
         return;
@@ -498,5 +478,6 @@ namespace wf
     void RenderedTile::leaveEvent(QEvent*)
     {
         emit tileLeft(getGridPosition());
+        return;
     }
 }

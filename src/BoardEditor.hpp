@@ -45,7 +45,7 @@ namespace wf
             void prepare() override;
             void save() override;
 
-            void mouseMoveEvent(QMouseEvent* a_event);
+            void mouseMoveEvent(QMouseEvent* a_event) override;
             void createModifierPalette();
             void createStandardModifiers();
             void addCustomModifier(Modifier a_modifier);

@@ -20,7 +20,7 @@ namespace wf
     {
         size = QSize{
             settings->getHandDimensions().width() * settings->getHandTileSize().width(),
-            settings->getHandDimensions().height() * settings->getHandTileSize().height() / 2
+            settings->getHandDimensions().height() * settings->getHandTileSize().height() * 55 / 100
         };
 
         button_width = size.width() / 4;

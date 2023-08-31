@@ -20,6 +20,9 @@ namespace wf
         hand_layout.addWidget(&hand, 0, 0, Qt::AlignCenter);
         hand_widget.setLayout(&hand_layout);
         hand_widget.setMouseTracking(true);
+
+        hand_layout.setSpacing(0);
+        hand_layout.setContentsMargins(0,0,0,0);
     }
     
     Player::~Player()

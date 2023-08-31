@@ -5,6 +5,7 @@
 
 #include <QColor>
 #include <QEvent>
+#include <QEnterEvent>
 #include <QFont>
 #include <QMouseEvent>
 #include <QPainter>
@@ -69,11 +70,11 @@ namespace wf
             void editableTileClicked(Qt::MouseButton a_button);
 
         private:
-            void paintEvent(QPaintEvent* a_event);
-            void mousePressEvent(QMouseEvent* a_event);
-            void wheelEvent(QWheelEvent* a_event);
-            void enterEvent(QEvent* a_event);
-            void leaveEvent(QEvent* a_event);
+            void paintEvent(QPaintEvent* a_event) override;
+            void mousePressEvent(QMouseEvent* a_event) override;
+            void wheelEvent(QWheelEvent* a_event) override;
+            void enterEvent(QEnterEvent* a_event) override;
+            void leaveEvent(QEvent* a_event) override;
             
             Settings* settings;
             RenderedTile* selection;

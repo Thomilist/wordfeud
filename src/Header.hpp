@@ -38,7 +38,7 @@ namespace wf
             void reset();
         
         private:
-            void paintEvent(QPaintEvent* a_event);
+            void paintEvent(QPaintEvent* a_event) override;
 
             Settings* settings;
             QSize size;

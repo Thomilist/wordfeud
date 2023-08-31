@@ -91,8 +91,8 @@ namespace wf
             void autoRestart();
 
         private:
-            void mouseMoveEvent(QMouseEvent* a_event);
-            void wheelEvent (QWheelEvent* a_event);
+            void mouseMoveEvent(QMouseEvent* a_event) override;
+            void wheelEvent (QWheelEvent* a_event) override;
 
             void loadLetters();
             void placeLetter(int a_column, int a_row, Letter* a_letter);

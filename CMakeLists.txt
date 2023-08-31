@@ -34,14 +34,14 @@ else()
     )
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(CURL REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 add_subdirectory(src)
 target_link_libraries(
     wordfeud PRIVATE
-    Qt5::Widgets
+    Qt::Widgets
     Version
     Wordfeud
 )

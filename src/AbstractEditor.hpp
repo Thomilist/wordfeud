@@ -14,8 +14,8 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QRegExp>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QString>
 #include <QStringBuilder>
 #include <QUrl>
@@ -100,8 +100,8 @@ namespace wf
             QLabel name_label{"Name:"};
             QLineEdit name_edit;
             QLabel name_validation_label;
-            QRegExpValidator name_validator;
-            QRegExp name_regex{"^[a-zA-Z0-9](?:[a-zA-Z0-9 ._-]*[a-zA-Z0-9])?\\.[a-zA-Z0-9_-]+$"};
+            QRegularExpressionValidator name_validator;
+            QRegularExpression name_regex{"^[a-zA-Z0-9](?:[a-zA-Z0-9 ._-]*[a-zA-Z0-9])?\\.[a-zA-Z0-9_-]+$"};
     };
 }
 

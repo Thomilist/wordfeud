@@ -1,7 +1,7 @@
 add_library(AboutDialog AboutDialog.cpp)
 target_link_libraries(
     AboutDialog
-    Qt5::Widgets
+    Qt::Widgets
     Version
 )
 add_custom_target(
@@ -18,21 +18,21 @@ add_dependencies(
 add_library(AbstractEditor AbstractEditor.cpp)
 target_link_libraries(
     AbstractEditor
-    Qt5::Widgets
+    Qt::Widgets
     Settings
 )
 
 add_library(AbstractEditorLauncher AbstractEditorLauncher.cpp)
 target_link_libraries(
     AbstractEditorLauncher
-    Qt5::Widgets
+    Qt::Widgets
     Settings
 )
 
 add_library(BoardEditor BoardEditor.cpp)
 target_link_libraries(
     BoardEditor
-    Qt5::Widgets
+    Qt::Widgets
     AbstractEditor
     RenderedBoard
     RenderedTile
@@ -42,21 +42,21 @@ target_link_libraries(
 add_library(BoardEditorLauncher BoardEditorLauncher.cpp)
 target_link_libraries(
     BoardEditorLauncher
-    Qt5::Widgets
+    Qt::Widgets
     AbstractEditorLauncher
 )
 
 add_library(ButtonPanel ButtonPanel.cpp)
 target_link_libraries(
     ButtonPanel
-    Qt5::Widgets
+    Qt::Widgets
     Settings
 )
 
 add_library(DictionaryEditor DictionaryEditor.cpp)
 target_link_libraries(
     DictionaryEditor
-    Qt5::Widgets
+    Qt::Widgets
     AbstractEditor
     LetterEditorWidget
     LetterTable
@@ -67,7 +67,7 @@ target_link_libraries(
 add_library(DictionaryEditorLauncher DictionaryEditorLauncher.cpp)
 target_link_libraries(
     DictionaryEditorLauncher
-    Qt5::Widgets
+    Qt::Widgets
     AbstractEditorLauncher
     Language
     Settings
@@ -76,14 +76,14 @@ target_link_libraries(
 add_library(DictionaryLookupDialog DictionaryLookupDialog.cpp)
 target_link_libraries(
     DictionaryLookupDialog
-    Qt5::Widgets
+    Qt::Widgets
     Settings
 )
 
 add_library(Game Game.cpp)
 target_link_libraries(
     Game
-    Qt5::Widgets
+    Qt::Widgets
     ButtonPanel
     Header
     Language
@@ -103,7 +103,7 @@ target_link_libraries(
 add_library(Header Header.cpp)
 target_link_libraries(
     Header
-    Qt5::Widgets
+    Qt::Widgets
     Player
     Settings
 )
@@ -111,20 +111,20 @@ target_link_libraries(
 add_library(Language Language.cpp)
 target_link_libraries(
     Language
-    Qt5::Widgets
+    Qt::Widgets
     Letter
 )
 
 add_library(Letter Letter.cpp)
 target_link_libraries(
     Letter
-    Qt5::Widgets
+    Qt::Widgets
 )
 
 add_library(LetterEditorWidget LetterEditorWidget.cpp)
 target_link_libraries(
     LetterEditorWidget
-    Qt5::Widgets
+    Qt::Widgets
     Letter
     RenderedTile
 )
@@ -132,7 +132,7 @@ target_link_libraries(
 add_library(LetterPool LetterPool.cpp)
 target_link_libraries(
     LetterPool
-    Qt5::Widgets
+    Qt::Widgets
     Language
     Letter
 )
@@ -140,13 +140,13 @@ target_link_libraries(
 add_library(LetterTable LetterTable.cpp)
 target_link_libraries(
     LetterTable
-    Qt5::Widgets
+    Qt::Widgets
 )
 
 add_library(LetterTableModel LetterTableModel.cpp)
 target_link_libraries(
     LetterTableModel
-    Qt5::Widgets
+    Qt::Widgets
     Language
     Letter
 )
@@ -154,14 +154,14 @@ target_link_libraries(
 add_library(Modifier Modifier.cpp)
 target_link_libraries(
     Modifier
-    Qt5::Widgets
+    Qt::Widgets
     nlohmann_json::nlohmann_json
 )
 
 add_library(ModifierPattern ModifierPattern.cpp)
 target_link_libraries(
     ModifierPattern
-    Qt5::Widgets
+    Qt::Widgets
     nlohmann_json::nlohmann_json
     Modifier
     VirtualBoard
@@ -171,7 +171,7 @@ target_link_libraries(
 add_library(Player Player.cpp)
 target_link_libraries(
     Player
-    Qt5::Widgets
+    Qt::Widgets
     Letter
     LetterPool
     PlayerAI
@@ -183,7 +183,7 @@ target_link_libraries(
 add_library(PlayerAI PlayerAI.cpp)
 target_link_libraries(
     PlayerAI
-    Qt5::Widgets
+    Qt::Widgets
     Player
     PlayerAIWorker
     PlayerSettings
@@ -196,7 +196,7 @@ target_link_libraries(
 add_library(PlayerAIWorker PlayerAIWorker.cpp)
 target_link_libraries(
     PlayerAIWorker
-    Qt5::Widgets
+    Qt::Widgets
     Letter
     LetterPool
     Settings
@@ -207,41 +207,41 @@ target_link_libraries(
 add_library(PlayerSettings PlayerSettings.cpp)
 target_link_libraries(
     PlayerSettings
-    Qt5::Widgets
+    Qt::Widgets
 )
 
 add_library(ProposalInfo ProposalInfo.cpp)
 target_link_libraries(
     ProposalInfo
-    Qt5::Widgets
+    Qt::Widgets
     Settings
 )
 
 add_library(RecordContainer RecordContainer.cpp)
 target_link_libraries(
     RecordContainer
-    Qt5::Widgets
+    Qt::Widgets
     Score
 )
 
 add_library(RecordDialog RecordDialog.cpp)
 target_link_libraries(
     RecordDialog
-    Qt5::Widgets
+    Qt::Widgets
     RecordSortFilterProxyModel
 )
 
 add_library(RecordSortFilterProxyModel RecordSortFilterProxyModel.cpp)
 target_link_libraries(
     RecordSortFilterProxyModel
-    Qt5::Widgets
+    Qt::Widgets
     Score
 )
 
 add_library(RecordTableModel RecordTableModel.cpp)
 target_link_libraries(
     RecordTableModel
-    Qt5::Widgets
+    Qt::Widgets
     RecordContainer
     Score
 )
@@ -249,7 +249,7 @@ target_link_libraries(
 add_library(RenderedBoard RenderedBoard.cpp)
 target_link_libraries(
     RenderedBoard
-    Qt5::Widgets
+    Qt::Widgets
     LetterPool
     Modifier
     RenderedTile
@@ -260,7 +260,7 @@ target_link_libraries(
 add_library(RenderedTile RenderedTile.cpp)
 target_link_libraries(
     RenderedTile
-    Qt5::Widgets
+    Qt::Widgets
     Letter
     LetterPool
     Modifier
@@ -271,13 +271,13 @@ target_link_libraries(
 add_library(Score Score.cpp)
 target_link_libraries(
     Score
-    Qt5::Widgets
+    Qt::Widgets
 )
 
 add_library(Settings Settings.cpp)
 target_link_libraries(
     Settings
-    Qt5::Widgets
+    Qt::Widgets
     Language
     ModifierPattern
     PlayerSettings
@@ -287,27 +287,27 @@ target_link_libraries(
 add_library(SettingsDialog SettingsDialog.cpp)
 target_link_libraries(
     SettingsDialog
-    Qt5::Widgets
+    Qt::Widgets
     Settings
 )
 
 add_library(StartupProgressDialog StartupProgressDialog.cpp)
 target_link_libraries(
     StartupProgressDialog
-    Qt5::Widgets
+    Qt::Widgets
 )
 
 add_library(UpdateDialog UpdateDialog.cpp)
 target_link_libraries(
     UpdateDialog
-    Qt5::Widgets
+    Qt::Widgets
     Version
 )
 
 add_library(Version Version.cpp)
 target_link_libraries(
     Version
-    Qt5::Widgets
+    Qt::Widgets
     CURL::libcurl
     nlohmann_json::nlohmann_json
 )
@@ -315,7 +315,7 @@ target_link_libraries(
 add_library(VirtualBoard VirtualBoard.cpp)
 target_link_libraries(
     VirtualBoard
-    Qt5::Widgets
+    Qt::Widgets
     Letter
     Modifier
     Settings
@@ -333,7 +333,7 @@ target_link_libraries(
 add_library(Word Word.cpp)
 target_link_libraries(
     Word
-    Qt5::Widgets
+    Qt::Widgets
     Letter
     Modifier
     VirtualTile
@@ -342,7 +342,7 @@ target_link_libraries(
 add_library(Wordfeud Wordfeud.cpp)
 target_link_libraries(
     Wordfeud
-    Qt5::Widgets
+    Qt::Widgets
     AboutDialog
     BoardEditor
     BoardEditorLauncher

@@ -46,6 +46,7 @@ namespace wf
         right_player_score.setFont(score_font);
 
         grid_layout.setSpacing(0);
+        grid_layout.setContentsMargins(0, 11, 0, 0);
         setLayout(&grid_layout);
     }
     

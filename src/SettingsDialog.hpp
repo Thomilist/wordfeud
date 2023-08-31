@@ -19,8 +19,8 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QPushButton>
-#include <QRegExp>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QSizePolicy>
 #include <QSlider>
 #include <QString>
@@ -77,7 +77,7 @@ namespace wf
             QGridLayout right_column_layout;
             QWidget left_column_padding;
             QWidget right_column_padding;
-            QRegExp player_name_regex{QString{"^[\\w ]*[^\\W_][\\w ]*$"}};
+            QRegularExpression player_name_regex{QString{"^[\\w ]*[^\\W_][\\w ]*$"}};
             const int minimum_group_box_width = 400;
             const int maximum_name_length = 26;
             const int minimum_shown_ai_difficulty = 0;
@@ -108,7 +108,7 @@ namespace wf
             QGridLayout left_player_settings_layout;
             QLabel left_player_name_label{"Name:"};
             QLineEdit left_player_name_edit;
-            QRegExpValidator left_player_name_validator;
+            QRegularExpressionValidator left_player_name_validator;
             QCheckBox left_player_random_name_checkbox{"Use random name"};
             QLabel left_player_type_label{"Control:"};
             QComboBox left_player_type_dropdown;
@@ -128,7 +128,7 @@ namespace wf
             QGridLayout right_player_settings_layout;
             QLabel right_player_name_label{"Name:"};
             QLineEdit right_player_name_edit;
-            QRegExpValidator right_player_name_validator;
+            QRegularExpressionValidator right_player_name_validator;
             QCheckBox right_player_random_name_checkbox{"Use random name"};
             QLabel right_player_type_label{"Control:"};
             QComboBox right_player_type_dropdown;

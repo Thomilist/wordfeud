@@ -23,7 +23,7 @@ namespace wf
             void setProposedPlay(bool a_valid, int a_points);
         
         private:
-            void paintEvent(QPaintEvent* a_event);
+            void paintEvent(QPaintEvent* a_event) override;
             QString getPointsAsText();
 
             Settings* settings;

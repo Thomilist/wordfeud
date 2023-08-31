@@ -21,12 +21,6 @@ namespace wf
         header.setLeftPlayer(all_players[0]);
         header.setRightPlayer(all_players[1]);
         all_players[current_player_index]->setTurn(true);
-
-        header.stackUnder(&selection);
-        board.stackUnder(&selection);
-        proposal_info.stackUnder(&selection);
-        hands.stackUnder(&selection);
-        buttons.stackUnder(&selection);
         
         int grid_row = 0;
 
@@ -37,7 +31,11 @@ namespace wf
         game_layout.addWidget(&buttons, grid_row++, 0, Qt::AlignCenter);
 
         game_layout.setSpacing(0);
+        game_layout.setContentsMargins(0,0,0,0);
         setLayout(&game_layout);
+
+        hands.setContentsMargins(0,0,0,0);
+        buttons.setContentsMargins(0,0,0,0);
 
         loadLetters();
         letter_pool.set(getAllLetters());
@@ -52,6 +50,8 @@ namespace wf
         buttons.setTileCount(letter_pool.getRemainingCount());
         setCorrectButtonState();
         showCorrectButtons();
+
+        selection.raise();
 
         initialiseConnections();
         player_AI_thread.start();

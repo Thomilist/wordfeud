@@ -29,6 +29,7 @@ namespace wf
         proposed_play_value.setFont(value_font);
 
         grid_layout.setSpacing(0);
+        grid_layout.setContentsMargins(0,0,0,0);
         setLayout(&grid_layout);
     }
     

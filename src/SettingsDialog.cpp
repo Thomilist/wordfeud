@@ -285,7 +285,7 @@ namespace wf
         left_player_settings_layout.addWidget(&left_player_name_edit, 0, 1);
         left_player_settings_layout.addWidget(&left_player_random_name_checkbox, 1, 1);
 
-        left_player_name_validator.setRegExp(player_name_regex);
+        left_player_name_validator.setRegularExpression(player_name_regex);
         left_player_name_edit.setValidator(&left_player_name_validator);
 
         left_player_name_edit.setText(settings->getLeftPlayer()->getTempName());
@@ -340,7 +340,7 @@ namespace wf
         right_player_settings_layout.addWidget(&right_player_name_edit, 0, 1);
         right_player_settings_layout.addWidget(&right_player_random_name_checkbox, 1, 1);
 
-        right_player_name_validator.setRegExp(player_name_regex);
+        right_player_name_validator.setRegularExpression(player_name_regex);
         right_player_name_edit.setValidator(&right_player_name_validator);
 
         right_player_name_edit.setText(settings->getRightPlayer()->getTempName());

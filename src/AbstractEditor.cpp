@@ -246,7 +246,7 @@ namespace wf
         setCurrentItem(a_name);
 
         // Validate name
-        if (current_item.isEmpty() || current_item.back() == " ")
+        if (current_item.isEmpty() || current_item.back() == ' ')
         {
             name_validation_label.setText("Invalid");
             item_valid = false;
@@ -288,7 +288,7 @@ namespace wf
     {
         connect(&name_edit, &QLineEdit::textChanged, this, &AbstractEditor::updateCurrentName);
 
-        name_validator.setRegExp(name_regex);
+        name_validator.setRegularExpression(name_regex);
         name_edit.setValidator(&name_validator);
         name_edit.setMaxLength(32);
 

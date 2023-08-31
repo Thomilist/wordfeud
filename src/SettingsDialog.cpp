@@ -17,6 +17,8 @@ namespace wf
         grid_layout.addLayout(&left_column_layout, 0, 0);
         grid_layout.addLayout(&right_column_layout, 0, 1);
 
+        player_name_regex.setPatternOptions(QRegularExpression::UseUnicodePropertiesOption);
+
         // Left collumn
         int layout_row = 0;
 

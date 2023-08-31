@@ -63,6 +63,7 @@ namespace wf
             void discardProposed();
             void invalidateEvaluation();
             const QPoint mirrorTilePosition(const QPoint& a_position, Direction a_direction);
+            bool hasStartModifier();
         
         protected:
             void assignNeighbours();

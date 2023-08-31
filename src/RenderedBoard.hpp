@@ -52,6 +52,7 @@ namespace wf
         signals:
             void tileEntered(const QPoint& a_position);
             void tileLeft(const QPoint& a_position);
+            void highlightedTilesEdited();
 
         private:
             void createEmptyGrid();

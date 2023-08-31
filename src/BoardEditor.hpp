@@ -39,6 +39,7 @@ namespace wf
             void loadBoard();
             void highlightTiles(const QPoint& a_position);
             void unhighlightTiles(const QPoint& a_position);
+            void updateSaveButtonState();
         
         private:
             void prepare() override;
@@ -58,8 +59,8 @@ namespace wf
 
             QGroupBox mirroring_group{"Mirroring"};
             QGridLayout mirroring_layout;
-            QCheckBox mirror_vertical{"Vertical"};
             QCheckBox mirror_horisontal{"Horisontal"};
+            QCheckBox mirror_vertical{"Vertical"};
 
             QPushButton reset_board_button{"Reset Board"};
 

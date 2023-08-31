@@ -208,6 +208,7 @@ namespace wf
             tile->repaint();
         }
 
+        emit highlightedTilesEdited();
         return;
     }
 

@@ -474,6 +474,31 @@ namespace wf
         return a_direction == Direction::Horisontal ? QPoint{mirror_index, other_index} : QPoint{other_index, mirror_index};
     }
     
+    bool VirtualBoard::hasStartModifier()
+    {
+        VirtualTile* tile;
+        
+        for (int row = 0; row < getGridDimensions().height(); ++row)
+        {
+            for (int column = 0; column < getGridDimensions().width(); ++column)
+            {
+                tile = getTileAtPosition(column, row);
+
+                if (tile == nullptr)
+                {
+                    continue;
+                }
+
+                if (tile->getModifier() != nullptr && tile->getModifier()->getType() == ModifierType::Start)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    
     bool VirtualBoard::isPlacementConnectedToStart(VirtualTile* a_tile)
     {
         checked_tiles.push_back(a_tile);

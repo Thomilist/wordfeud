@@ -32,6 +32,7 @@ namespace wf
         connect(&reset_board_button, &QPushButton::clicked, this, &BoardEditor::loadBoard);
         connect(&board, &RenderedBoard::tileEntered, this, &BoardEditor::highlightTiles);
         connect(&board, &RenderedBoard::tileLeft, this, &BoardEditor::unhighlightTiles);
+        connect(&board, &RenderedBoard::highlightedTilesEdited, this, &BoardEditor::updateSaveButtonState);
 
         vertical_spacer.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -79,7 +80,7 @@ namespace wf
         }
 
         board.repaint();
-
+        updateSaveButtonState();
         return;
     }
     
@@ -140,6 +141,13 @@ namespace wf
             board.getTileAtPosition(position)->setHighlight(false);
         }
 
+        return;
+    }
+    
+    void BoardEditor::updateSaveButtonState()
+    {
+        bool board_valid = board.hasStartModifier();
+        button_box.button(QDialogButtonBox::Save)->setEnabled(board_valid && item_valid);
         return;
     }
     
@@ -211,8 +219,10 @@ namespace wf
     
     void BoardEditor::createMirroringGroup()
     {
-        mirroring_layout.addWidget(&mirror_vertical, 0, 0);
-        mirroring_layout.addWidget(&mirror_horisontal, 1, 0);
+        int layout_row = 0;
+
+        mirroring_layout.addWidget(&mirror_horisontal, layout_row++, 0);
+        mirroring_layout.addWidget(&mirror_vertical, layout_row++, 0);
 
         mirroring_group.setLayout(&mirroring_layout);
 

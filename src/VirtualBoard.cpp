@@ -115,7 +115,7 @@ namespace wf
         return &board[a_column][a_row];
     }
     
-    VirtualTile* VirtualBoard::getTileAtPosition(QPoint a_position)
+    VirtualTile* VirtualBoard::getTileAtPosition(const QPoint& a_position)
     {
         return getTileAtPosition(a_position.x(), a_position.y());
     }

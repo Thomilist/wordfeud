@@ -182,7 +182,7 @@ namespace wf
     
     void RenderedBoard::editHighlightedTiles(Qt::MouseButton a_button)
     {
-        Modifier* modifier;
+        Modifier* modifier = nullptr;
 
         switch (a_button)
         {
@@ -198,7 +198,7 @@ namespace wf
             }
             default:
             {
-                break;
+                return;
             }
         }
 

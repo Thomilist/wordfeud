@@ -200,7 +200,7 @@ namespace wf
 
             while (!words.atEnd())
             {
-                QString word = word_list_file.readLine().trimmed().toUpper();
+                QString word = system_locale.toUpper(word_list_file.readLine().trimmed());
                 word_list.insert(word);
 
                 if (a_load_biased_words)
@@ -237,7 +237,7 @@ namespace wf
                     continue;
                 }
 
-                word_list.insert(word.trimmed().toUpper());
+                word_list.insert(system_locale.toUpper(word.trimmed()));
             }
 
             word_list_file.close();

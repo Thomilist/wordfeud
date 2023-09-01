@@ -11,6 +11,7 @@
 #include <QFileInfo>
 #include <QHash>
 #include <QIODevice>
+#include <QLocale>
 #include <QString>
 #include <QStringBuilder>
 #include <QStringList>
@@ -70,6 +71,7 @@ namespace wf
             QString letter_list_path;
             QString word_list_path;
             QString biased_words_path;
+            QLocale system_locale;
     };
 }
 
